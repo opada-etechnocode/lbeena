@@ -1,0 +1,312 @@
+{
+"language":"Language",
+"next":"Next",
+"skip":"Skip",
+  "welcome_to_company": "Welcome to Lbeena",
+  "login_to_continue": "Log in to continue",
+  "login": "Login",
+  "delete_sure_account": "Are you sure you want to delete the account?",
+  "password": "Password",
+  "sure": "Sure",
+  "choose_date": "Choose the license expiration date",
+  "choose_date_license":"License expiration date",
+  "choose_date_license2":"You must select an expiration date",
+  "error_data":"Error loading, please try again",
+  "dont_have_product":"Don't have products",
+  "login_in_app": "Sign in",
+  "offer": "Offers",
+  "or": "Or",
+  "save": "Save",
+  "cancel":"Cancel",
+  "about_app": "About app",
+
+  "field_is_empty": "The field is empty",
+  "confirm_number": "Please confirm the number",
+  "send_otp_tow": "Send the OTP again",
+  "send_otp_pas": "One-Time Password (OTP)",
+  "new_password": "New password",
+  "login_guest": "Login as a guest",
+  "forget_password": "Forget Password?",
+  "reset_password": "Reset Password",
+  "dont_have_account": "You don't have an account?",
+  "sign_up": "Sign Up",
+  "individual_account": "Individual account",
+  "company_account": "Company account",
+  "user_name": "User Name",
+  "confirm_password": "Confirm Password",
+  "agree_terms": "Agree to the terms and policy of the application",
+  "do_you_have_account": "Do you have an account?",
+  "send_otp": "Send OTP",
+  "mobile_number": "Mobile Number",
+  "company_registration": "Complete registration",
+  "company_name": "Company name (as in the license)",
+  "owner_name": "Owner Name",
+  "license_number": "License number",
+  "emirate": "Emirate",
+  "upload_license": "Upload the trade license",
+  "remove": "Remove",
+  "company_activity": "Company activity",
+  "license_exp_date": "License expiration date",
+  "otp_send_to": "OTP sent to {mobile}",
+  "@otp_send_to": {
+    "placeholders": {
+      "mobile": {
+        "type": "String"
+      }
+    }
+  },
+  "didnt_receive": "Didn't receive?",
+  "please_wait": "please wait {time}",
+  "@please_wait": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "resend": "Resend",
+  "verify": "Verify",
+  "msg_valid_code": "Please enter valid verification code",
+  "msg_otp_failed": "OTP validation failed",
+  "msg_upload_license": "Please upload the trade license!",
+  "msg_exp_date": "Please select trade license expiry date!",
+  "msg_pw_six_char": "Password should be at-least six characters!",
+  "msg_agree_terms": "Please agree to our terms",
+  "msg_pw_not_match": "Passwords doesn't match",
+  "view": "View",
+  "archived_research": "Archived research",
+  "customer_support": "Customer support",
+  "report_problem": "Report a problem",
+  "contact_us": "Contact Us",
+  "terms": "Terms and conditions",
+  "privacy": "Privacy and policy",
+  "delete_account": "Delete account",
+  "dark_mode": "Dark mode",
+  "lite_mode": "Lite mode",
+  "home_page": "Home Page",
+  "logout": "Logout",
+  "settings": "Settings",
+  "are_you_sure": "Are you sure?",
+  "are_you_sure_des": "Are your sure want to do this?",
+  "no": "No",
+  "yes": "Yes",
+  "search": "Search",
+  "do_you_want_add_wahtsapp":"Do you want to add your WhatsApp number??",
+  "do_you_want_add_coupons":"Do you want to add a discount coupon??",
+  "do_you_want_add_chats":"Do you want to activate chat??",
+  "error_size_photo": "Error: Image size is larger than 1 MB",
+  "search_hint": "Search...",
+  "main_categories": "Main sections",
+  "top_companies": "Featured advertisers",
+  "top_ads": "Featured ads",
+  "new_ads": "Newly added ads",
+  "add_ad": "Add Ad",
+  "choose_section": "Choose the section where you want your ad to appear:",
+  "main_category": "Al-Khaaldi sections",
+  "normal_category": "Another section",
+  "choose_ad_type": "Choosing the type of advertising:",
+  "banner_ad": "Banner announcement",
+  "product_ad": "Product announcement",
+  "ad_name": "Add the name:",
+  "add_name_here": "Add name here..",
+  "must_choose_photo": "You must choose a photo for the banner",
+  "should_link_active": "Please enter an active link..",
+  "choose_parts": "You must select one of the sections at the top",
+  "add_price": "Price:",
+  "chose_price_less": "Please choose a price less than 500 thousand AED",
+  "ad_name_hint": "Ad name here in english",
+  "ad_name_hint_ar": "Ad name here in arabic",
+  "add_photo": "Add a photo:",
+  "publish_method": "Method of publication:",
+  "link_type": "External link",
+  "description_method": "Through the application",
+  "add_link": "Add the link:",
+  "pay_now": "Pay Now",
+  "add_description": "Add description:",
+  "description_hint": "Type description here ..",
+  "description_hint_ar": "Type description in arabic here",
+  "add": "Add",
+  "must_choose_less_one": "At least one image must be selected",
+  "download_data": "Downloading..",
+  "less_photo": "5 photos or less..",
+  "submit": "Submit",
+  "link": "Link",
+  "dont_have_result": "Don't have result ..",
+  "link_hint": "Paste link here",
+  "whats_app_number": "WhatsApp Number(Optional):",
+  "whats_app_number_hint": "Type WhatsApp Number",
+  "sign_in_process": "Signing is being processed...",
+  "want_to_highlight": "Do you want to highlight your ads?",
+  "price": "Price(Optional)",
+  "price_hint": "Type price here",
+  "req_for_banner": "Request design from admin panel",
+  "msg_add_ad": "Your add has been submitted, wait for the approval",
+  "msg_select_category": "Please select the category",
+  "msg_banner_img_required": "Banner image is required!",
+  "msg_add_images": "Please add images or videos",
+  "msg_company_not_available": "Company not available!",
+  "all_ads": "All announcements",
+  "top_rated_ads": "The most rated ads",
+  "book_ad_space": "Book an ad space here",
+  "selected_videos": "Selected videos from Al-Khaaldi channels:",
+  "info": "Info",
+  "share": "Share",
+  "edit": "Edit",
+  "delete": "Delete",
+  "packages": "Packages",
+  "joined_on": "Joined on {date}",
+  "@joined_on": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "safety_tips": "Safety tips",
+  "faq": "Frequently asked questions",
+  "items": "{count} Items",
+  "@items": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "add_coupon": "Add coupon",
+  "click_here": "Click here",
+  "views": "Views",
+  "details": "Details",
+  "distinction": "Distinction",
+  "w_app": "WApp",
+  "chat": "Chat",
+  "coupons": "Coupons",
+  "login_first": "Please login first",
+  "notifications": "Notifications",
+  "coupon_info_company": "Company name: {name}",
+  "@coupon_info_company": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "coupon_info_category": "Type of advertisement: {name}",
+  "@coupon_info_category": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "coupon_info_discount": "Discount percentage: {discount}",
+  "@coupon_info_discount": {
+    "placeholders": {
+      "discount": {
+        "type": "String"
+      }
+    }
+  },
+  "coupon_info_date": "Coupon date: {date}",
+  "@coupon_info_date": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "close": "Close",
+  "my_profile": "My profile",
+  "book_plan": "Book a new plan here",
+  "buy_package_for": "for {price}",
+  "@buy_package_for": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "valid_days": "Valid {days} day(s)",
+  "@valid_days": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "ads_count": "{ads} Ads",
+  "@ads_count": {
+    "placeholders": {
+      "ads": {
+        "type": "String"
+      }
+    }
+  },
+  "choose_plan": "Choose Plane",
+  "rate_now": "Rate Now",
+  "rate_ad": "Rate Ad",
+  "update": "Update",
+  "loading": "loading...",
+  "start_message": "start new message",
+  "loading_old_messages": "loading older conversation history...",
+  "write_message": "Write a message...",
+  "delete_ad": "Delete ad",
+  "delete_ad_description": "Are you sure want to delete this ad?",
+  "msg_ad_deleted": "Ad has been deleted successfully!",
+  "sort_by": "Sort By",
+  "newset": "Newset First",
+  "oldest": "Oldest First",
+  "search_results": "Search Results",
+  "account_transfer_msg": "Only corporate accounts can upload ads, so if you want to transfer your account to a corporate account, please click on the button below.",
+  "account_transfer": "Account transfer",
+  "onboarding_1": "Welcome to Lbeena. You can register or continue as a guest.",
+  "onboarding_1_text1": "Welcome to Lbeena",
+  "onboarding_1_text2": "You can register in the app",
+  "onboarding_1_text3":"in the app or enter guest.",
+  "onboarding_2": "You can add or request to add an ad in the application after you register as a company.",
+  "onboarding_2_text1": "You can add or request to add",
+  "onboarding_2_text2": "an ad in the application after",
+  "onboarding_2_text3":"you register as a company.",
+  "onboarding_3_text1": "Browse ads and connect with",
+  "onboarding_3_text2": "advertisers easily،",
+  "onboarding_3_text3":"We wish you a special experience.",
+  "onboarding_3": "Browse ads and connect with advertisers easily، We wish you a special experience.",
+  "select_language": "Select Language",
+  "add_feedback": "Add Feedback",
+  "feedback_here": "Type your message here",
+  "full_name": "Full Name",
+  "msg_fill_details": "Please fill the all details!",
+  "exit_app": "Are you sure you want to exit?",
+  "no_data": "No data found",
+  "unlimited_ads": "Unlimited Ads",
+  "active_package": "My active package",
+  "choose_package": "Buy a package",
+  "msg_no_package": "Your don't have active package, please purchase one",
+  "select_method": "Select a payment method",
+  "boost_ad": "Highlight advertising for a {duration} days",
+  "@boost_ad": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "ad_boost_state": "Advertising discrimination:",
+  "promote_listing": "Promote your listing",
+  "ad_is_special": "Advertising is special",
+  "your_ad_end": "Your ad ends after:",
+  "number_days": "{days} days",
+  "@number_days": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "no_packages": "No boosting packages found!",
+  "news": "News",
+  "see_all": "See all",
+  "read_more": "Read More",
+  "checkout_news": "Check out all the news and updates",
+  "breaking_news": "Breaking News",
+  "search_news_hint": "Search..."
+}

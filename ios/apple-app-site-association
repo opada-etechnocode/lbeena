@@ -1,0 +1,39 @@
+{
+  "applinks": {
+    "apps": [
+    ],
+    "details": [
+      {
+        "appIDs": [
+          "8G2R59XL2F.com.syriansInUae"
+        ],
+        "components": [
+          {
+            "/": "/login",
+            "comment": "Matches URL with a path /login"
+          },
+          {
+            "/": "/details/*",
+            "comment": "Matches any URL with a path that starts with /details/."
+          },
+          {
+            "/": "/company/*",
+            "comment": "Matches any URL with a path that starts with /company/."
+          },
+            {
+                      "/": "/user/*",
+                      "comment": "Matches any URL with a path that starts with /company/."
+                    },
+          {
+            "/": "/secret",
+            "exclude": true,
+            "comment": "Matches URL with a path /secret and instructs the system not to open it as a universal link."
+          },
+          {
+             "/":"*"
+          }
+        ]
+      }
+    ]
+  }
+}

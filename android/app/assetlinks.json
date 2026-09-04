@@ -1,0 +1,7 @@
+[{
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.syriansInUae",
+      "sha256_cert_fingerprints": ["F6:9F:52:E5:7E:3F:98:5F:9C:75:04:0F:16:A0:71:53:FB:20:E1:7D:B4:B3:3D:F6:F9:6F:A7:D9:5A:ED:04:93"]}
+}]

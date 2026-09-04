@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1095937749757",
+    "project_id": "syriansinuae-84f35",
+    "storage_bucket": "syriansinuae-84f35.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095937749757:android:e311060293bf96820a0494",
+        "android_client_info": {
+          "package_name": "com.etechnocode.lbeena"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASSpklb9Nw0AJa1w2M66tdSn3-4rF0jZE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,311 @@
+{
+  "language":"اللغة",
+  "next":"التالي",
+  "skip":"تخطي",
+  "cancel":"إلغاء",
+  "welcome_to_company": "أهلاً بك في لبينا",
+  "login_to_continue": "سجل الدخول للمتابعة",
+  "login": "دخول",
+  "login_in_app": "تسجيل الدخول",
+  "login_guest": "الدخول كضيف",
+  "or": "أو",
+  "password": "كلمة المرور",
+  "forget_password": "هل نسيت كلمة المرور؟",
+  "reset_password": "إعادة تعيين كلمة المرور",
+  "dont_have_account": "ليس لديك حساب؟",
+  "download_data": "جاري التحميل ..",
+  "less_photo": "5 صور أو أقل ..",
+  "save": "حفظ",
+  "field_is_empty": "الحقل فارغ",
+  "confirm_number": "يرجى التأكد من الرقم",
+  "new_password": "كلمة المرور الجديدة",
+  "sign_up": "تسجيل جديد",
+  "individual_account": "حساب فردي",
+  "company_account": "حساب شركة",
+  "user_name": "اسم المستخدم",
+  "confirm_password": "تأكيد كلمة المرور",
+  "agree_terms": "الموافقة على شروط و سياسة التطبيق",
+  "do_you_have_account": "هل لديك حساب؟",
+  "send_otp": "أرسل الكود",
+  "mobile_number": "رقم الجوال",
+  "send_otp_tow": "ارسال ال OTP مرة ثانية",
+  "send_otp_pas": "كلمة مرور واحد OTP ستصلك على الواتس آب أو رسالة قصيرة",
+  "company_registration": "إكمال التسجيل",
+  "company_name": "اسم الشركة (كما في الرخصة)",
+  "owner_name": "اسم الشخص المسؤول",
+  "license_number": "رقم الرخصة",
+  "emirate": "الإمارة",
+  "upload_license": "تحميل الرخصة التجارية",
+  "remove": "إزالة",
+  "company_activity": "نشاط الشركة",
+  "license_exp_date": "تاريخ انتهاء الرخصة",
+  "otp_send_to": "تم إرسال رمز التحقق إلى {mobile}",
+  "@otp_send_to": {
+    "placeholders": {
+      "mobile": {
+        "type": "String"
+      }
+    }
+  },
+  "didnt_receive": "لم تستلم؟",
+  "please_wait": "يرجى الانتظار {time}",
+  "@please_wait": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "resend": "إعادة الإرسال",
+  "verify": "التحقق",
+  "msg_valid_code": "يرجى إدخال رمز التحقق الصحيح",
+  "msg_otp_failed": "فشل التحقق من رمز التحقق",
+  "msg_upload_license": "يرجى تحميل رخصة التجارة!",
+  "msg_exp_date": "يرجى تحديد تاريخ انتهاء صلاحية رخصة التجارة!",
+  "msg_pw_six_char": "يجب أن تكون كلمة المرور مكونة على الأقل من ستة أحرف!",
+  "msg_agree_terms": "يرجى الموافقة على شروطنا",
+  "msg_pw_not_match": "كلمات المرور غير متطابقة",
+  "view": "عرض",
+  "archived_research": "البحوثات المحفوظة",
+  "customer_support": "خدمة دعم العملاء",
+  "about_app": "عن التطبيق",
+  "report_problem": "الإبلاغ عن مشكلة",
+  "contact_us": "اتصل بنا",
+  "terms": "الأحكام و الشروط",
+  "delete_account": "حذف الحساب",
+  "delete_sure_account": "هل أنت متأكد من حذف الحساب ؟",
+  "home_page": "الرئيسية",
+  "dark_mode": "الوضع الليلي",
+  "lite_mode": "الوضع النهاري",
+  "logout": "تسجيل الخروج",
+  "settings": "الإعدادات",
+  "are_you_sure": "هل أنت متأكد؟",
+  "sure": "تأكيد",
+  "choose_date": "اختر تاريخ انتهاء الرخصة",
+  "choose_date_license":"تاريخ انتهاء الرخصة",
+  "choose_date_license2":"يجب تحديد تاريخ انتهاء الصلاحية",
+  "error_data":"خطأ بالتحميل, الرجاء المحاولة مرة أخرى",
+  "dont_have_product":"لايوجد إعلانات ",
+  "do_you_want_add_wahtsapp":"هل تريد إضافة رقم الواتساب؟؟",
+  "do_you_want_add_coupons":"هل تريد إضافة كوبون خصم؟؟",
+  "do_you_want_add_chats":"هل تريد تفعيل الدردشة؟؟",
+  "are_you_sure_des": "هل أنت متأكد أنك تريد القيام بذلك؟",
+  "error_size_photo": "خطأ: حجم الصورة أكبر من 1 ميغابايت",
+  "no": "لا",
+  "yes": "نعم",
+  "search": "منتج، اسم شركة،",
+  "search_hint": "منتج، اسم شركة، ....",
+  "main_categories": "الأقسام الرئيسية",
+  "top_companies": "المعلنين المميزين:",
+  "top_ads": "إعلانات مميزة",
+  "new_ads": "إعلانات مضافة حديثا",
+  "add_ad": "أعلن هنا",
+  "choose_section": "اختر القسم الذي تريد أن يظهر إعلانك فيه:",
+  "main_category": "أقسام الخالدي",
+  "normal_category": "قسم آخر",
+  "choose_ad_type": "اختيار نوع الإعلان:",
+  "banner_ad": "إعلان بنر",
+  "product_ad": "إعلان منتج",
+  "ad_name": "إضافة الاسم:",
+  "add_name_here": "أضف اسم هنا ..",
+  "must_choose_photo": "يجب اختيار صورة للبنر",
+  "ad_name_hint": "اسم الإعلان باللغة الانجليزية",
+  "ad_name_hint_ar": "اسم الإعلان هنا باللغة العربية",
+  "add_photo": "إضافة صورة:",
+  "publish_method": "عند النقر على إعلانك يفتح:",
+  "link_type": "رابط خارجي",
+  "description_method": "وصف داخل التطبيق",
+  "add_link": "إضافة الرابط:",
+  "pay_now": "دفع الآن",
+  "add_description": "إضافة الوصف:",
+  "description_hint": "اكتب الوصف هنا ..",
+  "description_hint_ar": "اكتب الوصف هنا باللغة العربية",
+  "submit": "إرسال",
+  "link": "رابط",
+  "link_hint": "الصق الرابط هنا",
+  "should_link_active": "يرجى إدخال رابط فعال ..",
+  "whats_app_number": "رقم واتس آب:",
+  "whats_app_number_hint": "اكتب رقم واتس آب",
+  "sign_in_process": "جاري تسجيل الدخول...",
+  "want_to_highlight": "هل تريد تمييز إعلانك؟؟",
+  "price": "السعر (اختياري) :",
+  "add_price": "السعر :",
+  "price_hint": "اكتب السعر هنا",
+  "chose_price_less": "يرجى اختيار سعر أقل من 500 ألف درهم",
+  "choose_parts": "يجب اختيار قسم من الأقسام في الأعلى",
+  "req_for_banner": "طلب تصميم من لوحة التحكم الإدارية",
+  "msg_add_ad": "تم تقديم إعلانك، انتظر الموافقة",
+  "msg_select_category": "يرجى تحديد الفئة",
+  "msg_banner_img_required": "الصورة البانر مطلوبة!",
+  "msg_add_images": "يرجى إضافة صور أو فيديوهات",
+  "add": "إضافة",
+  "must_choose_less_one": "يجب اختيار صورة واحدة على الأقل",
+  "msg_company_not_available": "الشركة غير متوفرة!",
+  "all_ads": "جميع الإعلانات",
+  "top_rated_ads": "إعلانات أكثر تقييما",
+  "book_ad_space": "احجز مساحة إعلانية هنا",
+  "selected_videos": " إعلانات مختارة من قنوات الخالدي:",
+  "info": "عن الشركة",
+  "share": "مشاركة",
+  "edit": "تعديل",
+  "delete": "حذف",
+  "packages": "بكجاتي",
+  "joined_on": "تاريخ الانضمام: {date} ",
+  "@joined_on": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "safety_tips": "نصائح السلامة",
+  "faq": "أسئلة متكررة",
+  "items": "{count} أغراض",
+  "@items": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "add_coupon": "إحصل على كود خصم :",
+  "click_here": "حك هنا",
+  "views": "إحصاء:",
+  "details": "التفاصيل:",
+  "distinction": "تمييز",
+  "w_app": "واتساب",
+  "chat": "الدردشة",
+  "coupons": "كوبونات",
+  "offer": "عروض",
+  "login_first": "الرجاء تسجيل الدخول أولاً",
+  "notifications": "الإشعارات",
+  "coupon_info_company": "اسم الشركة: {name}",
+  "@coupon_info_company": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "coupon_info_category": "نوع الإعلان: {name}",
+  "@coupon_info_category": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "coupon_info_discount": "نسبة الخصم: {discount}",
+  "@coupon_info_discount": {
+    "placeholders": {
+      "discount": {
+        "type": "String"
+      }
+    }
+  },
+  "coupon_info_date": "تاريخ القسيمة: {date}",
+  "@coupon_info_date": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "close": "يغلق",
+  "my_profile": "ملفي الشخصي",
+  "book_plan": "احجز خطة جديدة هنا",
+  "buy_package_for": "لـ {price}",
+  "@buy_package_for": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "valid_days": "صالح لـ {days} يوم",
+  "@valid_days": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "ads_count": "{ads} إعلانات",
+  "@ads_count": {
+    "placeholders": {
+      "ads": {
+        "type": "String"
+      }
+    }
+  },
+  "choose_plan": "مختارة",
+  "rate_now": "قيم الآن",
+  "rate_ad": "تقييم الإعلان",
+  "update": "تحديث",
+  "loading": "جار التحميل...",
+  "start_message": "بدء محادثة جديدة",
+  "loading_old_messages": "جار تحميل سجل المحادثات القديمة...",
+  "write_message": "اكتب رسالة...",
+  "delete_ad": "حذف الإعلان",
+  "delete_ad_description": "هل أنت متأكد أنك تريد حذف هذا الإعلان؟",
+  "msg_ad_deleted": "تم حذف الإعلان بنجاح!",
+  "sort_by": "ترتيب حسب",
+  "newset": "الأحدث أولاً",
+  "oldest": "الأقدم أولاً",
+  "search_results": "نتائج البحث",
+  "account_transfer_msg": "فقط حسابات الشركات من يمكنها رفع الإعلانات، لذلك إذا أردت تحويل الحساب إلى حساب شركة يرجى الضغط على الزر أدناه.",
+  "account_transfer": "تحويل الحساب",
+  "privacy": "الخصوصية والسياسة",
+  "onboarding_1": "نرحب بك في تطبيق لبينا، يمكنك التسجيل أو الدخول كضيف.",
+  "onboarding_1_text1": "نرحب بك في تطبيق لبينا",
+  "onboarding_1_text2": "يمكنك التسجيل في التطبيق",
+  "onboarding_1_text3":"في التطبيق أو الدخول ضيف.",
+  "onboarding_2": "تستطيع أن تضيف أو تطلب اضافة إعلان في التطبيق بعد تسجيلك كشركة.",
+  "onboarding_2_text1": "تستطيع أن تضيف أو تطلب",
+  "onboarding_2_text2": "اضافة إعلان في التطبيق بعد",
+  "onboarding_2_text3":"تسجيلك كشركة.",
+  "onboarding_3": "تصفح الاعلانات و تواصل مع المعلنين بسهولة،...",
+  "onboarding_3_text1": "تصفح الاعلانات و تواصل مع",
+  "onboarding_3_text2": "المعلنين بسهولة،",
+  "onboarding_3_text3":"نتمنى لك تجربة مميزة..",
+  "select_language": "اختر اللغة",
+  "add_feedback": "أضف تعليق",
+  "feedback_here": "اكتب رسالتك هنا",
+  "full_name": "الاسم الكامل",
+  "msg_fill_details": "يرجى ملء جميع التفاصيل!",
+  "exit_app": "هل أنت متأكد أنك تريد الخروج؟",
+  "no_data": "لم يتم العثور على بيانات",
+  "unlimited_ads": "إعلانات غير محدودة",
+  "active_package": "حزمتي النشطة",
+  "choose_package": "شراء حزمة",
+  "msg_no_package": "لا تملك حزمة نشطة، يرجى شراء واحدة",
+  "select_method": "اختر طريقة الدفع",
+  "boost_ad": "تسليط الضوء على الإعلان لمدة {duration} أيام",
+  "@boost_ad": {
+    "placeholders": {
+      "duration": {
+        "type": "String"
+      }
+    }
+  },
+  "ad_boost_state": "تمييز الإعلانات:",
+  "promote_listing": "تعزيز قائمة الإعلانات الخاصة بك",
+  "ad_is_special": "الإعلان خاص",
+  "your_ad_end": "ينتهي إعلانك بعد:",
+  "number_days": "{days} أيام",
+  "@number_days": {
+    "placeholders": {
+      "days": {
+        "type": "String"
+      }
+    }
+  },
+  "no_packages": "لم يتم العثور على حزم تعزيز!",
+  "news": "أخبار",
+  "see_all": "عرض الكل",
+  "read_more": "اقرأ المزيد",
+  "checkout_news": "قسم الأخبار",
+  "breaking_news": "قسم الأخبار",
+  "search_news_hint": "بحث...",
+  "dont_have_result": "لايوجد نتائج .."
+}
