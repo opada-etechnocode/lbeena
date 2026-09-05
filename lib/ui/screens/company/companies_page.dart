@@ -609,7 +609,7 @@ searchCompanyController.clear();
     );
   }
 
-  Widget _filterPill({required IconData icon, required String label}) {
+  Widget _filterPill({required FaIconData icon, required String label}) {
     final isDark = DIManager.findDep<SharedPrefs>().getThemeApp() == 'd';
     return Container(
       height: 40,
@@ -872,7 +872,7 @@ searchCompanyController.clear();
         mainAxisAlignment: MainAxisAlignment.center,
         children: iconsSocial.map((item) {
           final platform = item['type'] as String;
-          final icon = item['icon'] as IconData;
+          final icon = item['icon'] as FaIconData;
           final url = matchedLinks[platform];
           final hasLink = url != null && url.trim().isNotEmpty;
           return Padding(

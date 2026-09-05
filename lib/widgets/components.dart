@@ -474,7 +474,7 @@ bool isIpad(context) {
 Widget buildCategory({
   required void Function() onTap,
   String? imagePath,
-  IconData? icon,
+  FaIconData? icon,
   required String text,
   Color? color,
   bool isScrollerCard = false,
@@ -913,7 +913,7 @@ Widget buildUaeNumber(BuildContext context) {
   );
 }
 
-IconData getIcon(String url) {
+FaIconData getIcon(String url) {
   if (url.contains("facebook")) {
     return FontAwesomeIcons.facebook;
   } else if (url.contains("instagram")) {
@@ -925,7 +925,7 @@ IconData getIcon(String url) {
   } else if (url.contains("youtube")) {
     return FontAwesomeIcons.youtube;
   } else {
-    return Icons.link;
+    return FontAwesomeIcons.link;
   }
 }
 

@@ -408,7 +408,7 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  Widget _sectionTitle(String title, IconData icon) {
+  Widget _sectionTitle(String title, FaIconData icon) {
     return LbeenaSectionHeader(
       title: title,
       icon: icon,
@@ -433,7 +433,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   Widget _tile({
-    required IconData icon,
+    required FaIconData icon,
     required String label,
     required VoidCallback onTap,
     Color? iconColor,

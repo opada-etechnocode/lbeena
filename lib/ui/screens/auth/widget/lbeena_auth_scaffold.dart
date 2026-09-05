@@ -178,7 +178,7 @@ class LbeenaAuthPrimaryButton extends StatelessWidget {
 class LbeenaAuthFieldIcon extends StatelessWidget {
   const LbeenaAuthFieldIcon({super.key, required this.icon});
 
-  final IconData icon;
+  final FaIconData icon;
 
   @override
   Widget build(BuildContext context) {

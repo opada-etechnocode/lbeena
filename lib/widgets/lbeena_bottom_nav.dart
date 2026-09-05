@@ -167,7 +167,7 @@ class _NavItem extends StatelessWidget {
     this.badge = 0,
   });
 
-  final IconData icon;
+  final FaIconData icon;
   final String label;
   final bool isActive;
   final VoidCallback onTap;
@@ -290,7 +290,7 @@ class LbeenaAppBarIcon extends StatelessWidget {
     this.badge = 0,
   });
 
-  final IconData icon;
+  final FaIconData icon;
   final VoidCallback onTap;
   final int badge;
 
@@ -337,7 +337,7 @@ class LbeenaSectionHeader extends StatelessWidget {
   final String title;
   final String? actionLabel;
   final VoidCallback? onAction;
-  final IconData? icon;
+  final FaIconData? icon;
   final EdgeInsetsGeometry padding;
 
   @override

@@ -44,7 +44,7 @@ class _FloatingActionButtonWidgetState extends State<FloatingActionButtonWidget>
         foregroundColor: LbeenaColors.white,
         activeBackgroundColor: LbeenaColors.teal,
         activeForegroundColor: LbeenaColors.white,
-        activeIcon: FontAwesomeIcons.xmark,
+        activeIcon: Icons.close,
         children: [
           ///
           // SpeedDialChild(
