@@ -6,7 +6,7 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:syriansinuae.com</string>
+		<string>applinks:www.lbeena.com</string>
 		<string>webcredentials:syriansinuae.com</string>
 	</array>
 </dict>
