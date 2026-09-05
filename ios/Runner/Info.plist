@@ -4,8 +4,8 @@
 <dict>
 	<key>Associated Domains</key>
 	<array>
-		<string>applinks:syriansinuae.com</string>
-		<string>webcredentials:syriansinuae.com</string>
+		<string>applinks:www.lbeena.com</string>
+		<string>webcredentials:www.lbeena.com</string>
 	</array>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
