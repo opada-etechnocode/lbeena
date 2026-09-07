@@ -147,7 +147,7 @@ class LbeenaAuthPrimaryButton extends StatelessWidget {
           disabledBackgroundColor: LbeenaColors.orange.withOpacity(0.7),
           elevation: 0,
           side: outlined
-              ? const BorderSide(color: LbeenaColors.teal, width: 1.2)
+              ? BorderSide(color: LbeenaColors.teal, width: 1.2)
               : BorderSide.none,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),

@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../core/constants/app_font.dart';
-import '../../core/di/di_manager.dart';
-import '../../core/shared_prefs/shared_prefs.dart';
 import 'lbeena_colors.dart';
 
 class AppColorSchemes {
-  static final lightColorScheme = ColorScheme.fromSwatch().copyWith(
+  static ColorScheme get lightColorScheme => ColorScheme.fromSwatch().copyWith(
     primary: LbeenaColors.teal,
     primaryContainer: LbeenaColors.orange,
     secondaryContainer: LbeenaColors.teal,
@@ -17,7 +15,7 @@ class AppColorSchemes {
     onPrimary: LbeenaColors.white,
   );
 
-  static final darkColorScheme = ColorScheme.fromSwatch().copyWith(
+  static ColorScheme get darkColorScheme => ColorScheme.fromSwatch().copyWith(
     primary: LbeenaColors.black,
     primaryContainer: LbeenaColors.orange,
     secondaryContainer: LbeenaColors.teal,
@@ -181,10 +179,13 @@ class ThemeHelper {
         : AppColorSchemes.lightColorScheme;
 
     return ThemeData(
+      fontFamily: TextThemes.font,
       visualDensity: VisualDensity.standard,
       colorScheme: colorScheme,
       brightness: colorScheme.brightness,
-      textTheme: TextThemes.textTheme(colorScheme),
+      textTheme: TextThemes.textTheme(colorScheme).apply(fontFamily: TextThemes.font),
+      primaryTextTheme:
+          TextThemes.textTheme(colorScheme).apply(fontFamily: TextThemes.font),
       scaffoldBackgroundColor: appTheme.scaffoldBackgroundColor100,
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -209,7 +210,7 @@ class ThemeHelper {
 
 // TextThemes class to define text styles based on the color scheme
 class TextThemes {
-  static String font = DIManager.findDep<SharedPrefs>().getFontType();
+  static const String font = 'Cairo';
   static TextTheme textTheme(ColorScheme colorScheme) => TextTheme(
     bodyLarge: TextStyle(
       color: ThemeHelper._isDarkMode ? Colors.white : Colors.black,

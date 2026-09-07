@@ -14,6 +14,7 @@ import '../../models/auth/register/register_from_data.dart';
 import '../../models/auth/register/register_model.dart';
 import '../../models/auth/transfer_user_to_company_model.dart';
 import '../../../core/utils/endpoints.dart';
+import '../../../core/utils/lbeena_phone_country.dart';
 import '../../models/company/activity_company_model.dart';
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -91,7 +92,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       "user_name": registerFromData.userName,
       "password": registerFromData.password,
       "confirm_password": registerFromData.passwordConfirm,
-      "mobile": '971${registerFromData.mobile}',
+      "mobile": LbeenaPhoneCountry.full(
+        registerFromData.countryCode,
+        registerFromData.mobile,
+      ),
       "account_type": 'individual',
       "device_token": deviceToken,
       "device_type": deviceType,
@@ -210,7 +214,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 //   }
 //
   @override
-  Future<Result> resetPassword(String mobile, String password,String confirmPassword) async {
+  Future<Result> resetPassword(
+    String mobile,
+    String password,
+    String confirmPassword, {
+    String? countryCode,
+  }) async {
 
     return await RemoteDataSource.request<GeneralModel>(
       converter: (model) => GeneralModel.fromJson(model),
@@ -221,7 +230,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       //   'Authorization': 'Bearer ${DIManager.findDep<SharedPrefs>().getToken()}'
       // },
       data: {
-        "mobile": '971$mobile',
+        "mobile": LbeenaPhoneCountry.full(countryCode, mobile),
         "password": password,
         "confirm_password": DIManager.findDep<SharedPrefs>().getPasswordToken()
       },
@@ -241,29 +250,36 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 //   }
 //
   @override
-  Future<Result> sendVerificationCode(String mobile) async {
+  Future<Result> sendVerificationCode(
+    String mobile, {
+    String? countryCode,
+  }) async {
     return await RemoteDataSource.request<GeneralModel>(
       method: HttpMethod.POST,
       converter: (model) => GeneralModel.fromJson(model),
-      data: {"mobile": mobile,
-        "country_code" : "971",},
+      data: {
+        "mobile": LbeenaPhoneCountry.normalizeLocal(mobile),
+        "country_code": LbeenaPhoneCountry.digits(countryCode),
+      },
       url: '${AppEndpoints.baseUrl}${AppEndpoints.sendVerificationCode}/ar',
       headers: {RemoteDataSource.requiresToken: false},
     );
   }
 
   @override
-  Future<Result> validateMobileNumber(String otpCode, String mobile) async {
+  Future<Result> validateMobileNumber(
+    String otpCode,
+    String mobile, {
+    String? countryCode,
+  }) async {
     return await RemoteDataSource.request<GeneralModel>(
       converter: (model) => GeneralModel.fromJson(model),
       method: HttpMethod.POST,
       data: {
-        "mobile": "971$mobile",
-        // "mobile": mobile,
+        "mobile": LbeenaPhoneCountry.full(countryCode, mobile),
         "otp_code": otpCode,
       },
       url: '${AppEndpoints.baseUrl}${AppEndpoints.validateMobileNumber}/ar',
-      // url: 'http://wadeema.com/api/mobile/auth/validateMobileNumber/ar',
       headers: {RemoteDataSource.requiresToken: false},
     );
   }
@@ -294,9 +310,18 @@ abstract class AuthRemoteDataSource {
       {required RegisterFromDataCompany registerFromDataCompany,
         // File? image,
       });
-  Future<Result> resetPassword(String mobile, String password,String confirm_password);
-  Future<Result> sendVerificationCode(String mobile);
+  Future<Result> resetPassword(
+    String mobile,
+    String password,
+    String confirm_password, {
+    String? countryCode,
+  });
+  Future<Result> sendVerificationCode(String mobile, {String? countryCode});
 
-  Future<Result<dynamic>> validateMobileNumber(String otpCode, String mobile);
+  Future<Result<dynamic>> validateMobileNumber(
+    String otpCode,
+    String mobile, {
+    String? countryCode,
+  });
   Future<Result<ActivityCompanyModel>> getActivityCompany();
 }

@@ -1,4 +1,3 @@
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as ad;
@@ -22,12 +21,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:syrians_in_uae/widgets/custom_elevated_button.dart';
 import '../../../core/utils/image_constant.dart';
+import '../../../core/utils/lbeena_phone_country.dart';
 import '../../../data/models/reminders/reminders_model.dart';
 // import '../../../l10n/app_localizations.dart';
 
 import 'package:syrians_in_uae/core/link_app.dart';
 
 import '../../../widgets/components.dart';
+import '../../../widgets/lbeena_country_code_picker.dart';
 import '../../../widgets/custom_image_view.dart';
 import '../../../widgets/custom_text_form_field.dart';
 import '../../app_general_bloc/handel_android_app.dart';
@@ -413,7 +414,7 @@ class _AddRemindersPageState extends State<AddRemindersPage> {
   }
 
   String? reminderDate;
-  String countryCode = '+971';
+  String countryCode = LbeenaPhoneCountry.defaultSelection;
 
   void showDatePicker(BuildContext context) {
     DatePicker.showDatePicker(
@@ -547,52 +548,14 @@ class _AddRemindersPageState extends State<AddRemindersPage> {
           ),
         ),
         sizeWidthNormal(),
-        Container(
-          decoration: AppDecoration.outlineCyan.copyWith(
-            borderRadius: BorderRadiusStyle.circleBorder16,
-          ),
+        LbeenaCountryCodePicker(
           height: 46.h,
-          child: Directionality(
-            textDirection: ui.TextDirection.ltr,
-            child: CountryCodePicker(
-              padding: EdgeInsets.zero,
-
-              backgroundColor: appTheme.white,
-              dialogBackgroundColor: appTheme.white,
-              searchStyle: themeLite.textTheme.titleSmall,
-              searchDecoration: InputDecoration(hintText: 'ابحث ..'),
-              onChanged: (value) {
-                setState(() {
-                  countryCode = value.dialCode!;
-                });
-              },
-              flagWidth: 20.w,
-              textStyle: TextStyle(fontSize: 14.fSize, color: Colors.grey),
-              // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-              initialSelection: '+971',
-
-              favorite: [
-                '+968',
-                'OM',
-                '+973',
-                'BH',
-                '+974',
-                'QAR',
-                '+965',
-                'KW',
-                '+966',
-                'KSA',
-                '+971',
-                'UAE'
-              ],
-              // optional. Shows only country name and flag
-              showCountryOnly: false,
-              // optional. Shows only country name and flag when popup is closed.
-              showOnlyCountryWhenClosed: false,
-              // optional. aligns the flag and the Text left
-              alignLeft: false,
-            ),
-          ),
+          initialSelection: countryCode,
+          onChanged: (code) {
+            setState(() {
+              countryCode = '+$code';
+            });
+          },
         ),
       ],
     );

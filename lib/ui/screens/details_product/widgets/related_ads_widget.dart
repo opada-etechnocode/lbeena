@@ -1,4 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:syrians_in_uae/ui/theme/lbeena_colors.dart';
 
 import '../../../../data/models/home_page/banner_product_model.dart';
 import '../../../../widgets/ads_product_widget.dart';
@@ -10,21 +13,34 @@ class RelatedAdsWidget extends StatelessWidget {
   List<DataProductBannerModel> relatedAds=[];
   @override
   Widget build(BuildContext context) {
+    if (relatedAds.isEmpty) return const SizedBox.shrink();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        relatedAds.isEmpty
-            ? Container()
-            : textNormal(text: 'إعلانات ذات صلة:'),
-        relatedAds.isEmpty ? Container() : sizeHeightNormal(),
-        relatedAds.isEmpty
-            ? Container()
-            : ListView.builder(
+        Row(
+          children: [
+            Container(
+              width: 4,
+              height: 18,
+              decoration: BoxDecoration(
+                color: LbeenaColors.orange,
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            SizedBox(width: 8.w),
+            textNormal(
+              text: 'إعلانات ذات صلة',
+              color: LbeenaColors.teal,
+              fontWeight: FontWeight.w800,
+            ),
+          ],
+        ),
+        sizeHeightNormal(),
+        ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: relatedAds.length ,
           itemBuilder: (context, index) {
-            // print(homePageModel!.data!.adsProduct!.data.length);
             return GestureDetector(
                 onTap: () {
                   navigatorToPush(

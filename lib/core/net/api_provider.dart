@@ -31,15 +31,14 @@ class ApiProvider {
     FormData? formData,
   }) async {
     try {
-      // print('------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------');
-      // print('[$method: $url ]');
-      // print('[formData: $formData ]');
-      // print('[data: $data ]');
-      // print('[headers: $headers ]');
-      // print('[queryParameters: $queryParameters ]');
-      // print('------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------');
-      // print('------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------');
-      print('------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------');
+      _logRequest(
+        method: method,
+        url: url,
+        data: data,
+        formData: formData,
+        headers: headers,
+        queryParameters: queryParameters,
+      );
 
       // Get the response from the server
       late Response response;
@@ -102,7 +101,11 @@ class ApiProvider {
         decodedJson = response.data;
       }
 
-      print("$decodedJson");
+      _logResponse(
+        url: url,
+        statusCode: response.statusCode,
+        body: decodedJson,
+      );
 
       // if (decodedJson['status'] == true) {
       if (converterList != null) {
@@ -128,6 +131,13 @@ class ApiProvider {
 
     // Handling errors
     on DioException catch (e,stack) {
+      _logResponse(
+        url: url,
+        statusCode: e.response?.statusCode,
+        body: e.response?.data,
+        isError: true,
+        errorMessage: e.message,
+      );
       print("Dio Error : ${e.message}");
       print("Dio stack : $stack");
       return Result(error: _handleDioError(e));
@@ -146,6 +156,52 @@ class ApiProvider {
   }
 
 
+
+  static void _logRequest({
+    required HttpMethod method,
+    required String url,
+    Map<String, dynamic>? data,
+    FormData? formData,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? queryParameters,
+  }) {
+    print('========== API REQUEST ==========');
+    print('METHOD: ${method.name}');
+    print('URL: $url');
+    if (queryParameters != null && queryParameters.isNotEmpty) {
+      print('QUERY: $queryParameters');
+    }
+    if (headers != null && headers.isNotEmpty) {
+      print('HEADERS: $headers');
+    }
+    if (data != null) {
+      print('BODY: $data');
+    }
+    if (formData != null) {
+      print('FORM FIELDS: ${formData.fields}');
+      print('FORM FILES: ${formData.files.map((e) => e.key).toList()}');
+    }
+    print('=================================');
+  }
+
+  static void _logResponse({
+    required String url,
+    int? statusCode,
+    dynamic body,
+    bool isError = false,
+    String? errorMessage,
+  }) {
+    print(isError
+        ? '========== API ERROR RESPONSE =========='
+        : '========== API RESPONSE ==========');
+    print('URL: $url');
+    print('STATUS: $statusCode');
+    if (errorMessage != null) {
+      print('DIO MESSAGE: $errorMessage');
+    }
+    print('BODY: $body');
+    print('=======================================');
+  }
 
   static BaseError _handleDioError(DioException error) {
     if (error.type == DioExceptionType.unknown ||

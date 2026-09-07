@@ -45,9 +45,6 @@ class _FixedAdsItemsState extends State<FixedAdsItems> {
   @override
   Widget build(BuildContext context) {
     // print(widget.dataProductItem!.company[0].id);
-    String? color = widget
-        .dataProductItem.background_color
-        ?.replaceRange(0, 1, '0xff');
     return Padding(
       padding:  EdgeInsets.all(8),
       child: Align(
@@ -56,19 +53,7 @@ class _FixedAdsItemsState extends State<FixedAdsItems> {
           // height: 182.h,
 
           width: 200,
-          decoration: BoxDecoration(
-              color:widget
-                  .dataProductItem.background_color == null || widget
-                  .dataProductItem.background_color == "null"?appTheme.backgroundContainer :Color((int.parse(color!))),
-              boxShadow: [
-                BoxShadow(
-                  color: appTheme.grey.withOpacity(0.3),
-                  spreadRadius: 1,
-                  blurRadius: 1,
-                  offset: Offset(0, 1), // changes position of shadow
-                ),
-              ],
-              borderRadius: BorderRadius.circular(16)),
+          decoration: LbeenaColors.card,
           child: Padding(
             padding:  EdgeInsets.all(8
             ),
@@ -117,7 +102,7 @@ class _FixedAdsItemsState extends State<FixedAdsItems> {
                                     radius: BorderRadiusStyle.circleBorder20,
                                     alignment: Alignment.center,
                                     // fit: BoxFit.cover,
-                                    color: appTheme.greenColor,
+                                    color: LbeenaColors.teal,
                                     placeHolder: ImageConstant.imgPerson,
                                   )
                                       : CustomImageView(
@@ -174,7 +159,7 @@ class _FixedAdsItemsState extends State<FixedAdsItems> {
                             imagePath: ImageConstant.companiesIcon,
                             width: 15,
                             height:  15,
-                            color: appTheme.greenColor,
+                            color: LbeenaColors.teal,
                           ),
                           sizeWidthNormal()
                         },
@@ -218,11 +203,9 @@ class _FixedAdsItemsState extends State<FixedAdsItems> {
                             ? Container()
                             : Container(
                           // width:widget.dataProductItem.price.toString().length >6?200.w: 120.w,
-                          decoration: ( widget.dataProductItem!.imageNames.isEmpty|| widget.dataProductItem!.imageNames[0] == null || widget.dataProductItem!.imageNames[0] == '')?null: AppDecoration.outlineButton.copyWith(
-                            borderRadius: BorderRadius.circular(2),
-                            color: LbeenaColors.white.withOpacity(0.92),
-                            boxShadow: [
-                            ],
+                          decoration: BoxDecoration(
+                            color: LbeenaColors.orange,
+                            borderRadius: BorderRadius.circular(20),
                           ),
                           child: Padding(
                             padding:( widget.dataProductItem!.imageNames.isEmpty|| widget.dataProductItem!.imageNames[0] == null || widget.dataProductItem!.imageNames[0] == '')? EdgeInsets.zero:  EdgeInsets.symmetric(horizontal: 10.w,vertical: 5.h),
@@ -234,13 +217,10 @@ class _FixedAdsItemsState extends State<FixedAdsItems> {
                                     "${widget.dataProductItem.price.toString()} درهم ",
                                     style: themeLite.textTheme.titleSmall!
                                         .copyWith(
-                                        color:
-                                        DIManager.findDep<SharedPrefs>()
-                                            .getThemeApp() ==
-                                            'd'
-                                            ? Colors.white
-                                            : Colors.black, fontSize: AppFontSize.fontSize_14,
-                                        fontWeight: FontWeight.w400),
+                                        color: LbeenaColors.white,
+                                        fontFamily: 'Cairo',
+                                        fontSize: AppFontSize.fontSize_12,
+                                        fontWeight: FontWeight.w800),
                                   )
                                 } else ...{
                                   double.parse(widget.dataProductItem.finalPrice.toString())
@@ -252,34 +232,22 @@ class _FixedAdsItemsState extends State<FixedAdsItems> {
                                     "${widget.dataProductItem.price.toString()} درهم ",
                                     style: themeLite.textTheme.titleSmall!
                                         .copyWith(
-                                        color: DIManager.findDep<
-                                            SharedPrefs>()
-                                            .getThemeApp() ==
-                                            'd'
-                                            ? Colors.white
-                                            : Colors.black,fontSize: AppFontSize.fontSize_14,
-                                        fontWeight: FontWeight.w400),
+                                        color: LbeenaColors.white,
+                                        fontFamily: 'Cairo',
+                                        fontSize: AppFontSize.fontSize_12,
+                                        fontWeight: FontWeight.w800),
                                   )
                                       : Text(
                                     "${widget.dataProductItem.price.toString()} ",
                                     style: themeLite.textTheme.titleSmall!
                                         .copyWith(
-                                      color:  DIManager.findDep<
-                                          SharedPrefs>()
-                                          .getThemeApp() ==
-                                          'd'
-                                          ?Colors.orangeAccent
-                                          : Colors.indigo,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: AppFontSize.fontSize_14,
+                                      color: LbeenaColors.white.withValues(alpha: 0.8),
+                                      fontFamily: 'Cairo',
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: AppFontSize.fontSize_11,
                                       decoration:
                                       TextDecoration.lineThrough,
-                                      decorationColor: DIManager.findDep<
-                                          SharedPrefs>()
-                                          .getThemeApp() ==
-                                          'd'
-                                          ? Colors.white
-                                          : Colors.black,
+                                      decorationColor: LbeenaColors.white,
                                     ),
                                   ),
                                   sizeWidthNormal(width: 4),
@@ -293,13 +261,10 @@ class _FixedAdsItemsState extends State<FixedAdsItems> {
                                     "${double.parse(widget.dataProductItem.finalPrice.toString()).toString()} درهم ",
                                     style: themeLite.textTheme.titleSmall!
                                         .copyWith(
-                                      color: DIManager.findDep<
-                                          SharedPrefs>()
-                                          .getThemeApp() ==
-                                          'd'
-                                          ? Colors.white
-                                          : Colors.black, fontSize: AppFontSize.fontSize_14,
-                                      fontWeight: FontWeight.w400,
+                                      color: LbeenaColors.white,
+                                      fontFamily: 'Cairo',
+                                      fontSize: AppFontSize.fontSize_12,
+                                      fontWeight: FontWeight.w800,
                                     ),
                                   ),
                                 },
@@ -344,7 +309,7 @@ class _FixedAdsItemsState extends State<FixedAdsItems> {
                               imagePath: ImageConstant.imgLinkedin,
                               height: 13,
                               width: 10,
-                              color:   appTheme.black900,
+                              color: LbeenaColors.orange,
                               alignment: Alignment.bottomLeft,
                               margin: EdgeInsets.only(
                                 left: 4, right: 4,
@@ -358,7 +323,7 @@ class _FixedAdsItemsState extends State<FixedAdsItems> {
                                 widget.dataProductItem!.city_name.toString(),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: themeLite.textTheme.labelMedium!.copyWith(color: appTheme.black900,fontWeight: FontWeight.w500),
+                                style: themeLite.textTheme.labelMedium!.copyWith(color: LbeenaColors.muted,fontFamily: 'Cairo',fontWeight: FontWeight.w600),
                               ),
                             ),
 
@@ -370,7 +335,7 @@ class _FixedAdsItemsState extends State<FixedAdsItems> {
 
                       Spacer(),
                       textNormal(text: widget.dataProductItem!.categoryName ?? '',
-                          fontSize: AppFontSize.fontSize_10,color: appTheme.black900,
+                          fontSize: AppFontSize.fontSize_10,color: LbeenaColors.teal,
                           fontWeight: FontWeight.w500),
 
                       // Spacer(),

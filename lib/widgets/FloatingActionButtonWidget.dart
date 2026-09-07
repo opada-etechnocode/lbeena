@@ -104,7 +104,7 @@ class _FloatingActionButtonWidgetState extends State<FloatingActionButtonWidget>
                     color: LbeenaColors.white,
                     shape: BoxShape.circle,
                   ),
-                  child: const Center(
+                  child: Center(
                     child: FaIcon(
                       FontAwesomeIcons.users,
                       size: 16,
@@ -139,7 +139,7 @@ class _FloatingActionButtonWidgetState extends State<FloatingActionButtonWidget>
                     color: LbeenaColors.white,
                     shape: BoxShape.circle,
                   ),
-                  child: const Center(
+                  child: Center(
                     child: FaIcon(
                       FontAwesomeIcons.bullhorn,
                       size: 16,

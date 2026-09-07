@@ -267,7 +267,7 @@ class _SettingPageState extends State<SettingPage> {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
           colors: [LbeenaColors.tealDark, LbeenaColors.teal],
@@ -362,7 +362,7 @@ class _SettingPageState extends State<SettingPage> {
               color: LbeenaColors.iconTile,
               shape: BoxShape.circle,
             ),
-            child: const Center(
+            child: Center(
               child: FaIcon(FontAwesomeIcons.user, color: LbeenaColors.teal, size: 20),
             ),
           ),
@@ -495,7 +495,7 @@ class _SettingPageState extends State<SettingPage> {
                   color: _isDark ? LbeenaColors.surfaceDark : LbeenaColors.iconTile,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Center(
+                child: Center(
                   child: FaIcon(FontAwesomeIcons.bell, size: 16, color: LbeenaColors.teal),
                 ),
               ),
@@ -648,7 +648,7 @@ class _ConfirmDialog extends StatelessWidget {
                 onPressed: () => Navigator.of(context).pop(),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: LbeenaColors.teal,
-                  side: const BorderSide(color: LbeenaColors.teal),
+                  side: BorderSide(color: LbeenaColors.teal),
                   minimumSize: const Size(0, 44),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -656,7 +656,7 @@ class _ConfirmDialog extends StatelessWidget {
                 ),
                 child: Text(
                   AppLocalizations.of(context)!.cancel,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: LbeenaColors.teal,
                     fontWeight: FontWeight.w800,
                   ),

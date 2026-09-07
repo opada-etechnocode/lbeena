@@ -18,6 +18,7 @@ import '../../../data/models/home_page/categories_main.dart';
 import '../../../data/models/home_page/home_page_model.dart';
 import '../../app_general_bloc/handel_android_app.dart';
 import '../../theme/lbeena_colors.dart';
+import '../../theme/cubit/them_app_cubit.dart';
 import '../../theme/theme_helper.dart';
 import '../auth/login/model_home_page.dart';
 import '../home/cubit/cubit.dart';
@@ -78,7 +79,9 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return BlocProvider<HomeCubit>(
-      create: (BuildContext context) => HomeCubit()..getSettingApp(),
+      create: (BuildContext context) => HomeCubit()
+        ..getSettingApp()
+        ..getColorsApp(),
       // create: (BuildContext context) => HomeCubit(),
       child: BlocConsumer<HomeCubit, HomeStates>(
         listener: (context, state) {
@@ -160,6 +163,15 @@ class _SplashScreenState extends State<SplashScreen>
                 .setStatusUGC(state.statusUserResult.is_ugc ?? false);
             DIManager.findDep<SharedPrefs>()
                 .setMembershipNumber(state.statusUserResult.membershipNumber);
+          }
+          if (state is SuccessColorsAppState) {
+            DIManager.findDep<SharedPrefs>().setColorsApp(
+              color1: state.colorAppModel?.data?.color1 ?? '',
+              color2: state.colorAppModel?.data?.color2 ?? '',
+              color3: state.colorAppModel?.data?.color3 ?? '',
+            );
+            context.read<ThemAppCubit>().refreshBrandColors();
+            setState(() {});
           }
 
         },

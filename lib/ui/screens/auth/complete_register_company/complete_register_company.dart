@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/di/di_manager.dart';
+import '../../../../core/utils/lbeena_phone_country.dart';
 import '../../../../core/shared_prefs/shared_prefs.dart';
 import '../../../../core/utils/image_constant.dart';
 import '../../../../data/models/add_ad_new/category_model.dart';
@@ -32,8 +33,9 @@ import '../../company/info_company.dart';
 import '../login/model_home_page.dart';
 
 class CompleteRegisterCompany extends StatefulWidget {
-  CompleteRegisterCompany({super.key,this.mobileNumber,required this.isTransferUserToCompany, this.activityCompanyList});
+  CompleteRegisterCompany({super.key,this.mobileNumber,this.countryCode,required this.isTransferUserToCompany, this.activityCompanyList});
   String? mobileNumber;
+  String? countryCode;
   bool? isTransferUserToCompany;
   List<ActivityCompanyList>? activityCompanyList=[];
   @override
@@ -150,7 +152,13 @@ class _CompleteRegisterCompanyState extends State<CompleteRegisterCompany> {
                             }
                             if(state is SuccessRegisterCompanyState){
                               SnackBarHelper.mySnackBarSuccess(state.registerCompanyModel.message, context);
-                              RegisterCubit.get(context).login('971${widget.mobileNumber}', passwordController.text);
+                              RegisterCubit.get(context).login(
+                                LbeenaPhoneCountry.full(
+                                  widget.countryCode,
+                                  widget.mobileNumber,
+                                ),
+                                passwordController.text,
+                              );
 
                               // navigatorToPushReplacementUntil(context: context, pageName: LoginScreen());
                             }
@@ -636,7 +644,10 @@ class _CompleteRegisterCompanyState extends State<CompleteRegisterCompany> {
                 RegisterCubit.get(context).registerCompany(
                     registerFromDataCompany: RegisterFromDataCompany(
                       password: passwordController.text,
-                      mobile:'971${widget.mobileNumber}',
+                      mobile: LbeenaPhoneCountry.full(
+                        widget.countryCode,
+                        widget.mobileNumber,
+                      ),
                       // mobile:'971559075504',
                       accountType: 'company',
                       commercialLicense: File(fileLicense!.path),

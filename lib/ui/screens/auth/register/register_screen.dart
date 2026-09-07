@@ -14,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
 import '../../../../core/di/di_manager.dart';
+import '../../../../core/utils/lbeena_phone_country.dart';
 import '../../../../core/shared_prefs/shared_prefs.dart';
 import '../../../../data/models/auth/register/register_from_data.dart';
 import '../../../../data/models/company/activity_company_model.dart';
@@ -47,6 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final FocusNode _therdFocusNode = FocusNode();
   final FocusNode _fouredFocusNode = FocusNode();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _countryCode = LbeenaPhoneCountry.defaultCode;
 
   bool isPressing = false;
   bool isPressing2 = true;
@@ -98,6 +100,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         state.registerModel.message, context);
                     RegisterCubit.get(context).sendOtp(
                       mobileNoController.text,
+                      countryCode: _countryCode,
                     );
                     navigatorToPush(
                         context: context,
@@ -107,6 +110,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           passwordFromRegisterA: passwordController.text,
                           mobileFromRegisterAccount:
                               mobileNoController.text,
+                          countryCode: _countryCode,
                         ));
 
                   }
@@ -155,6 +159,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         true) {
                       RegisterCubit.get(context).sendOtp(
                         mobileNoController.text,
+                        countryCode: _countryCode,
                       );
                     } else {
                       SnackBarHelper.mySnackBarError(
@@ -180,6 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     SnackBarHelper.mySnackBarSuccess(state.otpModel.message, context);
                     navigatorToPush(context: context, pageName: CompleteRegisterCompany(
                       mobileNumber: mobileNoController.text,
+                      countryCode: _countryCode,
                       isTransferUserToCompany: false,
                       activityCompanyList: activityCompanyList,
                     ));
@@ -246,16 +252,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           TimerCountdown(
                             format: CountDownTimerFormat.secondsOnly,
                             enableDescriptions: false,
-                            timeTextStyle: const TextStyle(
+                            timeTextStyle: TextStyle(
                                 color: LbeenaColors.orange,
                                 fontSize: 12,
-                                fontFamily: 'Inter',
+                                fontFamily: 'Cairo',
                                 fontWeight: FontWeight.bold,
                                 height: 0),
-                            colonsTextStyle: const TextStyle(
+                            colonsTextStyle: TextStyle(
                                 color: LbeenaColors.orange,
                                 fontSize: 16,
-                                fontFamily: 'Inter',
+                                fontFamily: 'Cairo',
                                 fontWeight: FontWeight.bold,
                                 height: 0),
                             endTime: isStartTime
@@ -271,13 +277,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             InkWell(
                                 onTap: () {
                                   RegisterCubit.get(context)
-                                      .sendOtp(mobileNoController.text);
+                                      .sendOtp(
+                                    mobileNoController.text,
+                                    countryCode: _countryCode,
+                                  );
                                   setState(() {
                                     isFinishTime = false;
                                   });
                                 },
-                                child: const Padding(
-                                  padding: EdgeInsets.only(top: 8),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 8),
                                   child: Text(
                                     'إعادة إرسال الرمز',
                                     style: TextStyle(
@@ -458,7 +467,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
               if (_formKey.currentState!.validate()) {
                 if (!isStartTime) {
                   RegisterCubit.get(context)
-                      .checkMobileExists(mobileNumber: mobileNoController.text);
+                      .checkMobileExists(
+                    mobileNumber: mobileNoController.text,
+                    countryCode: _countryCode,
+                  );
                 } else {
                   SnackBarHelper.mySnackBarPending('الرجاء الانتظار ...', context);
                 }
@@ -496,7 +508,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
           otp = pin;
 
           RegisterCubit.get(context)
-              .validateMobileNumber(otp!, mobileNoController.text);
+              .validateMobileNumber(
+            otp!,
+            mobileNoController.text,
+            countryCode: _countryCode,
+          );
         });
       },
     );
@@ -525,6 +541,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             password: passwordController.text,
             passwordConfirm: password2Controller.text,
             userName: userNameController.text,
+            countryCode: _countryCode,
           ));
         } else {
           setState(() {
@@ -572,7 +589,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
           child: _buildMobileNo(context, focusNode),
         ),
         const SizedBox(width: 8),
-        buildUaeNumber(context),
+        buildUaeNumber(
+          context,
+          initialSelection: '+$_countryCode',
+          onChanged: (code) {
+            setState(() {
+              _countryCode = code;
+            });
+          },
+        ),
       ],
     );
   }
@@ -682,7 +707,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       onTap: (){
         Navigator.of(context).pop();
       },
-      child: const Text(
+      child: Text(
         "تسجيل دخول",
         style: TextStyle(
           color: LbeenaColors.orange,

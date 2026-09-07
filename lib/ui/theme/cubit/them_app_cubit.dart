@@ -45,6 +45,10 @@ class ThemAppCubit extends Cubit<ThemAppState> {
 
     emit(ChangeLangAppState());
   }
+
+  refreshBrandColors() {
+    emit(BrandColorsAppState());
+  }
 }
 
 enum ThemeState {initial,light,dark}

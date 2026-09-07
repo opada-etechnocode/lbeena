@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../../core/results/result.dart';
+import '../../../../../core/utils/media_permission.dart';
 import '../../../../../data/models/auth/register/register_company_from_data.dartregister_from_data.dart';
 import '../../../../../data/models/auth/register/register_from_data.dart';
 import '../../../../../data/models/company/activity_company_model.dart';
@@ -24,13 +25,16 @@ class RegisterCubit extends Cubit<RegisterStates> {
   RegisterCubit() : super(InitialOTPState());
   static RegisterCubit get(context) => BlocProvider.of(context);
 
-  Future<void> sendOtp(String mobile) async {
+  Future<void> sendOtp(String mobile, {String? countryCode}) async {
     AuthRemoteDataSourceImpl authRemoteDataSourceImpl =
     const AuthRemoteDataSourceImpl();
     try {
       emit(LoadingSendOTPState());
 
-      Result otp = await authRemoteDataSourceImpl.sendVerificationCode(mobile);
+      Result otp = await authRemoteDataSourceImpl.sendVerificationCode(
+        mobile,
+        countryCode: countryCode,
+      );
 
       if (otp.data != null) {
         emit(SuccessSendOTPState(otp.data));
@@ -69,12 +73,20 @@ class RegisterCubit extends Cubit<RegisterStates> {
 
 
 
-  Future<void> validateMobileNumber(String otpCode , String mobile ) async{
+  Future<void> validateMobileNumber(
+    String otpCode,
+    String mobile, {
+    String? countryCode,
+  }) async{
     AuthRemoteDataSourceImpl authRemoteDataSourceImpl = const AuthRemoteDataSourceImpl();
     try{
       emit(LoadingValidateMobileNumberState());
       Result validation =
-      await authRemoteDataSourceImpl.validateMobileNumber(otpCode, mobile);
+      await authRemoteDataSourceImpl.validateMobileNumber(
+        otpCode,
+        mobile,
+        countryCode: countryCode,
+      );
       // if(validation.data)
 
       if (validation.data != null) {
@@ -114,12 +126,22 @@ class RegisterCubit extends Cubit<RegisterStates> {
     }
   }
 
-  Future<void> resetPassword(String mobile, String password,String confirmPassword) async{
+  Future<void> resetPassword(
+    String mobile,
+    String password,
+    String confirmPassword, {
+    String? countryCode,
+  }) async{
     AuthRemoteDataSourceImpl authRemoteDataSourceImpl = const AuthRemoteDataSourceImpl();
     try{
       emit(LoadingResetPasswordState());
       Result resetPassword =
-      await authRemoteDataSourceImpl.resetPassword(mobile, password,confirmPassword);
+      await authRemoteDataSourceImpl.resetPassword(
+        mobile,
+        password,
+        confirmPassword,
+        countryCode: countryCode,
+      );
       // if(resetPassword.data)
 
       if (resetPassword.data != null) {
@@ -184,6 +206,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
 
   Future<void> checkMobileExists({
     String? mobileNumber,
+    String? countryCode,
   }) async {
     ProfilePageDataSourceImpl profileDataSourceImpl =
     const ProfilePageDataSourceImpl();
@@ -192,6 +215,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
 
       var profileData = await profileDataSourceImpl.checkMobileExists(
         mobileNumber: mobileNumber,
+        countryCode: countryCode,
       );
 
       if (profileData.data != null) {
@@ -234,6 +258,11 @@ class RegisterCubit extends Cubit<RegisterStates> {
 
     try {
       emit(LoadingLoadFileState());
+      final allowed = await MediaPermission.request(camera: true, gallery: false);
+      if (!allowed) {
+        emit(ErrorLoadFileState());
+        return;
+      }
       final picker = ImagePicker();
       XFile? result = await picker.pickImage(source: ImageSource.camera,
         imageQuality: 50,
@@ -286,6 +315,11 @@ class RegisterCubit extends Cubit<RegisterStates> {
 
     try {
       emit(LoadingLoadFileState());
+      final allowed = await MediaPermission.request(gallery: true);
+      if (!allowed) {
+        emit(ErrorLoadFileState());
+        return;
+      }
       final picker = ImagePicker();
       XFile? result = await picker.pickImage(source: ImageSource.gallery
         // imageQuality: 50,
@@ -335,6 +369,11 @@ class RegisterCubit extends Cubit<RegisterStates> {
 
     try {
       emit(LoadingLoadFileState());
+      final allowed = await MediaPermission.request(gallery: true);
+      if (!allowed) {
+        emit(ErrorLoadFileState());
+        return;
+      }
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['pdf'],

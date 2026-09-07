@@ -53,6 +53,7 @@ import '../../../widgets/custom_image_view.dart';
 import '../../../widgets/custom_text_form_field.dart';
 import '../../app_general_bloc/handel_android_app.dart';
 import '../../theme/app_decoration.dart';
+import '../../theme/lbeena_colors.dart';
 import '../../theme/theme_helper.dart';
 import '../../theme/theme_text_form_field.dart';
 import '../Notification/Notification.dart';
@@ -630,23 +631,42 @@ class _DetailsProductState extends State<DetailsProduct>
         builder: (context, state) {
           return HandelAndroidApp(
             child: Scaffold(
-              appBar: appBarNormalWithIcon(
-                  text: (dataDetailsProduct?.name == null ||
+              backgroundColor: LbeenaColors.lightBg,
+              appBar: AppBar(
+                backgroundColor: LbeenaColors.white,
+                elevation: 0,
+                surfaceTintColor: Colors.transparent,
+                centerTitle: true,
+                leading: IconButton(
+                  onPressed: () => Navigator.of(context).maybePop(),
+                  icon: Icon(Icons.arrow_back_ios_new_rounded,
+                      color: LbeenaColors.teal, size: 20),
+                ),
+                title: Text(
+                  (dataDetailsProduct?.name == null ||
                               dataDetailsProduct?.name == "null") &&
                           widget.isBannerInOut == false
                       ? 'تفاصيل الإعلان'
                       : widget.isBannerInOut == true
                           ? 'بنر خارجي'
                           : dataDetailsProduct.name!,
-                  context: context,
-                  isShowBack: true),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontFamily: 'Cairo',
+                    color: LbeenaColors.teal,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
               body: GestureDetector(
                 onTap: () {
                   FocusScope.of(context).unfocus();
                 },
                 child: RefreshIndicator(
-                  color: appTheme.greenColor,
-                  backgroundColor: appTheme.lightBlue100,
+                  color: LbeenaColors.orange,
+                  backgroundColor: LbeenaColors.white,
                   onRefresh: () {
                     // HomeCubit.get(context).getCategoriesMainApi();
 
@@ -671,9 +691,7 @@ class _DetailsProductState extends State<DetailsProduct>
                   },
                   child: SingleChildScrollView(
                     child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 8.w,
-                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 12.w),
                       child: state is LoadingDeleteAdsState
                           ? DeleteAdWidget()
                           : Column(
@@ -798,14 +816,17 @@ class _DetailsProductState extends State<DetailsProduct>
                   ? Container()
                   : textNormal(
                       text:
-                          'أحصل على كود خصم (${dataDetailsProduct.couponPercent}%) :'),
+                          'أحصل على كود خصم (${dataDetailsProduct.couponPercent}%)',
+                      color: LbeenaColors.teal,
+                      fontWeight: FontWeight.w800,
+                    ),
               appUserId == widget.idAdOnwerCompany.toString()
                   ? Container()
                   : sizeHeightNormal(),
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: 75.h,
-                decoration: AppDecoration.outlineWhiteB,
+                decoration: LbeenaColors.card,
                 child: Row(
                   // crossAxisAlignment: CrossAxisAlignment.center,
                   // mainAxisAlignment: MainAxisAlignment.center,
@@ -815,7 +836,7 @@ class _DetailsProductState extends State<DetailsProduct>
                     sizeWidthNormal(),
                     Icon(
                       Icons.arrow_forward,
-                      color: appTheme.deepPurpleA10001,
+                      color: LbeenaColors.orange,
                       size: 25.sp,
                     ),
                     sizeWidthNormal(),
@@ -899,14 +920,16 @@ class _DetailsProductState extends State<DetailsProduct>
                   ? Container()
                   : textNormal(
                       text:
-                          'أحصل على كود خصم (${dataDetailsProduct.couponPercent}%) :'),
+                          'أحصل على كود خصم (${dataDetailsProduct.couponPercent}%)',
+                      color: LbeenaColors.teal,
+                      fontWeight: FontWeight.w800,
+                    ),
               appUserId == widget.idAdOnwerCompany.toString()
                   ? Container()
                   : sizeHeightNormal(),
               Container(
                 width: MediaQuery.of(context).size.width,
-                // height: 75.h,
-                decoration: AppDecoration.outlineWhiteB,
+                decoration: LbeenaColors.card,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -921,7 +944,7 @@ class _DetailsProductState extends State<DetailsProduct>
                         sizeWidthNormal(),
                         Icon(
                           Icons.arrow_forward,
-                          color: appTheme.deepPurpleA10001,
+                          color: LbeenaColors.orange,
                           size: 25.sp,
                         ),
                         sizeWidthNormal(),

@@ -127,7 +127,7 @@ class _AladhanTimeCardWidgetState extends State<AladhanTimeCardWidget> {
                 end: Alignment.bottomLeft,
                 colors: isDark
                     ? const [LbeenaColors.cardDark, Color(0xFF1A2E2C)]
-                    : const [LbeenaColors.tealDark, LbeenaColors.teal],
+                    : [LbeenaColors.tealDark, LbeenaColors.teal],
               ),
               borderRadius: BorderRadius.circular(22),
               boxShadow: [
@@ -151,7 +151,7 @@ class _AladhanTimeCardWidgetState extends State<AladhanTimeCardWidget> {
                           color: LbeenaColors.white.withOpacity(0.14),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: FaIcon(
                             FontAwesomeIcons.mosque,
                             size: 16,

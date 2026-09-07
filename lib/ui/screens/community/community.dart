@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:syrians_in_uae/core/utils/media_permission.dart';
 import 'package:syrians_in_uae/core/utils/size_utils.dart';
 import 'package:syrians_in_uae/core/utils/endpoints.dart';
 import 'package:syrians_in_uae/ui/screens/chats/cubit/apis_chat_firebase.dart';
@@ -1534,6 +1535,8 @@ class _CommunityPageState extends State<CommunityPage>
   bool isImageNull = false;
 
   Future<void> _pickImages(context) async {
+    final allowed = await MediaPermission.ensure(context, gallery: true);
+    if (!allowed) return;
     final picker = ImagePicker();
     try {
       final pickedImage = await picker.pickImage(
@@ -1610,7 +1613,8 @@ class _CommunityPageState extends State<CommunityPage>
   }
 
   void _openCamera(BuildContext context) async {
-    // permissionPhoto(context: context,isCamera: true);
+    final allowed = await MediaPermission.ensure(context, camera: true, gallery: false);
+    if (!allowed) return;
     final picker = ImagePicker();
 
     try {
@@ -1644,6 +1648,8 @@ class _CommunityPageState extends State<CommunityPage>
   XFile? fileLicenseListImage;
 
   Future<void> loadImages(context) async {
+    final allowed = await MediaPermission.ensure(context, gallery: true);
+    if (!allowed) return;
     final picker = ImagePicker();
     XFile? result = await picker.pickImage(source: ImageSource.gallery
         // imageQuality: 50,

@@ -154,7 +154,7 @@ class _CompaniesPageState extends State<CompaniesPage>with AutomaticKeepAliveCli
                                   borderSide: BorderSide.none,
                                 ),
                                 isDense: false,
-                                prefix: const SizedBox(
+                                prefix: SizedBox(
                                   width: 44,
                                   height: 44,
                                   child: Center(
@@ -670,7 +670,7 @@ searchCompanyController.clear();
         decoration: BoxDecoration(
           color: isDark ? LbeenaColors.cardDark : LbeenaColors.white,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: LbeenaColors.fieldBorder),
+          border: Border.all(color: LbeenaColors.teal.withAlpha(100)),
           boxShadow: [
             BoxShadow(
               color: LbeenaColors.black.withOpacity(0.05),
@@ -717,7 +717,7 @@ searchCompanyController.clear();
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w800,
                   color: LbeenaColors.teal,
@@ -733,7 +733,7 @@ searchCompanyController.clear();
                 ),
                 child: Text(
                   'عضوية ${data.membershipNumber ?? '-'}',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     color: LbeenaColors.orange,

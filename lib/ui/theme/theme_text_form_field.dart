@@ -9,9 +9,9 @@ class ThemeTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Theme(
       data: Theme.of(context).copyWith(
-        textSelectionTheme: const TextSelectionThemeData(
+        textSelectionTheme: TextSelectionThemeData(
           cursorColor: LbeenaColors.orange,
-          selectionColor: Color(0x33F58220),
+          selectionColor: const Color(0x33F58220),
           selectionHandleColor: LbeenaColors.orange,
         ),
       ),

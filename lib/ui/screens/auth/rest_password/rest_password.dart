@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:syrians_in_uae/core/utils/size_utils.dart';
 import '../../../../core/di/di_manager.dart';
+import '../../../../core/utils/lbeena_phone_country.dart';
 import '../../../../core/shared_prefs/shared_prefs.dart';
 import '../../../../core/utils/image_constant.dart';
 // import '../../../../l10n/app_localizations.dart';
@@ -30,11 +31,12 @@ import '../register/cubit/status.dart';
 import '../widget/appbar_auth.dart';
 
 class RestPassword extends StatefulWidget {
-  RestPassword({Key? key,required this.mobileNumber})
+  RestPassword({Key? key,required this.mobileNumber, this.countryCode})
       : super(
           key: key,
         );
 String? mobileNumber;
+String? countryCode;
   @override
   State<RestPassword> createState() => _RestPasswordState();
 }
@@ -108,7 +110,13 @@ class _RestPasswordState extends State<RestPassword> {
                                   state.otpModel.message.toString(), context);
                               // navigatorToPushReplacementUntil(
                               //     context: context, location: '/homePage');
-                              RegisterCubit.get(context).login('971${widget.mobileNumber}', passwordController.text);
+                              RegisterCubit.get(context).login(
+                                LbeenaPhoneCountry.full(
+                                  widget.countryCode,
+                                  widget.mobileNumber,
+                                ),
+                                passwordController.text,
+                              );
 
                             }
                             if (state is SuccessLoginState) {
@@ -280,7 +288,8 @@ class _RestPasswordState extends State<RestPassword> {
                           RegisterCubit.get(context).resetPassword(
                               widget.mobileNumber!,
                               passwordController.text,
-                              passwordController2.text);
+                              passwordController2.text,
+                              countryCode: widget.countryCode);
                           isTruePassword = true;
                         } else {
                           isTruePassword = false;

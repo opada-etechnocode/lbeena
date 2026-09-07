@@ -19,6 +19,7 @@ import '../../../../core/di/di_manager.dart';
 import '../../../../core/helper/snack_bar_helper.dart';
 import '../../../../core/shared_prefs/shared_prefs.dart';
 import '../../../../core/utils/endpoints.dart';
+import '../../../../core/utils/media_permission.dart';
 import '../../../../core/utils/image_constant.dart';
 import '../../../../data/models/add_ad_new/category_model.dart';
 import '../../../../data/models/add_ad_new/cities_model.dart';
@@ -1329,6 +1330,8 @@ class _CreatePostState extends State<CreatePost> {
   }
 
   Future<void> loadImages(i, context) async {
+    final allowed = await MediaPermission.ensure(context, gallery: true);
+    if (!allowed) return;
     final picker = ImagePicker();
     XFile? result = await picker.pickImage(source: ImageSource.gallery
         // imageQuality: 50,
@@ -1360,7 +1363,8 @@ class _CreatePostState extends State<CreatePost> {
   bool isImageNull = false;
 
   Future<void> _pickImages(BuildContext context) async {
-    // permissionPhoto(context: context,isCamera: false);
+    final allowed = await MediaPermission.ensure(context, gallery: true);
+    if (!allowed) return;
     try {
       final picker = ImagePicker();
       final pickedImages = await picker.pickMultiImage(

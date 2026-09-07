@@ -44,6 +44,7 @@ import '../../../widgets/components.dart';
 import '../../../widgets/custom_image_view.dart';
 import '../../../widgets/loader_for_page.dart';
 import '../../theme/app_decoration.dart';
+import '../../theme/lbeena_colors.dart';
 import '../../theme/theme_helper.dart';
 import '../../widget/url_webview.dart';
 import '../auth/login/login_screen.dart';
@@ -323,60 +324,18 @@ class _ListCommunityState extends State<ListCommunity> {
                         alignment: Alignment.topLeft,
                         children: [
                           Container(
-                            // height: 48.h,
                             width: MediaQuery.of(context).size.width,
-                            decoration: widget.isFromHomePage
-                                ? AppDecoration.outlineBlueGray.copyWith(
-                              boxShadow: [],
-                              color: widget.communityPostModel![index].type == 'A' &&
-                                  widget.communityPostModel![index]
-                                      .background !=
-                                      null
-                                  ? widget.communityPostModel![index]
-                                  .background!
-                                  .contains('0xff')
-                                  ? Color(int.parse(widget
-                                  .communityPostModel![index]
-                                  .background
-                                  .toString()))
-                                  .withOpacity(.8)
-                                  : widget.communityPostModel![index]
-                                  .background!
-                                  .contains('#')
-                                  ? Color(int.parse(color))
-                                  .withOpacity(.8)
-                                  : Color(int.parse("0xff${widget.communityPostModel![index].background}"))
-                                  .withOpacity(.8)
-                                  : widget.isFromHomePage? appTheme.backgroundContainer :appTheme.lightBlue100,
-                            )
-                                : null,
-                            color: widget.isFromHomePage
-                                ? null
-                                : widget.communityPostModel![index].type ==
-                                'A' &&
-                                widget.communityPostModel![index]
-                                    .background !=
-                                    null
-                                ? widget.communityPostModel![index]
-                                .background!
-                                .contains('0xff')
-                                ? Color(int.parse(widget
-                                .communityPostModel![index]
-                                .background
-                                .toString()))
-                                .withOpacity(.8)
-                                : widget.communityPostModel![index]
-                                .background!
-                                .contains('#')
-                                ? Color(int.parse('0xff${colorWithoutHashtag(widget.communityPostModel![index].background!)}'))
-                                .withOpacity(.8)
-                                : Color(int.parse("0xff${widget.communityPostModel![index].background}"))
-                                .withOpacity(.8)
-                                : appTheme.lightBlue100,
-                            // color: Colors.grey.withOpacity(0.2),
-                            margin: EdgeInsets.symmetric(vertical: 3.h),
+                            decoration: LbeenaColors.cardWith(
+                              color: _postCardColor(
+                                widget.communityPostModel![index],
+                                color,
+                              ),
+                            ),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: widget.isFromHomePage ? 4.w : 12.w,
+                                vertical: 6.h),
                             child: Padding(
-                              padding: EdgeInsets.all(10.sp),
+                              padding: EdgeInsets.fromLTRB(14.w, 12.h, 14.w, 10.h),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -444,15 +403,13 @@ class _ListCommunityState extends State<ListCommunity> {
                                           DIManager.findDep<SharedPrefs>()
                                               .getUserID()
                                           ? PopupMenuButton(
-                                        color: appTheme
-                                            .lightBlueBottomNavigatorBar,
+                                        color: LbeenaColors.white,
                                         child: CustomImageView(
                                           imagePath:
                                           ImageConstant.iconList,
                                           height: 20.h,
                                           width: 20.h,
-                                          color:
-                                          appTheme.deepPurpleA10002,
+                                          color: LbeenaColors.teal,
                                         ),
                                         // Use a specific widget
                                         itemBuilder:
@@ -489,10 +446,17 @@ class _ListCommunityState extends State<ListCommunity> {
                                                 return StatefulBuilder(
                                                   builder: (BuildContext context3, StateSetter setState) {
                                                     return AlertDialog(
-                                                      backgroundColor: appTheme.buttonColor,
+                                                      backgroundColor: LbeenaColors.white,
+            surfaceTintColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20)),
                                                       title: Text(
                                                         'هل أنت متأكد من حذف المنشور ؟',
-                                                        style: themeLite.textTheme.titleSmall,
+                                                        style: themeLite.textTheme.titleSmall!.copyWith(
+                                                          color: LbeenaColors.teal,
+                                                          fontFamily: 'Cairo',
+                                                          fontWeight: FontWeight.w800,
+                                                        ),
                                                       ),
                                                       content: Container(
                                                         height: 40.h,
@@ -636,7 +600,7 @@ class _ListCommunityState extends State<ListCommunity> {
                                                   .copyWith(
                                                 fontSize: AppFontSize
                                                     .fontSize_12,
-                                                color: Colors.blue,
+                                                color: LbeenaColors.orange,
                                                 // لون "اقرأ المزيد"
                                                 decoration:
                                                 TextDecoration
@@ -702,7 +666,7 @@ class _ListCommunityState extends State<ListCommunity> {
                                             fontSize: AppFontSize.fontSize_12,
                                             fontWeight: FontWeight.w800,
                                             color:
-                                            appTheme.deepPurpleAndYellow),
+                                            LbeenaColors.teal),
                                       ),
                                     },
                                   ] else ...[
@@ -733,7 +697,7 @@ class _ListCommunityState extends State<ListCommunity> {
                                                   .copyWith(
                                                 fontSize: AppFontSize
                                                     .fontSize_12,
-                                                color: Colors.blue,
+                                                color: LbeenaColors.orange,
                                                 // لون "اقرأ المزيد"
                                                 decoration:
                                                 TextDecoration
@@ -803,7 +767,7 @@ class _ListCommunityState extends State<ListCommunity> {
                                             fontSize: AppFontSize.fontSize_12,
                                             fontWeight: FontWeight.w800,
                                             color:
-                                            appTheme.deepPurpleAndYellow),
+                                            LbeenaColors.teal),
                                       ),
                                     },
                                     sizeHeightNormal(height: 6.h),
@@ -818,11 +782,7 @@ class _ListCommunityState extends State<ListCommunity> {
                                                 .size
                                                 .width,
                                             // height: 214.h,
-                                            decoration: AppDecoration
-                                                .outlinePurple
-                                                .copyWith(
-                                              boxShadow: [],
-                                            ),
+                                            decoration: BoxDecoration(),
                                             child: CustomImageView(
                                               imagePath: widget
                                                   .communityPostModel![
@@ -869,7 +829,7 @@ class _ListCommunityState extends State<ListCommunity> {
                                         clipper: ChatBubbleClipper9(
                                             type: BubbleType.receiverBubble),
                                         backGroundColor:
-                                        Colors.blueGrey.withOpacity(.4),
+                                        LbeenaColors.teal.withValues(alpha: 0.12),
                                         child: Padding(
                                           padding: EdgeInsets.all(5.r),
                                           child: Stack(
@@ -1065,11 +1025,18 @@ class _ListCommunityState extends State<ListCommunity> {
                                   Padding(
                                     padding: EdgeInsets.only(
                                       top: 10.h,
-                                      right: 10.w,
-                                      left: 10.w,
+                                      right: 4.w,
+                                      left: 4.w,
                                     ),
                                     child: Container(
-                                      // width: 250.w,
+                                      decoration: const BoxDecoration(
+                                        border: Border(
+                                          top: BorderSide(
+                                            color: LbeenaColors.fieldBorder,
+                                          ),
+                                        ),
+                                      ),
+                                      padding: EdgeInsets.only(top: 10.h),
                                       child: Row(
                                         mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -1158,13 +1125,11 @@ class _ListCommunityState extends State<ListCommunity> {
                                                     index]
                                                         .isLikePost ==
                                                         true
-                                                        ? appTheme
-                                                        .deepPurpleA100
+                                                        ? LbeenaColors.orange
                                                         : postAllLikes[index] ??
                                                         false
-                                                        ? appTheme
-                                                        .deepPurpleA100
-                                                        : appTheme.black900,
+                                                        ? LbeenaColors.orange
+                                                        : LbeenaColors.muted,
                                                     height: 25.sp,
                                                     width: 25.sp,
                                                   ),
@@ -1176,6 +1141,7 @@ class _ListCommunityState extends State<ListCommunity> {
                                                     '${sum(widget.communityPostModel![index].likesCount!, counterPostAllLikes[index]!)} أعجبني',
                                                     fontSize:
                                                     AppFontSize.fontSize_10,
+                                                    color: LbeenaColors.muted,
                                                   ),
                                                 ],
                                               ),
@@ -1259,7 +1225,7 @@ class _ListCommunityState extends State<ListCommunity> {
                                                   Icon(
                                                     Icons.chat_outlined,
                                                     size: 25.sp,
-                                                    color: appTheme.black900,
+                                                    color: LbeenaColors.teal,
                                                   ),
                                                   SizedBox(
                                                     width: 12.w,
@@ -1267,9 +1233,9 @@ class _ListCommunityState extends State<ListCommunity> {
                                                   textNormal(
                                                     text:
                                                     '${widget.communityPostModel![index].comments.length} تعليق',
-                                                    // ' 33 تعليق',
                                                     fontSize: AppFontSize
                                                         .fontSize_10,
+                                                    color: LbeenaColors.muted,
                                                   ),
                                                 ],
                                               ),
@@ -1439,18 +1405,17 @@ class _ListCommunityState extends State<ListCommunity> {
                                                           .chatPost,
                                                       height: 25.h,
                                                       width: 25.h,
-                                                      color: appTheme
-                                                          .black900,
+                                                      color: LbeenaColors.teal,
                                                     ),
                                                     SizedBox(
                                                       width: 12.w,
                                                     ),
                                                     textNormal(
                                                       text: 'دردشة',
-                                                      // ' 33 تعليق',
                                                       fontSize:
                                                       AppFontSize
                                                           .fontSize_10,
+                                                      color: LbeenaColors.muted,
                                                     ),
                                                   ],
                                                 ),
@@ -1481,7 +1446,7 @@ class _ListCommunityState extends State<ListCommunity> {
                                         : widget.communityPostModel![index]
                                         .status ==
                                         '1'
-                                        ? Colors.green
+                                        ? LbeenaColors.teal
                                         : Colors.red,
                                     borderRadius: BorderRadius.circular(20.r)),
                                 width: 50.w,
@@ -1562,6 +1527,24 @@ class _ListCommunityState extends State<ListCommunity> {
     return a + b;
   }
 
+  Color _postCardColor(CommunityModelDatum post, String parsedColor) {
+    if (post.type == 'A' && post.background != null) {
+      try {
+        if (post.background!.contains('0xff')) {
+          return Color(int.parse(post.background.toString()))
+              .withValues(alpha: 0.88);
+        }
+        if (post.background!.contains('#')) {
+          return Color(int.parse(
+                  '0xff${colorWithoutHashtag(post.background!)}'))
+              .withValues(alpha: 0.88);
+        }
+        return Color(int.parse(parsedColor)).withValues(alpha: 0.88);
+      } catch (_) {}
+    }
+    return LbeenaColors.white;
+  }
+
 }
 
 class PostLikeInfo {
@@ -1578,10 +1561,17 @@ void showDeletePostPostEdit(BuildContext context, String idPost,) {
       return StatefulBuilder(
         builder: (BuildContext context3, StateSetter setState) {
           return AlertDialog(
-            backgroundColor: appTheme.buttonColor,
+            backgroundColor: LbeenaColors.white,
+            surfaceTintColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20)),
             title: Text(
               'هل أنت متأكد من حذف المنشور ؟',
-              style: themeLite.textTheme.titleSmall,
+              style: themeLite.textTheme.titleSmall!.copyWith(
+                color: LbeenaColors.teal,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w800,
+              ),
             ),
             content: Container(
               height: 40.h,

@@ -6,3 +6,4 @@ part of 'them_app_cubit.dart';
  class ThemDarkAppState extends ThemAppState {}
  class ThemLiteAppState extends ThemAppState {}
  class ChangeLangAppState extends ThemAppState {}
+ class BrandColorsAppState extends ThemAppState {}

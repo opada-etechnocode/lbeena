@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:syrians_in_uae/core/di/di_manager.dart';
 import 'package:syrians_in_uae/core/link_app.dart';
 import 'package:syrians_in_uae/core/shared_prefs/shared_prefs.dart';
@@ -23,231 +24,180 @@ class LbeenaBottomNav extends StatelessWidget {
   final ValueChanged<int> onSelect;
   final ChatCubitFirebase chatBloc;
 
-  static const double barHeight = 72;
+  static const double barHeight = 62;
+
+  static const _selectToGlass = {-1: 2, 1: 1, 0: 3, 2: 0, 3: 4};
+  static const _glassToSelect = [2, 1, -1, 0, 3];
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final isAr = Localizations.localeOf(context).languageCode == 'ar';
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
     final isDark = DIManager.findDep<SharedPrefs>().getThemeApp() == 'd';
-    final bottomInset = MediaQuery.of(context).padding.bottom;
-    final barColor = isDark ? LbeenaColors.cardDark : LbeenaColors.white;
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final barWidth = (screenWidth - 28).clamp(300.0, 560.0);
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(14, 0, 14, 8 + bottomInset),
-      child: Container(
-        height: barHeight,
-        decoration: BoxDecoration(
-          color: barColor,
-          borderRadius: BorderRadius.circular(28),
-          border: Border.all(
-            color: isDark
-                ? LbeenaColors.white.withOpacity(0.06)
-                : LbeenaColors.black.withOpacity(0.06),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: LbeenaColors.black.withOpacity(isDark ? 0.45 : 0.12),
-              blurRadius: 22,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: _NavItem(
-                icon: FontAwesomeIcons.gear,
-                label: AppLocalizations.of(context)!.settings,
-                isActive: selectScreen == 2,
-                onTap: () => onSelect(2),
-              ),
-            ),
-            Expanded(
-              child: _ChatNavItem(
-                chatBloc: chatBloc,
-                isActive: selectScreen == 1,
-                onTap: () => onSelect(1),
-              ),
-            ),
-            Expanded(
-              child: _HomeNavItem(
-                isActive: selectScreen == -1,
-                onTap: () => onSelect(-1),
-              ),
-            ),
-            Expanded(
-              child: BlocBuilder<CartCubit, CartState>(
-                builder: (context, state) {
-                  return _NavItem(
-                    icon: FontAwesomeIcons.bagShopping,
-                    label: 'السلة',
-                    isActive: selectScreen == 0,
-                    badge: CartCubit.get(context).lengthListCart,
-                    onTap: () => onSelect(0),
-                  );
-                },
-              ),
-            ),
-            Expanded(
-              child: _NavItem(
-                icon: FontAwesomeIcons.addressBook,
-                label: 'الدليل',
-                isActive: selectScreen == 3,
-                onTap: () => onSelect(3),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _HomeNavItem extends StatelessWidget {
-  const _HomeNavItem({required this.isActive, required this.onTap});
-
-  final bool isActive;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [LbeenaColors.orange, LbeenaColors.orangeDeep],
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: LbeenaColors.orange.withOpacity(isActive ? 0.45 : 0.22),
-                  blurRadius: isActive ? 12 : 6,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: const Center(
-              child: FaIcon(
-                FontAwesomeIcons.house,
-                size: 16,
-                color: LbeenaColors.white,
-              ),
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'الرئيسية',
-            style: TextStyle(
-              fontSize: 10,
-              fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
-              color: isActive ? LbeenaColors.orange : LbeenaColors.muted,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _NavItem extends StatelessWidget {
-  const _NavItem({
-    required this.icon,
-    required this.label,
-    required this.isActive,
-    required this.onTap,
-    this.badge = 0,
-  });
-
-  final FaIconData icon;
-  final String label;
-  final bool isActive;
-  final VoidCallback onTap;
-  final int badge;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isActive ? LbeenaColors.orange : LbeenaColors.muted;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Stack(
-            clipBehavior: Clip.none,
-            children: [
-              FaIcon(icon, size: 18, color: color),
-              if (badge > 0)
-                PositionedDirectional(
-                  top: -8,
-                  start: -10,
-                  child: _CountBadge(count: badge),
-                ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: 10,
-              height: 1.1,
-              fontWeight: isActive ? FontWeight.w800 : FontWeight.w600,
-              color: color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ChatNavItem extends StatelessWidget {
-  const _ChatNavItem({
-    required this.chatBloc,
-    required this.isActive,
-    required this.onTap,
-  });
-
-  final ChatCubitFirebase chatBloc;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
     if (DIManager.findDep<SharedPrefs>().getToken() != null) {
       chatBloc.getNotifications(
         user_id: DIManager.findDep<SharedPrefs>().getUserID(),
       );
     }
 
-    return BlocProvider(
-      create: (context) => ChatCubitFirebase(),
-      child: BlocConsumer<ChatCubitFirebase, ChatStateFirebase>(
-        bloc: chatBloc,
-        listener: (context, state) {},
-        builder: (context, state) {
-          return _NavItem(
-            icon: isActive
-                ? FontAwesomeIcons.solidComments
-                : FontAwesomeIcons.comments,
-            label: AppLocalizations.of(context)!.chat,
-            isActive: isActive,
-            badge: chatBloc.notification.length,
-            onTap: onTap,
-          );
-        },
-      ),
+    return BlocBuilder<CartCubit, CartState>(
+      builder: (context, _) {
+        return BlocConsumer<ChatCubitFirebase, ChatStateFirebase>(
+          bloc: chatBloc,
+          listener: (context, state) {},
+          builder: (context, state) {
+            final chatCount = chatBloc.notification.length;
+            final cartCount = CartCubit.get(context).lengthListCart;
+            final ink = isDark ? LbeenaColors.white : const Color(0xFF121215);
+
+            final items = <LiquidGlassTabBarItem>[
+              _glassTab(
+                icon: Icons.settings_rounded,
+                label: l10n.settings,
+              ),
+              _glassTab(
+                icon: Icons.chat_rounded,
+                selectedIcon: Icons.chat_bubble_rounded,
+                label: l10n.chat,
+                badge: chatCount,
+              ),
+              _glassTab(
+                icon: Icons.home_rounded,
+                label: isAr ? 'الرئيسية' : 'Home',
+              ),
+              _glassTab(
+                icon: Icons.shopping_bag_outlined,
+                selectedIcon: Icons.shopping_bag_rounded,
+                label: isAr ? 'السلة' : 'Cart',
+                badge: cartCount,
+              ),
+              _glassTab(
+                icon: Icons.menu_book_rounded,
+                label: isAr ? 'الدليل' : 'Directory',
+              ),
+            ];
+            final barItems = isRtl ? items.reversed.toList() : items;
+            final logicalIndex = _selectToGlass[selectScreen] ?? 2;
+            final barIndex = isRtl ? items.length - 1 - logicalIndex : logicalIndex;
+
+            return Directionality(
+              textDirection: TextDirection.ltr,
+              child: LiquidGlassTabBar.withImpeller(
+                items: barItems,
+                selectedIndex: barIndex,
+                onChanged: (index) {
+                  final logical = isRtl ? items.length - 1 - index : index;
+                  onSelect(_glassToSelect[logical]);
+                },
+                width: barWidth,
+                height: barHeight,
+                itemPadding: 4,
+                margin: const EdgeInsets.only(bottom: 8),
+                style: LiquidGlassTabBar.defaultStyle.copyWith(
+                  shape: LiquidGlassShape.continuousRoundedRectangle(
+                    cornerRadius: barHeight / 2,
+                    clipQuality: LiquidGlassClipQuality.exact,
+                    borderWidth: 0.7,
+                    lightIntensity: 0.9,
+                    lightDirection: 62,
+                    borderType: const OpticalBorder(
+                      borderSaturation: 1.1,
+                      ambientIntensity: 0.85,
+                      borderSolidity: 0.95,
+                    ),
+                  ),
+                  appearance: LiquidGlassAppearance(
+                    color: isDark
+                        ? const Color(0x33FFFFFF)
+                        : const Color(0x8FFFFFFF),
+                    blur: const LiquidGlassBlur(sigmaX: 5, sigmaY: 5),
+                    shadow: const LiquidGlassShadow(blur: 9, opacity: 0.13),
+                  ),
+                  refraction: const LiquidGlassRefraction(
+                    distortion: 0.06,
+                    distortionWidth: 26,
+                  ),
+                ),
+                itemStyle: LiquidGlassTabItemStyle(
+                  selectedColor: LbeenaColors.orange,
+                  unselectedColor: ink,
+                  iconSize: 20,
+                  labelFontSize: 10,
+                  iconLabelGap: 2,
+                  underGlassIconSize: 24,
+                  underGlassLabelFontSize: 10,
+                  selectedFontWeight: FontWeight.w800,
+                  unselectedFontWeight: FontWeight.w600,
+                ),
+                pillStyle: LiquidGlassTabPillStyle(
+                  mode: LiquidGlassPillMode.both,
+                  rest: LiquidGlassStyle(
+                    shape: LiquidGlassShape.continuousRoundedRectangle(
+                      cornerRadius: 28,
+                      clipQuality: LiquidGlassClipQuality.exact,
+                      borderWidth: 0.7,
+                      lightIntensity: 0.9,
+                      lightDirection: 62,
+                      borderType: const OpticalBorder(
+                        borderSaturation: 1.1,
+                        ambientIntensity: 0.85,
+                        borderSolidity: 0.95,
+                      ),
+                    ),
+                    appearance: const LiquidGlassAppearance(
+                      color: Color(0x2EAEAEB2),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  static LiquidGlassTabBarItem _glassTab({
+    required IconData icon,
+    required String label,
+    IconData? selectedIcon,
+    int badge = 0,
+  }) {
+    return LiquidGlassTabBarItem(
+      icon: icon,
+      selectedIcon: selectedIcon,
+      label: label,
+      iconBuilder: (context, i) {
+        return Stack(
+          clipBehavior: Clip.none,
+          alignment: Alignment.center,
+          children: [
+            Icon(
+              i.selected ? (selectedIcon ?? icon) : icon,
+              size: i.size,
+              color: i.color,
+              shadows: i.selected
+                  ? [
+                      Shadow(
+                        color: i.color.withValues(alpha: 0.85),
+                        blurRadius: 14,
+                      ),
+                    ]
+                  : null,
+            ),
+            if (badge > 0)
+              Positioned(
+                top: -6,
+                right: -8,
+                child: _CountBadge(count: badge),
+              ),
+          ],
+        );
+      },
     );
   }
 }
@@ -347,10 +297,7 @@ class LbeenaSectionHeader extends StatelessWidget {
       padding: padding,
       child: Row(
         children: [
-          if (icon != null) ...[
-            FaIcon(icon, size: 14, color: LbeenaColors.teal),
-            const SizedBox(width: 8),
-          ],
+
           Container(
             width: 4,
             height: 16,
@@ -375,7 +322,7 @@ class LbeenaSectionHeader extends StatelessWidget {
               onTap: onAction,
               child: Text(
                 actionLabel!,
-                style: const TextStyle(
+                style: TextStyle(
                   color: LbeenaColors.orange,
                   fontWeight: FontWeight.w700,
                   fontSize: 13,

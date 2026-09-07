@@ -29,7 +29,7 @@ class FixedAdsWidget extends StatelessWidget {
                       ),
             )
             : Container(),
-        Container(
+        adsProduct!.data.isNotEmpty?Container(
           height: 280,
           child: ListView.builder(
             shrinkWrap: true,
@@ -58,7 +58,7 @@ class FixedAdsWidget extends StatelessWidget {
                   ));
             },
           ),
-        ),
+        ):Container(),
         adsProduct!.data.isNotEmpty
             ? sizeHeightNormal(height: 10)
             : Container(),

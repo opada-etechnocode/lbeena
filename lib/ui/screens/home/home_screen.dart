@@ -57,6 +57,7 @@ import '../../../widgets/smart_refresh_widget.dart';
 import '../../../widgets/user_image_profile.dart';
 import '../../app_general_bloc/handel_android_app.dart';
 import '../../theme/lbeena_colors.dart';
+import '../../theme/cubit/them_app_cubit.dart';
 import '../../theme/theme_helper.dart';
 import '../Notification/Notification.dart';
 import '../aladhan_time/aladhan_time_card.dart';
@@ -780,9 +781,12 @@ class _HomePageState extends State<HomePage>
 
     if (state is SuccessColorsAppState) {
       DIManager.findDep<SharedPrefs>().setColorsApp(
-          color1: state.colorAppModel!.data!.color1!,
-          color2: state.colorAppModel!.data!.color2!,
-          color3: state.colorAppModel!.data!.color3!);
+          color1: state.colorAppModel?.data?.color1 ?? '',
+          color2: state.colorAppModel?.data?.color2 ?? '',
+          color3: state.colorAppModel?.data?.color3 ?? '');
+      if (context.mounted) {
+        context.read<ThemAppCubit>().refreshBrandColors();
+      }
     }
 
     /// Error
@@ -832,7 +836,7 @@ class _HomePageState extends State<HomePage>
             end: Alignment.bottomLeft,
             colors: isDark
                 ? const [LbeenaColors.black, LbeenaColors.surfaceDark]
-                : const [LbeenaColors.tealDark, LbeenaColors.teal],
+                : [LbeenaColors.tealDark, LbeenaColors.teal],
           ),
         ),
         child: SafeArea(

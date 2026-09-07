@@ -31,6 +31,7 @@ import '../../../../widgets/custom_image_view.dart';
 import '../../../../widgets/custom_text_form_field.dart';
 import '../../../../widgets/loader_for_page.dart';
 import '../../../theme/app_decoration.dart';
+import '../../../theme/lbeena_colors.dart';
 import '../../../theme/theme_helper.dart';
 import '../../auth/login/login_screen.dart';
 import '../../cart/cart_page.dart';
@@ -109,23 +110,20 @@ class _DetailsAdWidgetState extends State<DetailsAdWidget> {
     return Column(
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 7.h),
-          child: Neumorphic(
-            style: getNeumorphicStyle().copyWith(
-              boxShape: NeumorphicBoxShape.roundRect(BorderRadius.circular(18.r)),
-              shadowLightColor:purpleShadowColor.withOpacity(1),
-              shadowDarkColor: purpleShadowColor.withOpacity(0.4),
-              color: appTheme.lightBlue100,
-            ),
-            child: Container(
+          padding: EdgeInsets.only(top: 4.h),
+          child: Container(
               width: MediaQuery.of(context).size.width,
-              // height: 450.h,
-              // height: 480.h,
-              // color: appTheme.buttonColor,
-              decoration: AppDecoration.outlineContainer.copyWith(
-                borderRadius: BorderRadius.zero,
-                border: null,
-                  boxShadow: [],
+              decoration: BoxDecoration(
+                color: LbeenaColors.white,
+                borderRadius: BorderRadius.circular(22.r),
+                border: Border.all(color: LbeenaColors.fieldBorder),
+                boxShadow: [
+                  BoxShadow(
+                    color: LbeenaColors.black.withValues(alpha: 0.06),
+                    blurRadius: 18,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,14 +138,11 @@ class _DetailsAdWidgetState extends State<DetailsAdWidget> {
                             ? widget.dataDetailsProduct.image.toString()
                             : AppEndpoints.baseUrlWithoutApi +
                             widget.dataDetailsProduct.image.toString(),
-                        // AppEndpoints.baseImageUrl +
-                        //     dataDetailsProduct.image.toString(),
-                        // imagePath: '${ImageConstant.imagePath}/1.PNG',
-                        height: 190.h,
+                        height: 260.h,
                         width: MediaQuery.of(context).size.width,
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                         radius: BorderRadius.circular(
-                          35.r,
+                          22.r,
                         ),
                         // alignment: Alignment.center,
                       )
@@ -229,13 +224,13 @@ class _DetailsAdWidgetState extends State<DetailsAdWidget> {
                                                 .toString(),
                                         // imagePath: '${ImageConstant.imagePath}/1.PNG',
 
-                                        height: 190.h,
+                                        height: 260.h,
                                         width:
                                         MediaQuery.of(context).size.width,
                                         fit: BoxFit.cover,
                                         radius: BorderRadius.only(
-                                            topLeft: Radius.circular(15.r),
-                                            topRight: Radius.circular(15.r)),
+                                            topLeft: Radius.circular(22.r),
+                                            topRight: Radius.circular(22.r)),
                                         // alignment: Alignment.center,
                                       ),
                                     );
@@ -264,9 +259,9 @@ class _DetailsAdWidgetState extends State<DetailsAdWidget> {
                                             // if true, give it a different color
                                             backgroundColor:
                                             _activePage == index
-                                                ? Colors.white
-                                                : Colors.black
-                                                .withOpacity(.6)),
+                                                ? LbeenaColors.orange
+                                                : Colors.white
+                                                .withValues(alpha: .55)),
                                       ),
                                     )),
                               ),
@@ -305,17 +300,25 @@ class _DetailsAdWidgetState extends State<DetailsAdWidget> {
                                               : 50.sp,
                                           // الارتفاع يختلف
                                           decoration: BoxDecoration(
-                                            color: _activePage == index
-                                                ? Colors.white
-                                                : Colors.black.withOpacity(.6),
+                                            color: LbeenaColors.white,
                                             borderRadius:
-                                            BorderRadius.circular(4.sp),
-                                            // زوايا مربعة بدلاً من دائرة
-                                            border: _activePage == index
-                                                ? Border.all(
-                                                color: Colors.black,
-                                                width: 2)
-                                                : null, // إطار للصورة النشطة
+                                            BorderRadius.circular(8.sp),
+                                            border: Border.all(
+                                                color: _activePage == index
+                                                    ? LbeenaColors.orange
+                                                    : Colors.white
+                                                        .withValues(alpha: .7),
+                                                width: _activePage == index
+                                                    ? 2
+                                                    : 1),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: LbeenaColors.black
+                                                    .withValues(alpha: 0.18),
+                                                blurRadius: 8,
+                                                offset: const Offset(0, 2),
+                                              ),
+                                            ],
                                           ),
                                           child: CustomImageView(
                                             imagePath: widget.dataDetailsProduct
@@ -351,13 +354,27 @@ class _DetailsAdWidgetState extends State<DetailsAdWidget> {
                         ],
                       ),
                       if (widget.isBannerInOut == false) ...[
-                        Row(
+                        Padding(
+                          padding: EdgeInsets.only(top: 10.h, left: 8.w, right: 8.w),
+                          child: Row(
                           children: [
                             Spacer(),
                             if (isLoadingShareAds) ...{
-                            CircleAvatar(
-                            backgroundColor: appTheme.greenColorApp,
-child:
+                            Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                color: LbeenaColors.teal,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: LbeenaColors.black.withValues(alpha: 0.18),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child:
                             Shimmer.fromColors(
                                 baseColor: appTheme.baseColorShimmer,
                                 highlightColor: appTheme.highlightColorShimmer,
@@ -368,9 +385,21 @@ child:
                                 ),
                               ))
                             } else ...{
-                            CircleAvatar(
-                            backgroundColor: appTheme.greenColorApp,
-child:
+                            Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                color: LbeenaColors.teal,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: LbeenaColors.black.withValues(alpha: 0.18),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child:
                             InkWell(
                                 onTap: () {
                                   // print('object');
@@ -405,11 +434,14 @@ child:
                                           widget.dataDetailsProduct.imageNames[0]
                                               .toString());
                                 },
-                                child: CustomImageView(
-                                  imagePath: ImageConstant.imgShare,
-                                  width: 20.fSize,
-                                  height: 20.fSize,
-                                  color: Colors.white,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CustomImageView(
+                                    imagePath: ImageConstant.imgShare,
+                                    width: 15.fSize,
+                                    height: 15.fSize,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               )),
                             },
@@ -433,12 +465,25 @@ child:
                                               widget.dataDetailsProduct.ad_id!));
                                     }
                                   },
-                                  icon:CircleAvatar(
-                                    backgroundColor: appTheme.greenColorApp,
+                                  icon: Container(
+                                    width: 42,
+                                    height: 42,
+                                    decoration: BoxDecoration(
+                                      color: LbeenaColors.orange,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: LbeenaColors.black
+                                              .withValues(alpha: 0.18),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 4),
+                                        ),
+                                      ],
+                                    ),
                                     child: Icon(
                                       Icons.favorite,
                                       color: Colors.white,
-                                      size: 25.fSize,
+                                      size: 22.fSize,
                                     ),
                                   )),
                             )
@@ -458,19 +503,32 @@ child:
                                             widget.dataDetailsProduct.ad_id!));
                                   }
                                 },
-                                icon: CircleAvatar(
-                                  backgroundColor: appTheme.greenColorApp,
-
+                                icon: Container(
+                                  width: 42,
+                                  height: 42,
+                                  decoration: BoxDecoration(
+                                    color: LbeenaColors.orange,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: LbeenaColors.black
+                                            .withValues(alpha: 0.18),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
                                   child: Icon(
                                     widget.isFavorite
                                         ? Icons.favorite
                                         : Icons.favorite_border,
                                     color: Colors.white,
-                                    size: 25.fSize,
+                                    size: 22.fSize,
                                   ),
                                 )),
 
                           ],
+                        ),
                         ),
                       ],
                     ],
@@ -479,7 +537,7 @@ child:
                     height: 5.h,
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    padding: EdgeInsets.fromLTRB(16.w, 8.h, 16.w, 4.h),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -497,21 +555,31 @@ child:
                             : Text(
                           widget.dataDetailsProduct.name.toString(),
                           style: themeLite.textTheme.titleSmall!
-                              .copyWith(color: Colors.white),
+                              .copyWith(
+                            color: LbeenaColors.black,
+                            fontFamily: 'Cairo',
+                            fontWeight: FontWeight.w800,
+                            fontSize: 20,
+                          ),
                         ),
                         if ((widget.dataDetailsProduct.description != null ||
                            createdAt != 'null') &&
                             !widget.isBannerInOut) ...[
                           Row(
                             children: [
-                              Text('التفاصيل :',
-                                  style: themeLite.textTheme.titleSmall),
+                              Text('التفاصيل',
+                                  style: themeLite.textTheme.titleSmall!.copyWith(
+                                    color: LbeenaColors.teal,
+                                    fontFamily: 'Cairo',
+                                    fontWeight: FontWeight.w800,
+                                  )),
                               Spacer(),
                               Text(
                                createdAt == 'null' ? '' :  createdAtTime.toString(),
                                 style: themeLite.textTheme.titleSmall!.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400,
+                                    color: LbeenaColors.muted,
+                                    fontFamily: 'Cairo',
+                                    fontWeight: FontWeight.w500,
                                     overflow: TextOverflow.visible),
                               ),
                             ],
@@ -521,13 +589,23 @@ child:
                               : Text( cleanHtmlText(widget.dataDetailsProduct.description.toString()),
                             // unescape.convert(widget.dataDetailsProduct.description.toString()),
                             style: themeLite.textTheme.titleSmall!.copyWith(
-                                fontWeight: FontWeight.w400,
+                                color: LbeenaColors.black.withValues(alpha: 0.78),
+                                fontFamily: 'Cairo',
+                                fontWeight: FontWeight.w500,
+                                height: 1.55,
                                 overflow: TextOverflow.visible),
                           ),
                         ],
                         if (widget.isBannerInOut == false) ...[
                           sizeHeightNormal(
-                            height: 10.h,
+                            height: 12.h,
+                          ),
+                          Container(
+                            height: 1,
+                            color: LbeenaColors.fieldBorder,
+                          ),
+                          sizeHeightNormal(
+                            height: 12.h,
                           ),
                           widget.dataDetailsProduct.toString() == '0.0' ||
                               widget.dataDetailsProduct.price.toString() == '0' ||
@@ -552,12 +630,12 @@ child:
                                             .toDouble(),
                                         itemCount: 5,
                                         itemSize: 16.r,
-                                        unratedColor: Colors.white70,
+                                        unratedColor: LbeenaColors.fieldBorder,
                                         direction: Axis.horizontal,
                                         itemBuilder: (context, _) => Icon(
                                           Icons.star,
                                           size: 13.h,
-                                          color: Colors.yellow,
+                                          color: LbeenaColors.star,
                                         ),
                                       ),
                                     ),
@@ -588,7 +666,7 @@ child:
                                             text: 'قيّم الإعلان',
                                             fontSize:
                                             AppFontSize.fontSize_11,
-                                            color: Colors.yellow)),
+                                            color: LbeenaColors.teal)),
                                   ],
                                 ),
                               }
@@ -597,22 +675,24 @@ child:
                               : Row(
                             children: [
                               Text(
-                                'السعر : ',
+                                'السعر',
                                 style: themeLite.textTheme.titleSmall!
-                                    .copyWith(color: Colors.white),
+                                    .copyWith(
+                                  color: LbeenaColors.muted,
+                                  fontFamily: 'Cairo',
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
+                              sizeWidthNormal(width: 8.w),
                               if (widget.dataDetailsProduct.finalPrice == null) ...{
                                 Text(
-                                  "${widget.dataDetailsProduct.price.toString()} درهم ",
+                                  "${widget.dataDetailsProduct.price.toString()} درهم",
                                   style: themeLite.textTheme.titleSmall!
                                       .copyWith(
-                                      color:
-                                      DIManager.findDep<SharedPrefs>()
-                                          .getThemeApp() ==
-                                          'd'
-                                          ? Colors.green
-                                          : Colors.white,
-                                      fontWeight: FontWeight.w400),
+                                      color: LbeenaColors.orange,
+                                      fontFamily: 'Cairo',
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 20),
                                 )
                               } else ...{
                                 double.parse(widget.dataDetailsProduct.finalPrice.toString())
@@ -621,23 +701,21 @@ child:
                                         widget.dataDetailsProduct.price.toString())
                                         .toString()
                                     ? Text(
-                                  "${widget.dataDetailsProduct.price.toString()} درهم ",
+                                  "${widget.dataDetailsProduct.price.toString()} درهم",
                                   style: themeLite.textTheme.titleSmall!
                                       .copyWith(
-                                      color: DIManager.findDep<
-                                          SharedPrefs>()
-                                          .getThemeApp() ==
-                                          'd'
-                                          ? Colors.green
-                                          : Colors.white,
-                                      fontWeight: FontWeight.w400),
+                                      color: LbeenaColors.orange,
+                                      fontFamily: 'Cairo',
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 20),
                                 )
                                     : Text(
                                   "${widget.dataDetailsProduct.price.toString()} ",
                                   style: themeLite.textTheme.titleSmall!
                                       .copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400,
+                                    color: LbeenaColors.muted,
+                                    fontFamily: 'Cairo',
+                                    fontWeight: FontWeight.w500,
                                     fontSize: AppFontSize.fontSize_13,
                                     decoration:
                                     TextDecoration.lineThrough,
@@ -651,11 +729,13 @@ child:
                                         .toString()
                                     ? Container()
                                     : Text(
-                                  "${double.parse(widget.dataDetailsProduct.finalPrice.toString()).toString()} درهم ",
+                                  "${double.parse(widget.dataDetailsProduct.finalPrice.toString()).toString()} درهم",
                                   style: themeLite.textTheme.titleSmall!
                                       .copyWith(
-                                    color: Colors.yellow,
-                                    fontWeight: FontWeight.w400,
+                                    color: LbeenaColors.orange,
+                                    fontFamily: 'Cairo',
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 20,
                                   ),
                                 ),
                               },
@@ -681,12 +761,12 @@ child:
                                             .toDouble(),
                                         itemCount: 5,
                                         itemSize: 16.r,
-                                        unratedColor: Colors.white70,
+                                        unratedColor: LbeenaColors.fieldBorder,
                                         direction: Axis.horizontal,
                                         itemBuilder: (context, _) => Icon(
                                           Icons.star,
                                           size: 13.h,
-                                          color: Colors.yellow,
+                                          color: LbeenaColors.star,
                                         ),
                                       ),
                                     ),
@@ -717,7 +797,7 @@ child:
                                             text: 'قيّم الإعلان',
                                             fontSize:
                                             AppFontSize.fontSize_11,
-                                            color: Colors.yellow)),
+                                            color: LbeenaColors.teal)),
                                   ],
                                 ),
                               },
@@ -742,12 +822,12 @@ child:
                                       .toDouble(),
                                   itemCount: 5,
                                   itemSize: 16.r,
-                                  unratedColor: Colors.white70,
+                                  unratedColor: LbeenaColors.fieldBorder,
                                   direction: Axis.horizontal,
                                   itemBuilder: (context, _) => Icon(
                                     Icons.star,
                                     size: 13.h,
-                                    color: Colors.yellow,
+                                    color: LbeenaColors.star,
                                   ),
                                 ),
                               ),
@@ -775,7 +855,7 @@ child:
                                       : textNormal(
                                       text: 'قيّم الإعلان',
                                       fontSize: AppFontSize.fontSize_11,
-                                      color: Colors.yellow)),
+                                      color: LbeenaColors.teal)),
                             ],
                           ),
                         },
@@ -1080,6 +1160,7 @@ child:
                                         },
                                         text: 'واتساب', adStatus: '',
                                         imageIcon: ImageConstant.iconWhatsapp,
+                                        changeBackGround: true,
                                       ),
                                     ),
                                   ]else...[
@@ -1194,7 +1275,6 @@ child:
                 ],
               ),
             ),
-          ),
         ),
         sizeHeightNormal(),
         ( !widget.isOwnerCompany||widget.dataDetailsProduct.status == '3'
@@ -1291,10 +1371,13 @@ child:
         return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return AlertDialog(
-                backgroundColor: appTheme.buttonColor,
+                backgroundColor: LbeenaColors.white,
+                surfaceTintColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20)),
                 title: textNormal(
                     text: 'قيّم الإعلان',
-                    color: Colors.white,
+                    color: LbeenaColors.teal,
                     fontSize: AppFontSize.fontSize_16),
                 content: RatingBar(
                   initialRating: rating,
@@ -1321,6 +1404,7 @@ child:
                   InkWell(
                     child: textNormal(
                       text: 'إلغاء',
+                      color: LbeenaColors.muted,
                     ),
                     onTap: () {
                       Navigator.of(context).pop();
@@ -1328,7 +1412,10 @@ child:
                   ),
                   sizeWidthNormal(width: 2.w),
                   InkWell(
-                    child: textNormal(text: 'تأكيّد'),
+                    child: textNormal(
+                      text: 'تأكيد',
+                      color: LbeenaColors.orange,
+                    ),
                     onTap: () async {
                       // Save the rating                        // and close the dialog box
                       Navigator.of(context).pop();
@@ -1357,22 +1444,30 @@ child:
               return Form(
                 key: _formKey2,
                 child: AlertDialog(
-                  backgroundColor: appTheme.buttonColor,
+                  backgroundColor: LbeenaColors.white,
+                  surfaceTintColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
                   title: Row(
                     children: [
 
 
-                      Text(
+                      Expanded(
+                        child: Text(
                         'هل تريد $status الدردشة ؟',
-                        style: themeLite.textTheme.titleSmall,
+                        style: themeLite.textTheme.titleSmall!.copyWith(
+                          color: LbeenaColors.teal,
+                          fontFamily: 'Cairo',
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                      Spacer(),
+                      ),
                       IconButton(
                         onPressed: (){
                           Navigator.of(context).pop();
                         },
                         icon: Icon(Icons.close,
-                          color:Colors.white,),
+                          color: LbeenaColors.muted,),
                       ),
 
                     ],
@@ -1396,12 +1491,15 @@ child:
                               child: Container(
                                 width: 160.h,
                                 height: 40.h,
-                                decoration: AppDecoration.outlineSelectedLite
-                                    .copyWith(
+                                decoration: BoxDecoration(
+                                    color: LbeenaColors.orange,
                                     borderRadius:
                                     BorderRadius.circular(30.h)),
                                 child: Center(
-                                  child:  textNormal(text: 'نعم'),
+                                  child:  textNormal(
+                                    text: 'نعم',
+                                    color: LbeenaColors.white,
+                                  ),
                                 ),
                               )),
                         ),
@@ -1425,23 +1523,29 @@ child:
               return Form(
                 key: _formKey2,
                 child: AlertDialog(
-                  backgroundColor: appTheme.buttonColor,
-
-
+                  backgroundColor: LbeenaColors.white,
+                  surfaceTintColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
                   title: Row(
                     children: [
 
-                      Text(
+                      Expanded(
+                        child: Text(
                         'هل أنت متأكد من حذف الإعلان ؟',
-                        style: themeLite.textTheme.titleSmall,
+                        style: themeLite.textTheme.titleSmall!.copyWith(
+                          color: LbeenaColors.teal,
+                          fontFamily: 'Cairo',
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                      Spacer(),
+                      ),
                       IconButton(
                         onPressed: (){
                           Navigator.of(context).pop();
                         },
                         icon: Icon(Icons.close,
-                          color:Colors.white,),
+                          color: LbeenaColors.muted,),
                       ),
 
                     ],
@@ -1460,10 +1564,15 @@ child:
                               child: Container(
                                 width: 90.h,
                                 height: 40.h,
-                                decoration: AppDecoration.outlineSelectedLite.copyWith(
-                                    borderRadius: BorderRadius.circular(30.h)),
+                                decoration: BoxDecoration(
+                                    color: LbeenaColors.white,
+                                    borderRadius: BorderRadius.circular(30.h),
+                                    border: Border.all(color: LbeenaColors.fieldBorder)),
                                 child: Center(
-                                  child: textNormal(text: 'إلغاء'),
+                                  child: textNormal(
+                                    text: 'إلغاء',
+                                    color: LbeenaColors.muted,
+                                  ),
                                 ),
                               )),
                         ),
@@ -1479,10 +1588,14 @@ child:
                               child: Container(
                                 width: 90.h,
                                 height: 40.h,
-                                decoration: AppDecoration.outlineSelectedLite.copyWith(
+                                decoration: BoxDecoration(
+                                    color: LbeenaColors.orange,
                                     borderRadius: BorderRadius.circular(30.h)),
                                 child: Center(
-                                  child: textNormal(text: 'حذف'),
+                                  child: textNormal(
+                                    text: 'حذف',
+                                    color: LbeenaColors.white,
+                                  ),
                                 ),
                               )),
                         ),
@@ -1514,7 +1627,10 @@ child:
               return Form(
                 key: _formKey2,
                 child: AlertDialog(
-                  backgroundColor: appTheme.buttonColor,
+                  backgroundColor: LbeenaColors.white,
+                  surfaceTintColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
                   // title: Text(
                   //             'اختر طريقة تمميز إعلانك',
                   //             style: themeLite.textTheme.titleSmall,
@@ -1525,7 +1641,11 @@ child:
 
                       Text(
                         'رقم الواتساب',
-                        style: themeLite.textTheme.titleSmall,
+                        style: themeLite.textTheme.titleSmall!.copyWith(
+                          color: LbeenaColors.teal,
+                          fontFamily: 'Cairo',
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
                       Spacer(),
                       IconButton(
@@ -1533,7 +1653,7 @@ child:
                           Navigator.of(context).pop();
                         },
                         icon: Icon(Icons.close,
-                          color:Colors.white,),
+                          color: LbeenaColors.muted,),
                       ),
 
                     ],
@@ -1594,14 +1714,19 @@ child:
                           child: Container(
                             width: 120.h,
                             height: 40.h,
-                            decoration: AppDecoration.outlineSelectedLite
-                                .copyWith(borderRadius: BorderRadius.circular(30.h)),
+                            decoration: BoxDecoration(
+                                color: LbeenaColors.orange,
+                                borderRadius: BorderRadius.circular(30.h)),
                             child: Center(
                               child: widget.mobileNumber == '000' || widget.mobileNumber == 'null'
                                   ? textNormal(
                                 text: 'حفظ',
+                                color: LbeenaColors.white,
                               )
-                                  : textNormal(text: 'إيقاف الواتساب'),
+                                  : textNormal(
+                                text: 'إيقاف الواتساب',
+                                color: LbeenaColors.white,
+                              ),
                             ),
                           )),
                     ),

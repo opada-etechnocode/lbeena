@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/results/result.dart';
+import '../../../../core/utils/media_permission.dart';
 import '../../../../data/sources/auth/auth_remote_data_source.dart';
 import '../../../../data/sources/community/community_data_source.dart';
 import '../../../../data/sources/following/following_remote_data_source.dart';
@@ -146,6 +147,7 @@ class ProfileCubit extends Cubit<ProfileStates> {
     String? mobileNumber,
     String? desc_user,
     File? imageProfile,
+    String? countryCode,
   }) async {
     ProfilePageDataSourceImpl profileDataSourceImpl =
         const ProfilePageDataSourceImpl();
@@ -157,6 +159,7 @@ class ProfileCubit extends Cubit<ProfileStates> {
         imageProfile: imageProfile,
         desc_user: desc_user,
         mobileNumber: mobileNumber,
+        countryCode: countryCode,
       );
 
       if (profileData.data != null) {
@@ -258,13 +261,16 @@ class ProfileCubit extends Cubit<ProfileStates> {
     }
   }
 
-  Future<void> sendOtp(String mobile) async {
+  Future<void> sendOtp(String mobile, {String? countryCode}) async {
     AuthRemoteDataSourceImpl authRemoteDataSourceImpl =
         const AuthRemoteDataSourceImpl();
     try {
       emit(LoadingSendOTPState());
 
-      Result otp = await authRemoteDataSourceImpl.sendVerificationCode(mobile);
+      Result otp = await authRemoteDataSourceImpl.sendVerificationCode(
+        mobile,
+        countryCode: countryCode,
+      );
 
       if (otp.data != null) {
         emit(SuccessSendOTPState(otp.data));
@@ -278,13 +284,21 @@ class ProfileCubit extends Cubit<ProfileStates> {
     }
   }
 
-  Future<void> validateMobileNumber(String otpCode, String mobile) async {
+  Future<void> validateMobileNumber(
+    String otpCode,
+    String mobile, {
+    String? countryCode,
+  }) async {
     AuthRemoteDataSourceImpl authRemoteDataSourceImpl =
         const AuthRemoteDataSourceImpl();
     try {
       emit(LoadingValidateMobileNumberState());
       Result validation =
-          await authRemoteDataSourceImpl.validateMobileNumber(otpCode, mobile);
+          await authRemoteDataSourceImpl.validateMobileNumber(
+        otpCode,
+        mobile,
+        countryCode: countryCode,
+      );
       // if(validation.data)
 
       if (validation.data != null) {
@@ -301,6 +315,7 @@ class ProfileCubit extends Cubit<ProfileStates> {
 
   Future<void> checkMobileExists({
     String? mobileNumber,
+    String? countryCode,
   }) async {
     ProfilePageDataSourceImpl profileDataSourceImpl =
         const ProfilePageDataSourceImpl();
@@ -309,6 +324,7 @@ class ProfileCubit extends Cubit<ProfileStates> {
 
       var profileData = await profileDataSourceImpl.checkMobileExists(
         mobileNumber: mobileNumber,
+        countryCode: countryCode,
       );
 
       if (profileData.data != null) {
@@ -602,6 +618,11 @@ class ProfileCubit extends Cubit<ProfileStates> {
   Future<void> openCamera() async {
     try {
       emit(LoadingLoadFileState());
+      final allowed = await MediaPermission.request(camera: true, gallery: false);
+      if (!allowed) {
+        emit(ErrorLoadFileState());
+        return;
+      }
       final picker = ImagePicker();
       XFile? result = await picker.pickImage(
         source: ImageSource.camera,
@@ -642,6 +663,11 @@ class ProfileCubit extends Cubit<ProfileStates> {
   Future<void> loadImages() async {
     try {
       emit(LoadingLoadFileState());
+      final allowed = await MediaPermission.request(gallery: true);
+      if (!allowed) {
+        emit(ErrorLoadFileState());
+        return;
+      }
       final picker = ImagePicker();
       XFile? result = await picker.pickImage(source: ImageSource.gallery,
           imageQuality: 50,
@@ -686,6 +712,11 @@ class ProfileCubit extends Cubit<ProfileStates> {
   Future<void> pickPDFAndUpload() async {
     try {
       emit(LoadingLoadFileState());
+      final allowed = await MediaPermission.request(gallery: true);
+      if (!allowed) {
+        emit(ErrorLoadFileState());
+        return;
+      }
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
         allowedExtensions: ['pdf'],

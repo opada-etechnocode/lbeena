@@ -18,6 +18,7 @@ import '../../models/auth/otp/check_monile_model.dart';
 import '../../models/auth/otp/otp_model.dart';
 import '../../models/profile_company/edit_profile_model.dart';
 import '../../../core/utils/endpoints.dart';
+import '../../../core/utils/lbeena_phone_country.dart';
 
 
 
@@ -241,6 +242,7 @@ class ProfilePageDataSourceImpl implements ProfilePageDataSource {
     String? mobileNumber,
     String? desc_user,
     File? imageProfile,
+    String? countryCode,
 
 }) async {
     // FormData data = FormData.fromMap({
@@ -259,17 +261,17 @@ class ProfilePageDataSourceImpl implements ProfilePageDataSource {
       },
       data: userName ==null? {
         "desc_user": desc_user,
-        "mobile": '971$mobileNumber',
+        "mobile": LbeenaPhoneCountry.full(countryCode, mobileNumber),
       }: mobileNumber ==null?{
         "user_name": userName,
         "desc_user": desc_user,
       }: desc_user ==null?{
         "user_name": userName,
-        "mobile": '971$mobileNumber',
+        "mobile": LbeenaPhoneCountry.full(countryCode, mobileNumber),
       }:{
         "user_name": userName,
         "desc_user": desc_user,
-        "mobile": '971$mobileNumber',
+        "mobile": LbeenaPhoneCountry.full(countryCode, mobileNumber),
       },
       url: '${AppEndpoints.baseUrl}${AppEndpoints.editProfile}ar' ,
     );
@@ -278,13 +280,14 @@ class ProfilePageDataSourceImpl implements ProfilePageDataSource {
   @override
   Future<Result<CheckMobileExistsModel>> checkMobileExists( {
     String? mobileNumber,
+    String? countryCode,
   }) async {
     return await RemoteDataSource.request<CheckMobileExistsModel>(
       converter: (model) => CheckMobileExistsModel.fromJson(model),
       method: HttpMethod.POST,
 
       data: {
-        "mobile": '971$mobileNumber',
+        "mobile": LbeenaPhoneCountry.full(countryCode, mobileNumber),
       },
       url: '${AppEndpoints.baseUrl}check_mobile_exists' ,
     );

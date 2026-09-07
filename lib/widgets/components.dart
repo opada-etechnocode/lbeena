@@ -36,8 +36,11 @@ import '../core/utils/image_constant.dart';
 import '../data/models/company/activity_company_model.dart';
 import '../data/models/company/company_model.dart';
 // import '../l10n/app_localizations.dart';
+import '../core/utils/lbeena_phone_country.dart';
+import '../core/utils/media_permission.dart';
 import '../ui/screens/auth/login/login_screen.dart';
 import '../ui/theme/lbeena_colors.dart';
+import 'lbeena_country_code_picker.dart';
 import '../ui/screens/auth/login/model_home_page.dart';
 import '../ui/screens/company/company_details_page.dart';
 import '../ui/screens/details_product/details_product.dart';
@@ -234,61 +237,76 @@ Widget itemButtonContainerProductPage({
   bool isLoading = false,
   required String status  ,
 }) {
-  return (status == '3' && !isDeleteAds) || inactivation
-      ? Container(
-    height: 38.h,
+  final bool isDisabled = (status == '3' && !isDeleteAds) || inactivation;
+  final Color background;
+  final Color foreground;
+  Color? border;
+
+  if (isDisabled) {
+    background = LbeenaColors.fieldBorder;
+    foreground = LbeenaColors.muted;
+  } else if (isDeleteAds) {
+    background = LbeenaColors.white;
+    foreground = LbeenaColors.orangeDeep;
+    border = const Color(0xFFFECACA);
+  } else if (changeBackGround) {
+    background = LbeenaColors.orange;
+    foreground = LbeenaColors.white;
+  } else {
+    background = LbeenaColors.teal;
+    foreground = LbeenaColors.white;
+  }
+
+  final button = Container(
+    height: 44.h,
     width: width ?? 100.w,
-    decoration: AppDecoration.outlineButtonLite
-        .copyWith(color: Colors.grey, boxShadow: []),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        textNormal(text: text),
-        SizedBox(
-          width: 8.w,
-        ),
-        CustomImageView(
-          imagePath: imageIcon,
-          color: Colors.white,
-          height: 24.h,
-          width: 24.h,
-        ),
-        // iconSvg(iconSvg: imageIcon),
-      ],
+    decoration: BoxDecoration(
+      color: background,
+      borderRadius: BorderRadius.circular(14.r),
+      border: border == null ? null : Border.all(color: border),
+      boxShadow: isDisabled || isDeleteAds
+          ? const []
+          : [
+              BoxShadow(
+                color: background.withValues(alpha: 0.28),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
     ),
-  )
-      : InkWell(
+    child: isLoading
+        ? Center(
+            child: LoadingAnimationWidget.fourRotatingDots(
+              color: foreground,
+              size: 20.sp,
+            ),
+          )
+        : Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              textNormal(
+                text: text,
+                fontSize: 12.fSize,
+                color: foreground,
+                fontWeight: FontWeight.w700,
+              ),
+              SizedBox(width: 8.w),
+              CustomImageView(
+                imagePath: imageIcon,
+                color: foreground,
+                height: 18.h,
+                width: 18.h,
+              ),
+            ],
+          ),
+  );
+
+  if (isDisabled) return button;
+  return InkWell(
     onTap: isLoading ? () {} : onTap,
-    child: Container(
-      height: 30.h,
-      width: width ?? 100.w,
-      decoration: AppDecoration.itemCartNew.copyWith(
-          color: changeBackGround ? Colors.green : appTheme.whiteA700,
-          boxShadow: []),
-      child: isLoading
-          ? LoadingAnimationWidget.fourRotatingDots(
-          color: Colors.black, size: 20.sp)
-          : Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          textNormal(text: text, fontSize: 10.fSize),
-          SizedBox(
-            width: 8.w,
-          ),
-          CustomImageView(
-            imagePath: imageIcon,
-            color: changeBackGround
-                ? Colors.white70
-                : appTheme.deepPurpleA100,
-            height: 15.h,
-            width: 15.h,
-          ),
-          // iconSvg(iconSvg: imageIcon),
-        ],
-      ),
-    ),
+    borderRadius: BorderRadius.circular(14.r),
+    child: button,
   );
 }
 
@@ -886,30 +904,14 @@ Widget containerLinks({
     ),
   );
 }
-/// Section Widget
-Widget buildUaeNumber(BuildContext context) {
-  var lang = Localizations.localeOf(context).languageCode;
-
-  return CustomTextFormField(
-    width: MediaQuery.of(context).size.width * 0.22,
-    readOnly: true,
-    hintText: lang == 'en' ? "+971" : "971+",
-    // filled: true,
-
-    suffix: Padding(
-      padding: const EdgeInsets.only(left: 6),
-      child: CustomImageView(
-        imagePath: ImageConstant.imgTelevision,
-        height: 16.fSize,
-        width: 23.fSize,
-      ),
-    ),
-    suffixConstraints: BoxConstraints(
-      maxHeight: 48.fSize,
-    ),
-    prefixConstraints:BoxConstraints(
-      maxHeight: 48.fSize,
-    ),
+Widget buildUaeNumber(
+  BuildContext context, {
+  ValueChanged<String>? onChanged,
+  String initialSelection = LbeenaPhoneCountry.defaultSelection,
+}) {
+  return LbeenaCountryCodePicker(
+    initialSelection: initialSelection,
+    onChanged: onChanged ?? (_) {},
   );
 }
 
@@ -1416,59 +1418,59 @@ Widget itemButtonContainer({
   bool isDeleteAds = false,
   bool inactivation = false,
 }) {
-  return (adStatus == '3' && !isDeleteAds) || inactivation
-      ? Container(
-    height: 25.h,
+  final bool isDisabled = (adStatus == '3' && !isDeleteAds) || inactivation;
+  final Color background = isDisabled
+      ? LbeenaColors.fieldBorder
+      : changeBackGround
+          ? LbeenaColors.orange
+          : LbeenaColors.teal;
+  final Color foreground =
+      isDisabled ? LbeenaColors.muted : LbeenaColors.white;
+
+  final button = Container(
+    height: 44.h,
     width: width ?? 180.w,
-    decoration: AppDecoration.itemCartNew.copyWith(
-      color: Colors.grey,
+    decoration: BoxDecoration(
+      color: background,
+      borderRadius: BorderRadius.circular(14.r),
+      boxShadow: isDisabled
+          ? const []
+          : [
+              BoxShadow(
+                color: background.withValues(alpha: 0.28),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
     ),
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        textNormal(text: text,fontSize: 10.fSize),
-        SizedBox(
-          width: 8.w,
+        textNormal(
+          text: text,
+          fontSize: 12.fSize,
+          color: foreground,
+          fontWeight: FontWeight.w700,
         ),
-        imageIcon==null?Container():     CustomImageView(
-          imagePath: imageIcon,
-          color: Colors.white,
-          height: 15.h,
-          width: 15.h,
-        ),
-        // iconSvg(iconSvg: imageIcon),
+        if (imageIcon != null) ...[
+          SizedBox(width: 8.w),
+          CustomImageView(
+            imagePath: imageIcon,
+            color: foreground,
+            height: 18.h,
+            width: 18.h,
+          ),
+        ],
       ],
     ),
-  )
-      : InkWell(
+  );
+
+  if (isDisabled) return button;
+  return InkWell(
     onTap: onTap,
-    child: Container(
-      height: 30.h,
-      width: width ?? 180.w,
-      decoration: AppDecoration.itemCartNew.copyWith(
-        color: changeBackGround ? Colors.green : Colors.grey[200],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          textNormal(text: text,fontSize: 10.fSize,color: Colors.black),
-          imageIcon==null?Container():     SizedBox(
-            width: 8.w,
-          ),
-          imageIcon==null?Container():        CustomImageView(
-            imagePath: imageIcon,
-            color: changeBackGround
-                ? Colors.white70
-                : appTheme.deepPurpleA100,
-            height: 15.h,
-            width: 15.h,
-          ),
-          // iconSvg(iconSvg: imageIcon),
-        ],
-      ),
-    ),
+    borderRadius: BorderRadius.circular(14.r),
+    child: button,
   );
 }
 
@@ -1548,31 +1550,11 @@ Widget bannerItem(image){
   required bool isCamera,
   required BuildContext context,
 }) async {
-
-    bool shouldOpenSettings = await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('الإذن مطلوب'),
-        content: Text(
-            'يجب منح إذن الوصول إلى ${isCamera ? "الكاميرا" : "معرض الصور"} لاستخدام هذه الميزة.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text('إلغاء'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: Text('فتح الإعدادات'),
-          ),
-        ],
-      ),
-    );
-
-    if (shouldOpenSettings) {
-      await openAppSettings();
-    }
-
-
+  await MediaPermission.ensure(
+    context,
+    camera: isCamera,
+    gallery: !isCamera,
+  );
 }
 
 Widget loadingButton({Color? color}) {

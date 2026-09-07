@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:syrians_in_uae/core/utils/media_permission.dart';
 import 'package:syrians_in_uae/core/utils/size_utils.dart';
 import 'package:syrians_in_uae/core/utils/endpoints.dart';
 import 'package:syrians_in_uae/ui/screens/community/list_coummunity.dart';
@@ -1211,7 +1212,8 @@ class _EditPostScreenState extends State<EditPostScreen> {
   bool isImageNull = false;
 
   Future<void> _pickImages(context) async {
-    // permissionPhoto(context: context,isCamera: false);
+    final allowed = await MediaPermission.ensure(context, gallery: true);
+    if (!allowed) return;
     final picker = ImagePicker();
     try{
       final pickedImage = await picker.pickImage(
@@ -1333,7 +1335,8 @@ class _EditPostScreenState extends State<EditPostScreen> {
   }
 
   void _openCamera(BuildContext context) async {
-    permissionPhoto(context: context,isCamera: true);
+    final allowed = await MediaPermission.ensure(context, camera: true, gallery: false);
+    if (!allowed) return;
     final picker = ImagePicker();
     try{
       XFile? result = await picker.pickImage(
@@ -1379,6 +1382,8 @@ class _EditPostScreenState extends State<EditPostScreen> {
   XFile? fileLicenseListImage;
 
   Future<void> loadImages(context) async {
+    final allowed = await MediaPermission.ensure(context, gallery: true);
+    if (!allowed) return;
     final picker = ImagePicker();
     XFile? result = await picker.pickImage(source: ImageSource.gallery
         // imageQuality: 50,

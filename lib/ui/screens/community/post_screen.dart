@@ -37,7 +37,7 @@ import 'comments.dart';
 import '../../../widgets/components.dart';
 import '../../../widgets/custom_image_view.dart';
 import '../../../widgets/loader_for_page.dart';
-import '../../theme/app_decoration.dart';
+import '../../theme/lbeena_colors.dart';
 import '../../theme/theme_helper.dart';
 import '../../widget/url_webview.dart';
 import '../auth/login/login_screen.dart';
@@ -344,8 +344,27 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
             },
             child: HandelAndroidApp(
               child: Scaffold(
-                appBar: appBarNormalWithIcon(
-                    text: ' المنشور', context: context, isShowBack: true),
+                backgroundColor: LbeenaColors.lightBg,
+                appBar: AppBar(
+                  backgroundColor: LbeenaColors.white,
+                  elevation: 0,
+                  surfaceTintColor: Colors.transparent,
+                  centerTitle: true,
+                  leading: IconButton(
+                    onPressed: () => Navigator.of(context).maybePop(),
+                    icon: Icon(Icons.arrow_back_ios_new_rounded,
+                        color: LbeenaColors.teal, size: 20),
+                  ),
+                  title: Text(
+                    'المنشور',
+                    style: TextStyle(
+                      fontFamily: 'Cairo',
+                      color: LbeenaColors.teal,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
                 body: Column(
                   children: [
                     if (DIManager.findDep<SharedPrefs>().getToken() == null) ...{
@@ -353,7 +372,7 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
                         height: 58.h,
                         padding:
                             EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                        color: appTheme.deepPurpleA10001,
+                        color: LbeenaColors.orange,
                         child: SizedBox(
                           height: 25.h,
                           child: Marquee(
@@ -426,65 +445,17 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
                                                     width: MediaQuery.of(context)
                                                         .size
                                                         .width,
-                                                    decoration: widget
-                                                            .isFromHomePage
-                                                        ? AppDecoration
-                                                            .outlineBlueGray
-                                                            .copyWith(
-                                                            boxShadow: [],
-                                                            color: widget.communityPostModel!.type ==
-                                                                        'A' &&
-                                                                    widget.communityPostModel!
-                                                                            .background !=
-                                                                        null
-                                                                ? widget.communityPostModel!
-                                                                        .background!
-                                                                        .contains(
-                                                                            '0xff')
-                                                                    ? Color(int.parse(widget.communityPostModel!.background.toString()))
-                                                                        .withOpacity(
-                                                                            .8)
-                                                                    : widget.communityPostModel!
-                                                                            .background!
-                                                                            .contains(
-                                                                                '#')
-                                                                        ? Color(int.parse('0xff${colorWithoutHashtag(widget.communityPostModel!.background!)}'))
-                                                                            .withOpacity(
-                                                                                .8)
-                                                                        : Color(int.parse("0xff${widget.communityPostModel!.background}"))
-                                                                            .withOpacity(.8)
-                                                                : appTheme.lightBlue100,
-                                                          )
-                                                        : null,
-                                                    color: widget.isFromHomePage
-                                                        ? null
-                                                        : widget.communityPostModel!
-                                                                        .type ==
-                                                                    'A' &&
-                                                                widget.communityPostModel!
-                                                                        .background !=
-                                                                    null
-                                                            ? widget.communityPostModel!
-                                                                    .background!
-                                                                    .contains(
-                                                                        '0xff')
-                                                                ? Color(int.parse(widget
-                                                                        .communityPostModel!
-                                                                        .background
-                                                                        .toString()))
-                                                                    .withOpacity(
-                                                                        .8)
-                                                                : widget.communityPostModel!
-                                                                        .background!
-                                                                        .contains('#')
-                                                                    ? Color(int.parse('0xff${colorWithoutHashtag(widget.communityPostModel!.background!)}')).withOpacity(.8)
-                                                                    : Color(int.parse("0xff${widget.communityPostModel!.background}")).withOpacity(.8)
-                                                            : appTheme.lightBlue100,
+                                                    decoration: LbeenaColors.cardWith(
+                                                      color: _postCardColor(
+                                                        widget.communityPostModel!,
+                                                      ),
+                                                    ),
                                                     margin: EdgeInsets.symmetric(
-                                                        vertical: 3.h),
+                                                        horizontal: 12.w,
+                                                        vertical: 8.h),
                                                     child: Padding(
                                                       padding:
-                                                          EdgeInsets.all(10.sp),
+                                                          EdgeInsets.fromLTRB(14.w, 12.h, 14.w, 10.h),
                                                       child: Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment
@@ -553,8 +524,7 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
                                                                               SharedPrefs>()
                                                                           .getUserID()
                                                                   ? PopupMenuButton(
-                                                                      color: appTheme
-                                                                          .lightBlueBottomNavigatorBar,
+                                                                      color: LbeenaColors.white,
                                                                       child:
                                                                           CustomImageView(
                                                                         imagePath:
@@ -564,8 +534,7 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
                                                                             15.h,
                                                                         width:
                                                                             15.h,
-                                                                        color: appTheme
-                                                                            .deepPurpleA10002,
+                                                                        color: LbeenaColors.teal,
                                                                       ),
                                                                       itemBuilder:
                                                                           (BuildContext
@@ -689,8 +658,7 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w800,
-                                                                    color: appTheme
-                                                                        .deepPurpleA100),
+                                                                    color: LbeenaColors.teal),
                                                               ),
                                                             },
                                                           ] else ...[
@@ -731,8 +699,7 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .w800,
-                                                                    color: appTheme
-                                                                        .deepPurpleA100),
+                                                                    color: LbeenaColors.teal),
                                                               ),
                                                             },
                                                             sizeHeightNormal(
@@ -751,11 +718,7 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
                                                                             context)
                                                                         .size
                                                                         .width,
-                                                                    decoration: AppDecoration
-                                                                        .outlinePurple
-                                                                        .copyWith(
-                                                                      boxShadow: [],
-                                                                    ),
+                                                                    decoration: const BoxDecoration(),
                                                                     child:
                                                                         CustomImageView(
                                                                       imagePath: widget
@@ -907,11 +870,18 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
                                                             padding:
                                                                 EdgeInsets.only(
                                                               top: 10.h,
-                                                              right: 10.w,
-                                                              left: 10.w,
+                                                              right: 4.w,
+                                                              left: 4.w,
                                                             ),
                                                             child: Container(
-                                                              // width: 250.w,
+                                                              decoration: const BoxDecoration(
+                                                                border: Border(
+                                                                  top: BorderSide(
+                                                                    color: LbeenaColors.fieldBorder,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              padding: EdgeInsets.only(top: 10.h),
                                                               child: Row(
                                                                 mainAxisAlignment:
                                                                     MainAxisAlignment
@@ -989,8 +959,8 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
                                                                               .unlikeIcon,
                                                                           color: widget.communityPostModel!.isLikePost ==
                                                                                   true
-                                                                              ? appTheme.deepPurpleA100
-                                                                              : appTheme.black900,
+                                                                              ? LbeenaColors.orange
+                                                                              : LbeenaColors.muted,
                                                                           height:
                                                                               25.sp,
                                                                           width: 25
@@ -1066,7 +1036,7 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
                                                                             children: [
                                                                               Icon(
                                                                                 Icons.chat_outlined,
-                                                                                size: 25.sp,         color: appTheme.black900,
+                                                                                size: 25.sp,         color: LbeenaColors.teal,
                                                                               ),
                                                                               SizedBox(
                                                                                 width: 12.w,
@@ -1151,8 +1121,7 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
                                                                                       CustomImageView(
                                                                                         imagePath: ImageConstant.chatPost,
                                                                                         height: 25.h,
-                                                                                        width: 25.h,color: appTheme
-                                                                                          .black900,
+                                                                                        width: 25.h,color: LbeenaColors.teal,
                                                                                       ),
                                                                                       SizedBox(
                                                                                         width: 12.w,
@@ -1202,12 +1171,20 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
                       //     thickness: 0.4,
                       // ),
                       Padding(
-                        padding: EdgeInsets.only(bottom: 20.h),
+                        padding: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 16.h),
                         child: Container(
-                          width: 365.w,
-                          decoration: AppDecoration.pointChoose.copyWith(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: LbeenaColors.white,
+                            borderRadius: BorderRadius.circular(16.r),
+                            border: Border.all(color: LbeenaColors.fieldBorder),
+                            boxShadow: [
+                              BoxShadow(
+                                color: LbeenaColors.black.withValues(alpha: 0.05),
+                                blurRadius: 10,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(2.0),
@@ -1244,8 +1221,8 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
                                       controller.clear();
                                     },
                                     icon: Icon(
-                                      Icons.send,
-                                      color: Colors.black,
+                                      Icons.send_rounded,
+                                      color: LbeenaColors.orange,
                                     ),
                                   ),
                                   contentPadding: EdgeInsets.symmetric(
@@ -1281,5 +1258,24 @@ class _PostScreenState extends State<PostScreen> with WidgetsBindingObserver {
 
   int sum(int a, int b) {
     return a + b;
+  }
+
+  Color _postCardColor(CommunityModelDatum post) {
+    if (post.type == 'A' && post.background != null) {
+      try {
+        if (post.background!.contains('0xff')) {
+          return Color(int.parse(post.background.toString()))
+              .withValues(alpha: 0.88);
+        }
+        if (post.background!.contains('#')) {
+          return Color(int.parse(
+                  '0xff${colorWithoutHashtag(post.background!)}'))
+              .withValues(alpha: 0.88);
+        }
+        return Color(int.parse('0xff${post.background}'))
+            .withValues(alpha: 0.88);
+      } catch (_) {}
+    }
+    return LbeenaColors.white;
   }
 }

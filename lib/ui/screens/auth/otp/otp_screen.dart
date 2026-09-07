@@ -9,17 +9,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_timer_countdown/flutter_timer_countdown.dart';
 import '../../../../core/di/di_manager.dart';
+import '../../../../core/utils/lbeena_phone_country.dart';
 import '../../../../core/shared_prefs/shared_prefs.dart';
-import '../../../../core/utils/image_constant.dart';
 // import '../../../../l10n/app_localizations.dart';
 
 import 'package:syrians_in_uae/core/link_app.dart';
 
 import '../../../../widgets/components.dart';
 import '../../../../widgets/custom_elevated_button.dart';
-import '../../../../widgets/custom_image_view.dart';
 import '../../../../widgets/custom_text_form_field.dart';
-import '../../../../widgets/loader_for_page.dart';
 import '../../../../widgets/otp_widegt.dart';
 import '../../../app_general_bloc/handel_android_app.dart';
 import '../../../theme/app_decoration.dart';
@@ -41,6 +39,7 @@ class OTPScreen extends StatefulWidget {
     this.mobileFromRegisterAccount,
     this.passwordFromRegisterA,
     this.ifFromRegisterAccount = false,
+    this.countryCode,
   });
 
   bool? ifFromRestPassword;
@@ -48,6 +47,7 @@ class OTPScreen extends StatefulWidget {
   String? mobileFromRegisterAccount;
   String? passwordFromRegisterA;
   bool ifFromRegisterAccount;
+  String? countryCode;
 
   @override
   State<OTPScreen> createState() => _OTPScreenState();
@@ -65,6 +65,7 @@ class _OTPScreenState extends State<OTPScreen> {
   final FocusNode _therdFocusNode = FocusNode();
   final FocusNode _fouredFocusNode = FocusNode();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late String _countryCode;
 
   bool isPressing = false;
   bool isPressing2 = false;
@@ -83,6 +84,10 @@ class _OTPScreenState extends State<OTPScreen> {
 
   @override
   void initState() {
+    _countryCode = widget.countryCode ?? LbeenaPhoneCountry.defaultCode;
+    if (widget.mobileFromRegisterAccount != null) {
+      mobileNoController.text = widget.mobileFromRegisterAccount!;
+    }
     loadData();
     super.initState();
   }
@@ -129,6 +134,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                   false) {
                                 RegisterCubit.get(context).sendOtp(
                                   mobileNoController.text,
+                                  countryCode: _countryCode,
                                 );
                               } else {
                                 SnackBarHelper.mySnackBarError(
@@ -147,11 +153,18 @@ class _OTPScreenState extends State<OTPScreen> {
                                 //     context: context, location: '/restPassword');
                                 navigatorToPush(context: context, pageName: RestPassword(
                                   mobileNumber: mobileNoController.text,
+                                  countryCode: _countryCode,
                                 ));
                               } else {
                                 SnackBarHelper.mySnackBarSuccess(
                                     state.otpModel.message, context);
-                                RegisterCubit.get(context).login('971${widget.mobileFromRegisterAccount}', widget.passwordFromRegisterA!);
+                                RegisterCubit.get(context).login(
+                                  LbeenaPhoneCountry.full(
+                                    _countryCode,
+                                    widget.mobileFromRegisterAccount,
+                                  ),
+                                  widget.passwordFromRegisterA!,
+                                );
 
                                 // navigatorToPushReplacementUntil(
                                 //     context: context, location: '/homePage');
@@ -249,14 +262,14 @@ class _OTPScreenState extends State<OTPScreen> {
                                     //             timeTextStyle: const TextStyle(
                                     //                 color: Colors.lightBlue,
                                     //                 fontSize: 12,
-                                    //                 fontFamily: 'Inter',
+                                    //                 fontFamily: 'Cairo',
                                     //                 fontWeight: FontWeight.bold,
                                     //                 height: 0),
                                     //             colonsTextStyle:
                                     //                 const TextStyle(
                                     //                     color: Colors.lightBlue,
                                     //                     fontSize: 16,
-                                    //                     fontFamily: 'Inter',
+                                    //                     fontFamily: 'Cairo',
                                     //                     fontWeight:
                                     //                         FontWeight.bold,
                                     //                     height: 0),
@@ -279,7 +292,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                     //                                   style: const TextStyle(
                                     //                                     color: Color(0xFFAC0000),
                                     //                                     fontSize: 18,
-                                    //                                     fontFamily: 'Inter',
+                                    //                                     fontFamily: 'Cairo',
                                     //                                     fontWeight: FontWeight.bold,
                                     //                                     height: 0,
                                     //                                   ),
@@ -322,14 +335,14 @@ class _OTPScreenState extends State<OTPScreen> {
                                                 timeTextStyle: const TextStyle(
                                                     color: Colors.lightBlue,
                                                     fontSize: 12,
-                                                    fontFamily: 'Inter',
+                                                    fontFamily: 'Cairo',
                                                     fontWeight: FontWeight.bold,
                                                     height: 0),
                                                 colonsTextStyle:
                                                     const TextStyle(
                                                         color: Colors.lightBlue,
                                                         fontSize: 16,
-                                                        fontFamily: 'Inter',
+                                                        fontFamily: 'Cairo',
                                                         fontWeight:
                                                             FontWeight.bold,
                                                         height: 0),
@@ -351,7 +364,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                                                       style: const TextStyle(
                                                                         color: Color(0xFFAC0000),
                                                                         fontSize: 18,
-                                                                        fontFamily: 'Inter',
+                                                                        fontFamily: 'Cairo',
                                                                         fontWeight: FontWeight.bold,
                                                                         height: 0,
                                                                       ),
@@ -366,14 +379,17 @@ class _OTPScreenState extends State<OTPScreen> {
                                                             true) {
                                                           RegisterCubit.get(
                                                                   context)
-                                                              .sendOtp(widget
-                                                                  .mobileFromRegisterAccount!);
+                                                              .sendOtp(
+                                                            widget.mobileFromRegisterAccount!,
+                                                            countryCode: _countryCode,
+                                                          );
                                                         } else {
                                                           RegisterCubit.get(
                                                                   context)
                                                               .sendOtp(
-                                                                  mobileNoController
-                                                                      .text);
+                                                            mobileNoController.text,
+                                                            countryCode: _countryCode,
+                                                          );
                                                         }
                                                         setState(() {
                                                           isFinishTime = false;
@@ -442,10 +458,16 @@ class _OTPScreenState extends State<OTPScreen> {
           otp = pin;
           if (widget.ifFromRegisterAccount == true) {
             RegisterCubit.get(context).validateMobileNumber(
-                otp!, widget.mobileFromRegisterAccount!);
+              otp!,
+              widget.mobileFromRegisterAccount!,
+              countryCode: _countryCode,
+            );
           } else {
-            RegisterCubit.get(context)
-                .validateMobileNumber(otp!, mobileNoController.text);
+            RegisterCubit.get(context).validateMobileNumber(
+              otp!,
+              mobileNoController.text,
+              countryCode: _countryCode,
+            );
           }
         });
       },
@@ -463,45 +485,14 @@ class _OTPScreenState extends State<OTPScreen> {
 
   /// Section Widget
   Widget _buildUaeNumber(BuildContext context) {
-    var lang = Localizations.localeOf(context).languageCode;
-
-    return CustomTextFormField(
-      width: 97.h,
-      readOnly: true,
-      controller: televisionController,
-      hintText: lang == 'en' ? "+971" : "971+",
-      // filled: true,
-      prefix: lang == 'ar'
-          ? null
-          : Container(
-              margin: EdgeInsets.fromLTRB(10.h, 16, 9.h, 16),
-              child: CustomImageView(
-                imagePath: ImageConstant.imgTelevision,
-                height: 16.h,
-                width: 23.h,
-              ),
-            ),
-
-      suffix: lang == 'en'
-          ? null
-          : Container(
-              margin: EdgeInsets.fromLTRB(10.h, 16, 9.h, 16),
-              child: CustomImageView(
-                imagePath: ImageConstant.imgTelevision,
-                height: 16.h,
-                width: 23.h,
-              ),
-            ),
-      suffixConstraints: lang == 'en'
-          ? null
-          : BoxConstraints(
-              maxHeight: 48.h,
-            ),
-      prefixConstraints: lang == 'ar'
-          ? null
-          : BoxConstraints(
-              maxHeight: 48.h,
-            ),
+    return buildUaeNumber(
+      context,
+      initialSelection: '+$_countryCode',
+      onChanged: (code) {
+        setState(() {
+          _countryCode = code;
+        });
+      },
     );
   }
 
@@ -573,14 +564,14 @@ class _OTPScreenState extends State<OTPScreen> {
       timeTextStyle: const TextStyle(
           color: Colors.lightBlue,
           fontSize: 12,
-          fontFamily: 'Inter',
+          fontFamily: 'Cairo',
           fontWeight: FontWeight.bold,
           height: 0),
       colonsTextStyle:
       const TextStyle(
           color: Colors.lightBlue,
           fontSize: 16,
-          fontFamily: 'Inter',
+          fontFamily: 'Cairo',
           fontWeight:
           FontWeight.bold,
           height: 0),
@@ -614,7 +605,10 @@ class _OTPScreenState extends State<OTPScreen> {
                   if(!isStartTime){
 
                     RegisterCubit.get(context)
-                        .checkMobileExists(mobileNumber: mobileNoController.text);
+                        .checkMobileExists(
+                      mobileNumber: mobileNoController.text,
+                      countryCode: _countryCode,
+                    );
                     // setState(() {
                     //   isStartTime =true;
                     // });

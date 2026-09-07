@@ -163,7 +163,7 @@ class _MainCategoriesNewState extends State<MainCategoriesNew> {
         children: [
           const LbeenaSectionHeader(
             title: 'الأقسام',
-            icon: FontAwesomeIcons.grip,
+
             padding: EdgeInsets.fromLTRB(4, 4, 4, 10),
           ),
           GridView.builder(

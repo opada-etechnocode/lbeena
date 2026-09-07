@@ -27,6 +27,7 @@ class OTPInputWidget extends StatelessWidget {
       width: 52,
       height: 56,
       textStyle: TextStyle(
+        fontFamily: 'Cairo',
         fontSize: 22,
         fontWeight: FontWeight.w800,
         color: textColor,
@@ -52,6 +53,7 @@ class OTPInputWidget extends StatelessWidget {
         ),
         submittedPinTheme: defaultPinTheme.copyWith(
           textStyle: const TextStyle(
+            fontFamily: 'Cairo',
             fontSize: 22,
             fontWeight: FontWeight.w800,
             color: LbeenaColors.white,

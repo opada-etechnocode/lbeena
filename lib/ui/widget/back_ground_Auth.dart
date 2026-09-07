@@ -19,7 +19,7 @@ class BackGroundAuth extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 220.h,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -83,7 +83,7 @@ class BackGroundAuthNotAllScreen extends StatelessWidget {
       width: double.maxFinite,
       child: Container(
         height: 170.h,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,

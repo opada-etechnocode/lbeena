@@ -136,13 +136,17 @@ class AppFontWeight {
 }
 
 class AppFontStyle {
+  static const String family = 'Cairo';
+
   static TextStyle get normalTitle => TextStyle(
       color: Colors.black,
+      fontFamily: family,
       fontWeight: AppFontWeight.bold,
       fontSize: AppFontSize.fontSize_16);
 
   static TextStyle get formFieldStyle => TextStyle(
       color:  Colors.black,
+      fontFamily: family,
       fontWeight: AppFontWeight.regular,
       fontSize: AppFontSize.fontSize_13);
 

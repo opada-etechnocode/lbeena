@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../../widgets/components.dart';
+import '../../ui/theme/lbeena_colors.dart';
 import '../constants/app_consts.dart';
 
 
@@ -396,25 +397,39 @@ class SharedPrefs {
 
 
   getFontType() {
-    // return fontType.val ;
-    return 'Janna' ;
+    return 'Cairo';
   }
   setColorsApp({
     required String color1,
     required String color2,
     required String color3,
 }) {
-    // Brand colors come from the Lbeena logo, not the backend.
+    primaryColorApp.val = colorWithoutHashtag(color1);
+    secondaryColorApp.val = colorWithoutHashtag(color2);
+    thirdColorApp.val = colorWithoutHashtag(color3);
+    LbeenaColors.applyFromBackend(
+      color1: color1,
+      color2: color2,
+      color3: color3,
+    );
+  }
+
+  hydrateBrandColors() {
+    LbeenaColors.applyFromBackend(
+      color1: primaryColorApp.val,
+      color2: secondaryColorApp.val,
+      color3: thirdColorApp.val,
+    );
   }
 
   getBackGroundColorApp() {
     return 'F3F6F6';
   }
   getMainColorApp() {
-    return '1F6B66';
+    return primaryColorApp.val ?? '1F6B66';
   }
   getThirdColorApp() {
-    return 'F58220';
+    return thirdColorApp.val ?? 'F58220';
   }
 
   getIfUsersCanCreateAd() {

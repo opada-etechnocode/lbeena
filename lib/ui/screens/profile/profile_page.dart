@@ -17,6 +17,7 @@ import 'package:intl/intl.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_font.dart';
 import '../../../core/di/di_manager.dart';
+import '../../../core/utils/lbeena_phone_country.dart';
 import '../../../core/helper/snack_bar_helper.dart';
 import '../../../core/shared_prefs/shared_prefs.dart';
 import '../../../core/utils/image_constant.dart';
@@ -83,6 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   String? imageCompany;
   String? ratingUser = DIManager.findDep<SharedPrefs>().getRatingUser();
+  String _countryCode = LbeenaPhoneCountry.defaultCode;
 
   @override
   void initState() {
@@ -120,10 +122,10 @@ initPrint(){
       desc_user = state.profileUserModel.data!.user!.desc_user;
       decController.text = state.profileUserModel.data!.user!.desc_user??'';
 
-      String mobileNumberSubstring = state
-          .profileUserModel.data!.user!.mobile!
-          .substring(3);
       mobileNumber = state.profileUserModel.data!.user!.mobile!;
+      _countryCode = LbeenaPhoneCountry.detectFromFull(mobileNumber);
+      final mobileNumberSubstring =
+          LbeenaPhoneCountry.localFromFull(mobileNumber);
       mobileNoController.text = mobileNumberSubstring;
       mobileNumberUser = mobileNumberSubstring;
     }
@@ -148,6 +150,7 @@ initPrint(){
       if (state.checkMobileExistsModel.status == true) {
         ProfileCubit.get(context).sendOtp(
           mobileNoController.text,
+          countryCode: _countryCode,
         );
       } else {
         SnackBarHelper.mySnackBarError(
@@ -172,6 +175,7 @@ initPrint(){
         userName: namePersonController.text,
         mobileNumber: mobileNoController.text,
         desc_user: decController.text,
+        countryCode: _countryCode,
       );
     }
     if (state is LoadingEditProfileState) {
@@ -181,7 +185,9 @@ initPrint(){
       loaderButton = false;
       SnackBarHelper.mySnackBarSuccess(
           state.editProfileModel!.message, context);
-      DIManager.findDep<SharedPrefs>().setMobileNumber('971${mobileNoController.text}');
+      DIManager.findDep<SharedPrefs>().setMobileNumber(
+        LbeenaPhoneCountry.full(_countryCode, mobileNoController.text),
+      );
       DIManager.findDep<SharedPrefs>().setUserNamePerson(state.editProfileModel!.data!.userName);
     }
     if (state is ErrorEditProfileState) {
@@ -365,7 +371,7 @@ initPrint(){
                         .lightBlue,
                     fontSize: 12,
                     fontFamily:
-                    'Inter',
+                    'Cairo',
                     fontWeight:
                     FontWeight
                         .bold,
@@ -376,7 +382,7 @@ initPrint(){
                         .lightBlue,
                     fontSize: 16,
                     fontFamily:
-                    'Inter',
+                    'Cairo',
                     fontWeight:
                     FontWeight
                         .bold,
@@ -404,8 +410,9 @@ initPrint(){
                     ProfileCubit.get(
                         context)
                         .sendOtp(
-                        mobileNoController
-                            .text);
+                      mobileNoController.text,
+                      countryCode: _countryCode,
+                    );
                     setState(() {
                       isFinishTime =
                       false;
@@ -538,8 +545,11 @@ initPrint(){
         setState(() {
           otp = pin;
 
-          ProfileCubit.get(context)
-              .validateMobileNumber(otp!, mobileNoController.text);
+          ProfileCubit.get(context).validateMobileNumber(
+            otp!,
+            mobileNoController.text,
+            countryCode: _countryCode,
+          );
         });
       },
 
@@ -593,14 +603,30 @@ initPrint(){
               decoration: AppDecoration.outlineCyan.copyWith(
                 borderRadius: BorderRadiusStyle.circleBorder24,
               ),
-              child: buildUaeNumber(context),
+              child: buildUaeNumber(
+                context,
+                initialSelection: '+$_countryCode',
+                onChanged: (code) {
+                  setState(() {
+                    _countryCode = code;
+                  });
+                },
+              ),
             )
           ] else ...[
             Container(
               decoration: AppDecoration.outlineCyan.copyWith(
                 borderRadius: BorderRadiusStyle.circleBorder24,
               ),
-              child: buildUaeNumber(context),
+              child: buildUaeNumber(
+                context,
+                initialSelection: '+$_countryCode',
+                onChanged: (code) {
+                  setState(() {
+                    _countryCode = code;
+                  });
+                },
+              ),
             ),
             Container(
               decoration: AppDecoration.outlineCyan.copyWith(
@@ -630,16 +656,18 @@ initPrint(){
                   return ;
                 }
                 if (namePersonController.text == userName.toString() &&
-                    '971${mobileNoController.text}' ==
+                    LbeenaPhoneCountry.full(_countryCode, mobileNoController.text) ==
                         mobileNumber.toString() && desc_user == decController.text) {
                   SnackBarHelper.mySnackBarPending(
                       'لم تقم بإجراء أي تعديل ..', context);
                   return ;
                 }
 
-if('971${mobileNoController.text}' != mobileNumber.toString()){
+if(LbeenaPhoneCountry.full(_countryCode, mobileNoController.text) != mobileNumber.toString()){
   ProfileCubit.get(context).checkMobileExists(
-      mobileNumber: mobileNoController.text);
+      mobileNumber: mobileNoController.text,
+      countryCode: _countryCode,
+  );
   return;
 } else {
   ProfileCubit.get(context).editProfileInformation(

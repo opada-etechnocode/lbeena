@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../core/di/di_manager.dart';
+import '../../../../core/utils/lbeena_phone_country.dart';
 import '../../../../core/helper/snack_bar_helper.dart';
 import '../../../../core/shared_prefs/shared_prefs.dart';
 import '../../../../data/models/add_ad_new/category_model.dart';
@@ -52,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final FocusNode _secondFocusNode = FocusNode();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String _countryCode = LbeenaPhoneCountry.defaultCode;
   HomePageModel? homePageModel;
   CategoriesAddPostModel? categoriesMainModel;
   HomePageLoginModel? homePageData;
@@ -174,6 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           BlocProvider.of<RegisterCubit>(context)
                               .sendOtp(
                             mobileNoController.text,
+                            countryCode: _countryCode,
                           );
                           navigatorToPush(
                               context: context,
@@ -183,6 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 passwordFromRegisterA: passwordController.text,
                                 mobileFromRegisterAccount:
                                 mobileNoController.text,
+                                countryCode: _countryCode,
                               ));
 
                         }else{
@@ -253,7 +257,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               FocusScope.of(context).unfocus();
                               if (_formKey.currentState!.validate()) {
                                 LoginCubit.get(context).login(
-                                    '971${mobileNoController.text}', passwordController.text);
+                                    LbeenaPhoneCountry.full(
+                                      _countryCode,
+                                      mobileNoController.text,
+                                    ),
+                                    passwordController.text);
                               }
                             },
                           ),
@@ -344,7 +352,15 @@ class _LoginScreenState extends State<LoginScreen> {
           child: _buildMobileNo(context, focusNode),
         ),
         const SizedBox(width: 8),
-        buildUaeNumber(context),
+        buildUaeNumber(
+          context,
+          initialSelection: '+$_countryCode',
+          onChanged: (code) {
+            setState(() {
+              _countryCode = code;
+            });
+          },
+        ),
       ],
     );
   }
@@ -402,7 +418,7 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       child: Text(
         AppLocalizations.of(context)!.sign_up,
-        style: const TextStyle(
+        style: TextStyle(
           color: LbeenaColors.orange,
           fontWeight: FontWeight.w800,
           decoration: TextDecoration.underline,

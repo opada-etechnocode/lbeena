@@ -17,6 +17,7 @@ import 'core/utils/size_utils.dart';
 import 'package:flutter/services.dart';
 import 'general_app.dart';
 import 'package:syrians_in_uae/core/link_app.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -47,6 +48,7 @@ class _MyAppState extends State<MyApp> with LifecycleMixin  {
     initApp();
     initDeepLinks();
     goRouter;
+    DIManager.findDep<SharedPrefs>().hydrateBrandColors();
     if(Platform.isAndroid){
       // enableEdgeToEdge();
     }
@@ -179,6 +181,7 @@ Future<void> initDeepLinks() async {
                     
                     localizationsDelegates: const [
                       AppLocalizations.delegate,
+                      CountryLocalizations.delegate,
                       GlobalMaterialLocalizations.delegate,
                       GlobalWidgetsLocalizations.delegate,
                       GlobalCupertinoLocalizations.delegate,

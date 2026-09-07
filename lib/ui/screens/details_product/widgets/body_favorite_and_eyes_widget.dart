@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:syrians_in_uae/ui/theme/lbeena_colors.dart';
 
 import '../../../../core/utils/image_constant.dart';
 import '../../../../widgets/components.dart';
 import '../../../../widgets/custom_image_view.dart';
-import '../../../theme/app_decoration.dart';
-import '../../../theme/theme_helper.dart';
 
 class BodyFavoriteAndEyesWidget extends StatelessWidget {
    BodyFavoriteAndEyesWidget({super.key,required this.dataProduct, required this.showAds, this.counterFavorite, this.clicksShare, this.clicksChat, this.clicksWhatsapp});
@@ -26,15 +25,30 @@ final String? clicksWhatsapp;
       children: [
         Padding(
             padding:
-            EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
-            child: textNormal(text: 'إحصاءات:')),
+            EdgeInsets.symmetric(horizontal: 4.w, vertical: 8.h),
+            child: Row(
+              children: [
+                Container(
+                  width: 4,
+                  height: 18,
+                  decoration: BoxDecoration(
+                    color: LbeenaColors.orange,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                SizedBox(width: 8.w),
+                textNormal(
+                  text: 'إحصاءات',
+                  color: LbeenaColors.teal,
+                  fontWeight: FontWeight.w800,
+                ),
+              ],
+            )),
         Container(
-          // height: 88.h,
           width: MediaQuery.of(context).size.width,
-          // height: isIpad(context) ?  160.h:100.h,
-          decoration: AppDecoration.outlineWhiteB,
+          decoration: LbeenaColors.card,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(14.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -42,106 +56,86 @@ final String? clicksWhatsapp;
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
-                      children: [
-                        iconSvg(iconSvg: ImageConstant.iconEyes),
-                        SizedBox(
-                          width: 8.w,
-                        ),
-                        clicks == 0
-                            ? textNormal(
-                            text:
-                            '${int.parse(dataProduct.clicks ?? '0') + showAds}' ??
-                                '')
-                            : textNormal(text: '$clicks' ?? ''),
-                      ],
+                    _statItem(
+                      child: iconSvg(iconSvg: ImageConstant.iconEyes),
+                      value: clicks == 0
+                          ? '${int.parse(dataProduct.clicks ?? '0') + showAds}'
+                          : '$clicks',
                     ),
                     sizeWidthNormal(width: 10.w),
                     Container(
-                      height: 50.h,
-                      width: 4.w,
-                      color: appTheme.deepPurpleA10001.withOpacity(.3),
+                      height: 36.h,
+                      width: 1,
+                      color: LbeenaColors.fieldBorder,
                     ),
                     sizeWidthNormal(width: 10.w),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.favorite_border,
-                          color:  appTheme.deepPurpleA100,
-                          size: 25.sp,
-                        ),
-                        SizedBox(
-                          width: 8.w,
-                        ),
-                        counterFavorite == null
-                            ? textNormal(
-                            text: dataProduct.favoritesCount
-                                .toString() ??
-                                '0')
-                            : textNormal(
-                            text: counterFavorite.toString() ?? ''),
-                      ],
+                    _statItem(
+                      child: Icon(
+                        Icons.favorite_border,
+                        color: LbeenaColors.orange,
+                        size: 22.sp,
+                      ),
+                      value: counterFavorite == null
+                          ? dataProduct.favoritesCount.toString()
+                          : counterFavorite.toString(),
                     ),
                   ],
                 ),
                 Center(
                   child: Container(
-                    height: 4.h,
+                    margin: EdgeInsets.symmetric(vertical: 12.h),
+                    height: 1,
                     width: 200.w,
-                    color: appTheme.deepPurpleA10001.withOpacity(.3),
+                    color: LbeenaColors.fieldBorder,
                   ),
                 ),
-                sizeHeightNormal(height: 15.h),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
-                      children: [
-                        iconSvg(iconSvg: ImageConstant.imgShare),
-                        SizedBox(
-                          width: 8.w,
-                        ),
-                        textNormal(text: clicksShare!)
-                      ],
+                    _statItem(
+                      child: iconSvg(iconSvg: ImageConstant.imgShare),
+                      value: clicksShare ?? '0',
                     ),
-                    sizeWidthNormal(width: 25.w),
-                    Row(
-                      children: [
-                        CustomImageView(
-                          imagePath: ImageConstant.imgChats,
-                          height: 24.h,
-                          width: 24.h,
-                          color: appTheme.deepPurpleA100,
-                        ),
-                        SizedBox(
-                          width: 8.w,
-                        ),
-                        textNormal(
-                          text: clicksChat!,
-                        )
-                      ],
+                    sizeWidthNormal(width: 22.w),
+                    _statItem(
+                      child: CustomImageView(
+                        imagePath: ImageConstant.imgChats,
+                        height: 22.h,
+                        width: 22.h,
+                        color: LbeenaColors.teal,
+                      ),
+                      value: clicksChat ?? '0',
                     ),
-                    sizeWidthNormal(width: 25.w),
-                    Row(
-                      children: [
-                        CustomImageView(
-                          imagePath: ImageConstant.iconWhatsapp,
-                          height: 24.h,
-                          color: appTheme.deepPurpleA100,
-                          width: 24.h,
-                        ),
-                        SizedBox(
-                          width: 8.w,
-                        ),
-                        textNormal(text: clicksWhatsapp.toString() ?? ''),
-                      ],
+                    sizeWidthNormal(width: 22.w),
+                    _statItem(
+                      child: CustomImageView(
+                        imagePath: ImageConstant.iconWhatsapp,
+                        height: 22.h,
+                        color: LbeenaColors.orange,
+                        width: 22.h,
+                      ),
+                      value: clicksWhatsapp?.toString() ?? '0',
                     ),
                   ],
                 ),
               ],
             ),
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _statItem({required Widget child, required String value}) {
+    return Row(
+      children: [
+        child,
+        SizedBox(width: 8.w),
+        textNormal(
+          text: value,
+          color: LbeenaColors.black,
+          fontWeight: FontWeight.w700,
         ),
       ],
     );
