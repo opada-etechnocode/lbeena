@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:syrians_in_uae/ui/screens/search/search.dart';
 import 'package:syrians_in_uae/ui/screens/store/store_page.dart';
 
@@ -7,7 +6,6 @@ import '../../../../core/di/di_manager.dart';
 import '../../../../core/shared_prefs/shared_prefs.dart';
 import '../../../../core/utils/image_constant.dart';
 import '../../../../widgets/components.dart';
-import '../../../../widgets/lbeena_bottom_nav.dart';
 import '../../../theme/lbeena_colors.dart';
 import '../../auth/login/login_screen.dart';
 import '../../auth/login/model_home_page.dart';
@@ -158,42 +156,36 @@ class _MainCategoriesNewState extends State<MainCategoriesNew> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-      child: Column(
-        children: [
-          const LbeenaSectionHeader(
-            title: 'الأقسام',
-
-            padding: EdgeInsets.fromLTRB(4, 4, 4, 10),
-          ),
-          GridView.builder(
-            shrinkWrap: true,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              mainAxisExtent: 98,
-              crossAxisCount: 4,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 8,
-            ),
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.zero,
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              final category = categories[index];
-              return buildCategory(
-                imagePath: category["imagePath"] as String,
-                color: LbeenaColors.teal,
-                text: category["text"] as String,
-                onTap: () {
-                  if (category["onTap"] is Function(BuildContext, dynamic)) {
-                    category["onTap"](context, widget);
-                  } else {
-                    category["onTap"](context);
-                  }
-                },
-              );
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      child: GridView.builder(
+        shrinkWrap: true,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          mainAxisExtent: 78,
+          crossAxisCount: 6,
+          mainAxisSpacing: 6,
+          crossAxisSpacing: 4,
+        ),
+        physics: const NeverScrollableScrollPhysics(),
+        padding: EdgeInsets.zero,
+        itemCount: categories.length,
+        itemBuilder: (context, index) {
+          final category = categories[index];
+          return buildCategory(
+            imagePath: category["imagePath"] as String,
+            color: LbeenaColors.teal,
+            text: category["text"] as String,
+            tileSize: 40,
+            iconSize: 22,
+            fontSize: 9,
+            onTap: () {
+              if (category["onTap"] is Function(BuildContext, dynamic)) {
+                category["onTap"](context, widget);
+              } else {
+                category["onTap"](context);
+              }
             },
-          ),
-        ],
+          );
+        },
       ),
     );
   }

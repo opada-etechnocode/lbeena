@@ -38,6 +38,7 @@ import '../../../data/models/parts_voice/common.dart';
 import 'package:syrians_in_uae/core/link_app.dart';
 
 import '../../../widgets/smart_refresh_widget.dart';
+import '../../../widgets/user_image_profile.dart';
 import '../../app_general_bloc/handel_android_app.dart';
 import '../auth/login/login_screen.dart';
 import '../chats/chat_messages_ad.dart';
@@ -594,21 +595,24 @@ class _CommunityPageState extends State<CommunityPage>
                 right: 7.w,
                 top: 11.h,
                 child: CustomImageView(
-                  imagePath: DIManager.findDep<SharedPrefs>()
-                          .getImageProfile()
-                          .toString()
-                          .contains('http')
-                      ? DIManager.findDep<SharedPrefs>()
-                          .getImageProfile()
-                          .toString()
-                      : AppEndpoints.baseUrlWithoutApi +
-                          DIManager.findDep<SharedPrefs>()
+                  imagePath: isEmptyProfileImage(
+                          DIManager.findDep<SharedPrefs>().getImageProfile())
+                      ? ImageConstant.imgPerson
+                      : DIManager.findDep<SharedPrefs>()
                               .getImageProfile()
-                              .toString(),
+                              .toString()
+                              .contains('http')
+                          ? DIManager.findDep<SharedPrefs>()
+                              .getImageProfile()
+                              .toString()
+                          : AppEndpoints.baseUrlWithoutApi +
+                              DIManager.findDep<SharedPrefs>()
+                                  .getImageProfile()
+                                  .toString(),
                   height: 26.h,
                   width: 26.h,
                   radius: BorderRadius.circular(900.r),
-                  fit: BoxFit.fill,
+                  fit: BoxFit.cover,
                   placeHolder: ImageConstant.imgPerson,
                 ),
               ),

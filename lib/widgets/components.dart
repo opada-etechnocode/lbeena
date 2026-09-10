@@ -496,6 +496,9 @@ Widget buildCategory({
   required String text,
   Color? color,
   bool isScrollerCard = false,
+  double tileSize = 56,
+  double iconSize = 30,
+  double fontSize = 12,
 }) {
   final accent = color ?? LbeenaColors.teal;
   final isDark = DIManager.findDep<SharedPrefs>().getThemeApp() == 'd';
@@ -574,32 +577,32 @@ Widget buildCategory({
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          height: 56,
-          width: 56,
+          height: tileSize,
+          width: tileSize,
           decoration: BoxDecoration(
             color: isDark ? LbeenaColors.cardDark : LbeenaColors.iconTile,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(14),
           ),
           child: Center(
             child: icon != null
-                ? FaIcon(icon, size: 24, color: accent)
+                ? FaIcon(icon, size: iconSize * 0.8, color: accent)
                 : CustomImageView(
                     imagePath: imagePath,
-                    height: 30,
-                    width: 30,
+                    height: iconSize,
+                    width: iconSize,
                     fit: BoxFit.contain,
                     color: accent,
                   ),
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: tileSize < 50 ? 4 : 8),
         Text(
           text,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
           style: TextStyle(
-            fontSize: 12,
+            fontSize: fontSize,
             fontWeight: FontWeight.w700,
             color: appTheme.black900,
           ),

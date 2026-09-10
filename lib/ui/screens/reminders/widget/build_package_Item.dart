@@ -86,7 +86,7 @@ class BuildPackageItem extends StatelessWidget {
                   imagePath: data.remind_others ==1 ? ImageConstant.iconWhatsapp: ImageConstant.imgPerson,
                   width:data.remind_others ==1 ? 18.w:  15.w,
                   height:data.remind_others ==1 ? 18.w: 15.w,
-                  color: appTheme.deepPurpleA10001,
+                  color: data.remind_others ==1 ? appTheme.deepPurpleA10001 : null,
                   fit: BoxFit.fill,
                 ),
               ],

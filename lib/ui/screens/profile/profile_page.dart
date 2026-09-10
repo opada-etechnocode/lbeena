@@ -37,6 +37,7 @@ import '../../../widgets/custom_image_view.dart';
 import '../../../widgets/custom_text_form_field.dart';
 import '../../../widgets/loader_for_page.dart';
 import '../../../widgets/otp_widegt.dart';
+import '../../../widgets/user_image_profile.dart';
 import '../../theme/app_decoration.dart';
 import '../../theme/theme_helper.dart';
 import '../../widget/url_webview.dart';
@@ -469,11 +470,12 @@ initPrint(){
                         //     ImageConstant.imgLogoWhite13,),
                         child:
                         CustomImageView(
-                          imagePath: imageCompany.toString().contains('http')? imageCompany
-                              .toString():AppEndpoints
-                              .baseUrlWithoutApi +
-                              imageCompany
-                                  .toString(),
+                          imagePath: isEmptyProfileImage(imageCompany)
+                              ? ImageConstant.imgPerson
+                              : imageCompany.toString().contains('http')
+                                  ? imageCompany.toString()
+                                  : AppEndpoints.baseUrlWithoutApi +
+                                      imageCompany.toString(),
                           width: 60.h,
                           height: 60.h,
                           alignment:
@@ -483,7 +485,7 @@ initPrint(){
                           BorderRadius
                               .circular(
                               30.h),
-                          fit: BoxFit.fill,
+                          fit: BoxFit.cover,
                           placeHolder:
                           ImageConstant
                               .imgPerson,

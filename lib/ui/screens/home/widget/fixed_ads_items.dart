@@ -97,12 +97,11 @@ class _FixedAdsItemsState extends State<FixedAdsItems> {
                                   child:widget.dataProductItem?.company.isEmpty ?Container(): widget.dataProductItem?.company[0].profilePic.toString() == 'null'
                                       ? CustomImageView(
                                     imagePath:ImageConstant.imgPerson,
-                                    height: 24,
-                                    width: 24,
+                                    height: 30,
+                                    width: 30,
                                     radius: BorderRadiusStyle.circleBorder20,
                                     alignment: Alignment.center,
-                                    // fit: BoxFit.cover,
-                                    color: LbeenaColors.teal,
+                                    fit: BoxFit.cover,
                                     placeHolder: ImageConstant.imgPerson,
                                   )
                                       : CustomImageView(

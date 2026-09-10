@@ -200,7 +200,7 @@ class _CommentsPostScreenState extends State<CommentsPostScreen> {
                                 BorderRadius.circular(
                                     900.r),
                                 placeHolder: ImageConstant
-                                    .imgCompanyD,
+                                    .imgPerson,
                               ),
                             ),
                             sizeWidthNormal(),
@@ -962,7 +962,7 @@ CommunityCubit.get(context).sendNotification(userId: commentsList[index]
                                                             BorderRadius.circular(
                                                                 900.r),
                                                         placeHolder: ImageConstant
-                                                            .imgCompanyD,
+                                                            .imgPerson,
                                                       ),
                                                     ),
                                                     sizeWidthNormal(),

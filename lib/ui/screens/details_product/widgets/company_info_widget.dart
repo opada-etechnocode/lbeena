@@ -44,12 +44,11 @@ class CompanyInfoWidget extends StatelessWidget {
               child: company[0].profilePic.toString() == 'null'
                   ? CustomImageView(
                 imagePath:ImageConstant.imgPerson,
-                height: 40.h,
-                width: 40.h,
+                height: 52.h,
+                width: 52.h,
                 radius: BorderRadiusStyle.roundedBorder60,
                 alignment: Alignment.center,
-                color: LbeenaColors.teal,
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               )
                   : CustomImageView(
                 imagePath:

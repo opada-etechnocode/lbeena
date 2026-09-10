@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:syrians_in_uae/core/utils/endpoints.dart';
 import 'package:syrians_in_uae/core/utils/image_constant.dart';
@@ -30,12 +31,13 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   @override
   void initState() {
     _initFirebaseMessaging();
     super.initState();
-    // _navigateToNextScreen();
+    _splashShownAt = DateTime.now();
+    _splashBackground = LbeenaColors.splashStart;
   }
 
   final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
@@ -63,18 +65,34 @@ class _SplashScreenState extends State<SplashScreen>
   HomePageModel? homePageModel;
   CategoriesAddPostModel? categoriesMainModel;
   HomePageModel? adsRandomModel;
-  late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
+  AnimationController? _controller;
+  Animation<double>? _fadeAnimation;
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
   String? appWord;
   bool isAppUnderMaintenance = false;
   bool isLoading = true;
+  Color _splashBackground = LbeenaColors.splashStart;
+  DateTime? _splashShownAt;
+
+  void _applyBackendSplashColor() {
+    if (!mounted) return;
+    final shownAt = _splashShownAt ?? DateTime.now();
+    final elapsed = DateTime.now().difference(shownAt).inMilliseconds;
+    const minGreenMs = 800;
+    final wait = (minGreenMs - elapsed).clamp(0, minGreenMs);
+    Future.delayed(Duration(milliseconds: wait), () {
+      if (!mounted) return;
+      setState(() {
+        _splashBackground = LbeenaColors.teal;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -116,13 +134,13 @@ class _SplashScreenState extends State<SplashScreen>
 
             // إعداد تأثير التلاشي
             _fadeAnimation = CurvedAnimation(
-              parent: _controller,
+              parent: _controller!,
               curve: Curves.easeIn,
             );
 
             // بدء الحركة بعد انتهاء الكتابة
             Future.delayed(Duration(milliseconds: 100), () {
-              _controller.forward();
+              _controller?.forward();
             });
             isLoading = false;
 
@@ -171,14 +189,18 @@ class _SplashScreenState extends State<SplashScreen>
               color3: state.colorAppModel?.data?.color3 ?? '',
             );
             context.read<ThemAppCubit>().refreshBrandColors();
-            setState(() {});
+            _applyBackendSplashColor();
           }
 
         },
         builder: (context, state) {
           return HandelAndroidApp(
-            child: Scaffold(
-              backgroundColor: LbeenaColors.teal,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 700),
+              curve: Curves.easeInOut,
+              color: _splashBackground,
+              child: Scaffold(
+              backgroundColor: Colors.transparent,
               body: SafeArea(
                 child: Column(
                   children: [
@@ -191,7 +213,9 @@ class _SplashScreenState extends State<SplashScreen>
                         height: 220.fSize,
                       ),
                     ),
-                    sizeHeightNormal(height: 24.h),
+                    sizeHeightNormal(height: 20.h),
+                    const Center(child: _SplashSloganText()),
+                    sizeHeightNormal(height: 20.h),
                     if (isLoading)
                       SizedBox(
                         width: 22.w,
@@ -201,9 +225,9 @@ class _SplashScreenState extends State<SplashScreen>
                           color: LbeenaColors.orange,
                         ),
                       )
-                    else
+                    else if (_fadeAnimation != null)
                       FadeTransition(
-                        opacity: _fadeAnimation,
+                        opacity: _fadeAnimation!,
                         child: Text(
                           appWord ?? 'لبينا',
                           textAlign: TextAlign.center,
@@ -223,9 +247,105 @@ class _SplashScreenState extends State<SplashScreen>
                   ],
                 ),
               ),
-            )
+            ),
+            ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _SplashSloganText extends StatefulWidget {
+  const _SplashSloganText();
+
+  @override
+  State<_SplashSloganText> createState() => _SplashSloganTextState();
+}
+
+class _SplashSloganTextState extends State<_SplashSloganText>
+    with SingleTickerProviderStateMixin {
+  static const _slogan = 'إعلانك يبدأ من هنا';
+
+  late final AnimationController _gradient;
+
+  @override
+  void initState() {
+    super.initState();
+    _gradient = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 2400),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _gradient.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final style = TextStyle(
+      fontSize: 18.fSize,
+      fontWeight: FontWeight.w700,
+      color: LbeenaColors.white,
+      fontFamily: 'Cairo',
+      letterSpacing: 0.5,
+      height: 1.3,
+    );
+    final painter = TextPainter(
+      text: TextSpan(text: '$_slogan|', style: style),
+      textDirection: TextDirection.rtl,
+      textAlign: TextAlign.center,
+      maxLines: 1,
+    )..layout();
+
+    return SizedBox(
+      height: 40.h,
+      width: painter.width,
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: AnimatedBuilder(
+          animation: _gradient,
+          builder: (context, child) {
+            return ShaderMask(
+              blendMode: BlendMode.srcIn,
+              shaderCallback: (bounds) {
+                final t = _gradient.value;
+                return LinearGradient(
+                  begin: Alignment(1.4 - 2.8 * t, 0),
+                  end: Alignment(-1.4 - 2.8 * t, 0),
+                  colors: [
+                    LbeenaColors.white,
+                    LbeenaColors.orange,
+                    LbeenaColors.white,
+                    LbeenaColors.orange,
+                    LbeenaColors.white,
+                  ],
+                  stops: const [0.0, 0.25, 0.5, 0.75, 1.0],
+                ).createShader(Offset.zero & bounds.size);
+              },
+              child: child,
+            );
+          },
+          child: DefaultTextStyle(
+            style: style,
+            child: AnimatedTextKit(
+              animatedTexts: [
+                TypewriterAnimatedText(
+                  _slogan,
+                  textAlign: TextAlign.center,
+                  speed: const Duration(milliseconds: 90),
+                  cursor: '|',
+                ),
+              ],
+              isRepeatingAnimation: false,
+              totalRepeatCount: 1,
+              displayFullTextOnTap: false,
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -207,9 +207,6 @@ class _UserCardWidgetState extends State<UserCardWidget> {
                     alignment: Alignment.center,
                     radius: BorderRadius.circular(30),
                     fit: BoxFit.cover,
-                    color: widget.data.profilePic.toString() == 'null'
-                        ? appTheme.greenColor
-                        : null,
                     placeHolder: ImageConstant.imgPerson,
                   ),
                 ),

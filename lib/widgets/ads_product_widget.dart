@@ -96,11 +96,11 @@ class _AdsProductWidgetState extends State<AdsProductWidget> {
                                   'null'
                               ? CustomImageView(
                                   imagePath: ImageConstant.imgPerson,
-                                  height: 20,
-                                  width: 20,
+                                  height: 38,
+                                  width: 38,
                                   radius: BorderRadiusStyle.circleBorder20,
                                   alignment: Alignment.center,
-                                  color: LbeenaColors.teal,
+                                  fit: BoxFit.cover,
                                   placeHolder: ImageConstant.imgPerson,
                                 )
                               : CustomImageView(

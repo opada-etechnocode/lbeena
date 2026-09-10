@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -36,7 +38,9 @@ class LbeenaBottomNav extends StatelessWidget {
     final isRtl = Directionality.of(context) == TextDirection.rtl;
     final isDark = DIManager.findDep<SharedPrefs>().getThemeApp() == 'd';
     final screenWidth = MediaQuery.sizeOf(context).width;
-    final barWidth = (screenWidth - 28).clamp(300.0, 560.0);
+    final barWidth = (screenWidth - 12).clamp(320.0, 620.0);
+    final media = MediaQuery.of(context);
+    final iOSBottomPad = media.padding.bottom > 0 ? 10.0 : 4.0;
 
     if (DIManager.findDep<SharedPrefs>().getToken() != null) {
       chatBloc.getNotifications(
@@ -84,7 +88,13 @@ class LbeenaBottomNav extends StatelessWidget {
             final logicalIndex = _selectToGlass[selectScreen] ?? 2;
             final barIndex = isRtl ? items.length - 1 - logicalIndex : logicalIndex;
 
-            return Directionality(
+            return MediaQuery(
+              data: media.copyWith(
+                padding: media.padding.copyWith(
+                  bottom: Platform.isIOS ? iOSBottomPad : media.padding.bottom,
+                ),
+              ),
+              child: Directionality(
               textDirection: TextDirection.ltr,
               child: LiquidGlassTabBar.withImpeller(
                 items: barItems,
@@ -96,7 +106,7 @@ class LbeenaBottomNav extends StatelessWidget {
                 width: barWidth,
                 height: barHeight,
                 itemPadding: 4,
-                margin: const EdgeInsets.only(bottom: 8),
+                margin: EdgeInsets.only(bottom: Platform.isIOS ? 0 : 8),
                 style: LiquidGlassTabBar.defaultStyle.copyWith(
                   shape: LiquidGlassShape.continuousRoundedRectangle(
                     cornerRadius: barHeight / 2,
@@ -153,6 +163,7 @@ class LbeenaBottomNav extends StatelessWidget {
                     ),
                   ),
                 ),
+              ),
               ),
             );
           },

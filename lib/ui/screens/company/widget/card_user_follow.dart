@@ -43,9 +43,8 @@ class UserCardFollowing extends StatelessWidget {
                         ? CustomImageView(
                             width: 35.r,
                             height: 35.r,
-                            color: appTheme.greenColor,
                             alignment: Alignment.center,
-                            fit: BoxFit.contain,
+                            fit: BoxFit.cover,
                             radius: BorderRadius.circular(30.h),
                             imagePath: ImageConstant.imgPerson,
                           )

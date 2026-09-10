@@ -28,7 +28,7 @@ class ImageConstant {
   static String imgShare = '$imagePath/share_icons.svg';
   static String videoICon = '$imagePath/video_icons.svg';
   static String iconVisa= '$imagePath/visa_icons.png';
-  static String imgSettings = '$imagePath/person_user.svg';
+  static String imgSettings = '$imagePath/person_user.png';
   static String imgNotification = '$imagePath/notification_icons.svg';
   static String notificationSettingIcon = '$iconsPath/notification_setting_icon.svg';
   static String imgSearchDeepPurpleA10001 = '$imagePath/search_icons.svg';
@@ -36,7 +36,7 @@ class ImageConstant {
   static String imgTelevision = '$imagePath/uae_icons.svg';
   static String imgMinimize = '$imagePath/phone_icons.svg';
   static String imgTrue = '$imagePath/true_icons.svg';
-  static String imgPerson = '$imagePath/person_user.svg';
+  static String imgPerson = '$imagePath/person_user.png';
   static String imgAgain = '$imagePath/again_icons.svg';
   static String imgLocation = '$imagePath/lock_icons.svg';
   static String imgChats = '$imagePath/chats_icons.svg';

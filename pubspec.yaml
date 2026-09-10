@@ -39,7 +39,7 @@ dependencies:
   dio: ^5.8.0+1
   bloc: ^9.0.0
   flutter_bloc: ^9.1.0
-  animated_text_kit: ^4.2.2
+  animated_text_kit: ^4.3.0
 #  package_info_plus:
   crypto:
 #  equatable: ^2.0.3

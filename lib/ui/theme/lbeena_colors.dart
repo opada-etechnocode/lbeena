@@ -14,6 +14,7 @@ class LbeenaColors {
   static const Color _fallbackOrangeDeep = Color(0xFFE56A1A);
   static const Color _fallbackTeal = Color(0xFF1F6B66);
   static const Color _fallbackTealDark = Color(0xFF164E4A);
+  static const Color splashStart = Color(0xFF183B4E);
 
   static Color _orange = _fallbackOrange;
   static Color _orangeDeep = _fallbackOrangeDeep;
@@ -24,6 +25,7 @@ class LbeenaColors {
   static Color get orangeDeep => _orangeDeep;
   static Color get teal => _teal;
   static Color get tealDark => _tealDark;
+  static Color get fallbackTeal => _fallbackTeal;
 
   static const Color black = Color(0xFF0D0D0D);
   static const Color surfaceDark = Color(0xFF161616);

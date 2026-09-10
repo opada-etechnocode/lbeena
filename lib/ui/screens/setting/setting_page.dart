@@ -287,9 +287,6 @@ class _SettingPageState extends State<SettingPage> {
               child: CustomImageView(
                 imagePath: image,
                 fit: BoxFit.cover,
-                color: rawImage.isEmpty || rawImage == 'null'
-                    ? LbeenaColors.white
-                    : null,
               ),
             ),
           ),

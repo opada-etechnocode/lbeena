@@ -697,9 +697,6 @@ searchCompanyController.clear();
                         child: CustomImageView(
                           imagePath: image,
                           fit: BoxFit.cover,
-                          color: data.profilePic.toString() == 'null'
-                              ? LbeenaColors.teal
-                              : null,
                         ),
                       ),
                     ),

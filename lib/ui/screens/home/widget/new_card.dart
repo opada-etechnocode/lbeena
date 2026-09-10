@@ -119,13 +119,12 @@ class _FixedAdsItemsState extends State<FixedAdsItems> {
                                       ? CustomImageView(
                                     imagePath:
                                     ImageConstant.imgPerson,
-                                    height: 24,
-                                    width: 24,
+                                    height: 30,
+                                    width: 30,
                                     radius: BorderRadiusStyle
                                         .circleBorder20,
                                     alignment: Alignment.center,
-                                    // fit: BoxFit.cover,
-                                    color: appTheme.greenColor,
+                                    fit: BoxFit.cover,
                                     placeHolder:
                                     ImageConstant.imgPerson,
                                   )

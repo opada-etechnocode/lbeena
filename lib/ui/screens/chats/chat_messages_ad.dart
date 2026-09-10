@@ -408,7 +408,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage>
                                     '${AppEndpoints.baseUrlWithoutApi}'
                                     ? CustomImageView(
                                   imagePath: ImageConstant.imgPerson,
-                                  fit: BoxFit.contain,
+                                  fit: BoxFit.cover,
                                   height: 30.fSize,
                                   width: 30.fSize,
                                 )
@@ -428,8 +428,8 @@ class _ChatMessagesPageState extends State<ChatMessagesPage>
                                     widget.dataMessage?.imageUser ==
                                         '${AppEndpoints.baseUrlWithoutApi}null' || widget.dataMessage?.imageUser.toString()=='https://www.syriansinuae.com'|| widget.dataMessage?.imageUser.toString()=='https://syriansinuae.com'
                                     ? CustomImageView(
-                                  imagePath: ImageConstant.imgCompanyD,
-                                  fit: BoxFit.contain,
+                                  imagePath: ImageConstant.imgPerson,
+                                  fit: BoxFit.cover,
                                   height: 30.fSize,
                                   width: 30.fSize,
                                 )
@@ -507,7 +507,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage>
                                     '${AppEndpoints.baseUrlWithoutApi}'
                                     ? CustomImageView(
                                   imagePath: ImageConstant.imgPerson,
-                                  fit: BoxFit.contain,
+                                  fit: BoxFit.cover,
                                   height: 30.fSize,
                                   width: 30.fSize,
                                 )
@@ -527,8 +527,8 @@ class _ChatMessagesPageState extends State<ChatMessagesPage>
                                     widget.dataMessage?.imageUser ==
                                         '${AppEndpoints.baseUrlWithoutApi}null' || widget.dataMessage?.imageUser.toString()=='https://www.syriansinuae.com'|| widget.dataMessage?.imageUser.toString()=='https://syriansinuae.com'
                                     ? CustomImageView(
-                                  imagePath: ImageConstant.imgCompanyD,
-                                  fit: BoxFit.contain,
+                                  imagePath: ImageConstant.imgPerson,
+                                  fit: BoxFit.cover,
                                   height: 30.fSize,
                                   width: 30.fSize,
                                 )
@@ -612,7 +612,7 @@ class _ChatMessagesPageState extends State<ChatMessagesPage>
                               '${AppEndpoints.baseUrlWithoutApi}'
                               ? CustomImageView(
                             imagePath: ImageConstant.imgPerson,
-                            fit: BoxFit.contain,
+                            fit: BoxFit.cover,
                             height: 30.fSize,
                             width: 30.fSize,
                           )
@@ -632,8 +632,8 @@ class _ChatMessagesPageState extends State<ChatMessagesPage>
                               widget.dataMessage?.imageUser ==
                                   '${AppEndpoints.baseUrlWithoutApi}null' || widget.dataMessage?.imageUser.toString()=='https://www.syriansinuae.com'|| widget.dataMessage?.imageUser.toString()=='https://syriansinuae.com'
                               ? CustomImageView(
-                            imagePath: ImageConstant.imgCompanyD,
-                            fit: BoxFit.contain,
+                            imagePath: ImageConstant.imgPerson,
+                            fit: BoxFit.cover,
                             height: 30.fSize,
                             width: 30.fSize,
                           )
