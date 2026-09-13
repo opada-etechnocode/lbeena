@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:syrians_in_uae/core/utils/image_constant.dart';
 import 'package:syrians_in_uae/core/utils/size_utils.dart';
 import 'package:get/get.dart';
 import 'package:record/record.dart';
@@ -30,7 +29,9 @@ import '../../../data/models/chats/data_massage_model.dart';
 import '../../../data/models/chats/message_model.dart';
 import '../../../core/utils/endpoints.dart';
 import '../../../widgets/components.dart';
+import '../../../widgets/lbeena_chat_ui.dart';
 import '../../../widgets/message_avis_widget.dart';
+import '../../theme/lbeena_colors.dart';
 import '../../app_general_bloc/handel_android_app.dart';
 import '../../theme/app_decoration.dart';
 import '../community/post_screen.dart';
@@ -338,6 +339,35 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
   String? userId = DIManager.findDep<SharedPrefs>().getUserID();
   List deviceTokenUser = [];
 
+  void _leaveChat() {
+    Navigator.pop(context);
+    APIs.updateStatusUser(userStatus: 'resumed');
+  }
+
+  String _chatPeerName() {
+    return userId == widget.dataMessage!.user_id.toString()
+        ? widget.dataMessage!.nameOwnerAds.toString()
+        : widget.dataMessage!.user_name_person_sender.toString();
+  }
+
+  String _chatPeerImage() {
+    return lbeenaChatPeerImage(
+      viewingAsOwner: userId == widget.dataMessage!.user_id.toString(),
+      companyImage: widget.dataMessage?.imageCompany?.toString(),
+      userImage: widget.dataMessage?.imageUser?.toString(),
+    );
+  }
+
+  Widget _chatPeerBar({required String subtitle, required bool isOnline}) {
+    return LbeenaChatPeerBar(
+      onBack: _leaveChat,
+      imagePath: _chatPeerImage(),
+      name: _chatPeerName(),
+      subtitle: subtitle,
+      isOnline: isOnline,
+    );
+  }
+
   Map<String, List<DataMassageModel>> groupMessagesByDate(
       List<DataMassageModel> messages) {
     Map<String, List<DataMassageModel>> groupedMessages = {};
@@ -367,8 +397,14 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
       child: HandelAndroidApp(
         child: Scaffold(
           resizeToAvoidBottomInset: true,
+          backgroundColor: LbeenaColors.lightBg,
           appBar: AppBar(
-            backgroundColor: appTheme.scaffoldBackgroundColor100,
+            backgroundColor: LbeenaColors.teal,
+            foregroundColor: LbeenaColors.white,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            centerTitle: false,
+            titleSpacing: 0,
             leading: SizedBox(),
             title: Builder(builder: (context) {
               // APIs.updateStatusUser(userStatus: statusUser);
@@ -390,278 +426,25 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                       if (snapshot.data.data()!['userStatus'] == 'resumed' ||
                           snapshot.data.data()!['userStatus'] == 'inChatPage') {
                         // APIs.updateStatusUser(userStatus: statusUser);
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.arrow_back_ios),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                APIs.updateStatusUser(userStatus: 'resumed');
-                              },
-                            ),
-                            if (userId == widget.dataMessage!.user_id.toString()) ...[
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(25.sp),
-                                // Adjust the border radius as needed
-                                child: widget.dataMessage?.imageCompany.toString() == 'null' ||
-                                    widget.dataMessage?.imageCompany.toString() ==
-                                        '${AppEndpoints.baseUrlWithoutApi}null' || widget.dataMessage?.imageCompany.toString() ==
-                                    '${AppEndpoints.baseUrlImageFirebase}null'|| widget.dataMessage?.imageCompany.toString() ==
-                                    '${AppEndpoints.baseUrlWithoutApi}'
-                                    ? CustomImageView(
-                                  imagePath: ImageConstant.imgPerson,
-                                  fit: BoxFit.cover,
-                                  height: 30.fSize,
-                                  width: 30.fSize,
-                                )
-                                    : CustomImageView(
-                                  imagePath:
-                                  widget.dataMessage!.imageCompany.toString(),
-                                  fit: BoxFit.cover,
-                                  height: 30.fSize,
-                                  width: 30.fSize,
-                                ),
-                              ),
-                            ] else ...[
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(25.sp),
-                                // Adjust the border radius as needed
-                                child: widget.dataMessage?.imageUser == null ||
-                                    widget.dataMessage?.imageUser ==
-                                        '${AppEndpoints.baseUrlWithoutApi}null' || widget.dataMessage?.imageUser.toString()=='https://www.syriansinuae.com'|| widget.dataMessage?.imageUser.toString()=='https://syriansinuae.com'
-                                    ? CustomImageView(
-                                  imagePath: ImageConstant.imgPerson,
-                                  fit: BoxFit.cover,
-                                  height: 30.fSize,
-                                  width: 30.fSize,
-                                )
-                                    : CustomImageView(
-                                  imagePath:
-                                  widget.dataMessage!.imageUser.toString(),
-                                  fit: BoxFit.cover,
-                                  height: 30.fSize,
-                                  width: 30.fSize,
-                                ),
-                              ),
-                            ],
-                            SizedBox(width: 7.w), // Space between image and text
-                            Padding(
-                              padding: const EdgeInsets.only(top: 5),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    userId ==
-                                        widget.dataMessage!.user_id.toString()
-                                        ? widget.dataMessage!.nameOwnerAds
-                                        .toString()
-                                        : widget
-                                        .dataMessage!.user_name_person_sender
-                                        .toString(),
-                                    style: themeLite.textTheme.titleSmall,
-                                  ),
-
-                                  sizeHeightNormal(height: 2.h),
-                                  //اخر ظهور
-                                  textNormal(
-                                    text: 'متصل الآن',
-                                    fontSize: AppFontSize.fontSize_10,
-                                    color: appTheme.black900,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            sizeWidthNormal(),
-                            Padding(
-                              padding: EdgeInsets.only(top: 7.h),
-                              child: Container(
-                                width: 10.w,
-                                height: 10.h,
-                                decoration: BoxDecoration(
-                                  color: Colors.green,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            )
-                          ],
+                        return _chatPeerBar(
+                          subtitle: 'متصل الآن',
+                          isOnline: true,
                         );
                       } else {
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.arrow_back_ios),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                APIs.updateStatusUser(userStatus: 'resumed');
-                              },
-                            ),
-                            if (userId == widget.dataMessage!.user_id.toString()) ...[
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(25.sp),
-                                // Adjust the border radius as needed
-                                child: widget.dataMessage?.imageCompany.toString() == 'null' ||
-                                    widget.dataMessage?.imageCompany.toString() ==
-                                        '${AppEndpoints.baseUrlWithoutApi}null' || widget.dataMessage?.imageCompany.toString() ==
-                                    '${AppEndpoints.baseUrlImageFirebase}null'|| widget.dataMessage?.imageCompany.toString() ==
-                                    '${AppEndpoints.baseUrlWithoutApi}'
-                                    ? CustomImageView(
-                                  imagePath: ImageConstant.imgPerson,
-                                  fit: BoxFit.cover,
-                                  height: 30.fSize,
-                                  width: 30.fSize,
-                                )
-                                    : CustomImageView(
-                                  imagePath:
-                                  widget.dataMessage!.imageCompany.toString(),
-                                  fit: BoxFit.cover,
-                                  height: 30.fSize,
-                                  width: 30.fSize,
-                                ),
-                              ),
-                            ] else ...[
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(25.sp),
-                                // Adjust the border radius as needed
-                                child: widget.dataMessage?.imageUser == null ||
-                                    widget.dataMessage?.imageUser ==
-                                        '${AppEndpoints.baseUrlWithoutApi}null' || widget.dataMessage?.imageUser.toString()=='https://www.syriansinuae.com'|| widget.dataMessage?.imageUser.toString()=='https://syriansinuae.com'
-                                    ? CustomImageView(
-                                  imagePath: ImageConstant.imgPerson,
-                                  fit: BoxFit.cover,
-                                  height: 30.fSize,
-                                  width: 30.fSize,
-                                )
-                                    : CustomImageView(
-                                  imagePath:
-                                  widget.dataMessage!.imageUser.toString(),
-                                  fit: BoxFit.cover,
-                                  height: 30.h,
-                                  width: 30.h,
-                                ),
-                              ),
-                            ],
-                            SizedBox(width: 7.w), // Space between image and text
-                            Padding(
-                              padding: EdgeInsets.only(top: 5.h),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    userId ==
-                                        widget.dataMessage!.user_id.toString()
-                                        ? widget.dataMessage!.nameOwnerAds
-                                        .toString()
-                                        : widget
-                                        .dataMessage!.user_name_person_sender
-                                        .toString(),
-                                    style: themeLite.textTheme.titleSmall,
-                                  ),
-                                  sizeHeightNormal(height: 2.h),
-                                  //اخر ظهور
-                                  textNormal(
-                                    text: (snapshot.data.data()!['userStatus'])
-                                        .toString()
-                                        .isDateTime
-                                        ? 'آخر ظهور: ${DateFormat('hh:mm a').format(DateTime.parse(snapshot.data.data()!['userStatus']))}'
-                                        : '',
-                                    fontSize: AppFontSize.fontSize_10,
-                                    color: Colors.grey,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            sizeWidthNormal(),
-                            Padding(
-                              padding: EdgeInsets.only(top: 7.h),
-                              child: Container(
-                                width: 10.w,
-                                height: 10.h,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                            )
-                          ],
+                        final status = snapshot.data.data()!['userStatus'].toString();
+                        return _chatPeerBar(
+                          subtitle: status.isDateTime
+                              ? 'آخر ظهور: ${DateFormat('hh:mm a').format(DateTime.parse(status))}'
+                              : '',
+                          isOnline: false,
                         );
                       }
                     }
                   }
 
-                  return Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.arrow_back_ios),
-                        onPressed: () {
-                          Navigator.pop(context);
-                          APIs.updateStatusUser(userStatus: 'resumed');
-                        },
-                      ),
-                      if (userId == widget.dataMessage!.user_id.toString()) ...[
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(25.sp),
-                          // Adjust the border radius as needed
-                          child: widget.dataMessage?.imageCompany.toString() == 'null' ||
-                              widget.dataMessage?.imageCompany.toString() ==
-                                  '${AppEndpoints.baseUrlWithoutApi}null' || widget.dataMessage?.imageCompany.toString() ==
-                              '${AppEndpoints.baseUrlImageFirebase}null'|| widget.dataMessage?.imageCompany.toString() ==
-                              '${AppEndpoints.baseUrlWithoutApi}'
-                              ? CustomImageView(
-                            imagePath: ImageConstant.imgPerson,
-                            fit: BoxFit.cover,
-                            height: 30.h,
-                            width: 30.h,
-                          )
-                              : CustomImageView(
-                            imagePath:
-                            widget.dataMessage!.imageCompany.toString(),
-                            fit: BoxFit.cover,
-                            height: 30.h,
-                            width: 30.h,
-                          ),
-                        ),
-                      ] else ...[
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(25.sp),
-                          // Adjust the border radius as needed
-                          child: widget.dataMessage?.imageUser == null ||
-                              widget.dataMessage?.imageUser ==
-                                  '${AppEndpoints.baseUrlWithoutApi}null' || widget.dataMessage?.imageUser.toString()=='https://www.syriansinuae.com'|| widget.dataMessage?.imageUser.toString()=='https://syriansinuae.com'
-                              ? CustomImageView(
-                            imagePath: ImageConstant.imgPerson,
-                            fit: BoxFit.cover,
-                            height: 30.h,
-                            width: 30.h,
-                          )
-                              : CustomImageView(
-                            imagePath:
-                            widget.dataMessage!.imageUser.toString(),
-                            fit: BoxFit.cover,
-                            height: 30.h,
-                            width: 30.h,
-                          ),
-                        ),
-                      ],
-                      SizedBox(width: 7.w), // Space between image and text
-                      Padding(
-                        padding: const EdgeInsets.only(top: 5),
-                        child: Text(
-                          userId == widget.dataMessage!.user_id.toString()
-                              ? widget.dataMessage!.nameOwnerAds.toString()
-                              : widget.dataMessage!.user_name_person_sender
-                              .toString(),
-                          style: themeLite.textTheme.titleSmall,
-                        ),
-                      ),
-                    ],
+                  return _chatPeerBar(
+                    subtitle: '',
+                    isOnline: false,
                   );
                 },
               );
@@ -1059,9 +842,7 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                           //input field & buttons
                           !_isRecordingForTextFormFiled
                               ? Expanded(
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.r)),
+                            child: LbeenaChatComposerBox(
                               child: Row(
                                 children: [
                                   sizeWidthNormal(),
@@ -1079,12 +860,11 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                         onChanged: (newValue) {
                                           textValueNotifier.value = newValue;
                                         },
-                                        style: TextStyle(color: Colors.black),
-                                        decoration: const InputDecoration(
-                                            hintText: 'ارسل',
-                                            hintStyle: TextStyle(
-                                                color: Colors.blueAccent),
-                                            border: InputBorder.none),
+                                        style: const TextStyle(
+                                          color: LbeenaColors.black,
+                                          fontFamily: 'Cairo',
+                                        ),
+                                        decoration: lbeenaChatInputDecoration(),
                                       )),
 
                                   //pick image from gallery button
@@ -1113,9 +893,7 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                           massage: 'صورة',
                                         );
                                       },
-                                      icon: Icon(Icons.image,
-                                          color: Colors.blueAccent,
-                                          size: 22.r)),
+                                      icon: const LbeenaChatFieldIcon.gallery()),
 
                                   //take image from camera button
                                   IconButton(
@@ -1141,9 +919,7 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                           );
                                         }
                                       },
-                                      icon: Icon(Icons.camera_alt_rounded,
-                                          color: Colors.blueAccent,
-                                          size: 24.r)),
+                                      icon: const LbeenaChatFieldIcon.camera()),
 
                                   //adding some space
                                   SizedBox(width: 6.w),
@@ -1209,21 +985,15 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                     onTap: isPlaying
                                         ? playRecording
                                         : stopPlaying,
-                                    child: Icon(
-                                      isPlaying
-                                          ? Icons.play_arrow
-                                          : Icons.stop,
-                                      color: appTheme.black900,
-                                    ),
+                                    child: isPlaying
+                                        ? const LbeenaChatFieldIcon.play()
+                                        : const LbeenaChatFieldIcon.stop(),
                                   ),
                                   InkWell(
                                     onTap: () {
                                       restartPlay();
                                     },
-                                    child: Icon(
-                                      Icons.delete,
-                                      color: appTheme.black900,
-                                    ),
+                                    child: const LbeenaChatFieldIcon.trash(),
                                   ),
                                 ],
                               ),
@@ -1263,18 +1033,15 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                 left: 10.w),
                             shape: const CircleBorder(),
                             color: _isDoneRecording
-                                ? Colors.green
+                                ? LbeenaColors.orange
                                 : _isRecording
                                 ? Colors.red
-                                : Colors.green,
-                            child: Icon(
-                                _isDoneRecording
-                                    ? Icons.send
-                                    : _isRecording
-                                    ? Icons.mic
-                                    : Icons.mic_none,
-                                color: Colors.white,
-                                size: 28.r),
+                                : LbeenaColors.orange,
+                            child: _isDoneRecording
+                                ? const LbeenaChatFieldIcon.send()
+                                : _isRecording
+                                    ? const LbeenaChatFieldIcon.micActive()
+                                    : const LbeenaChatFieldIcon.mic(),
                           )
                               : MaterialButton(
                             onPressed: () {
@@ -1376,9 +1143,8 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                 right: 10.w,
                                 left: 10.w),
                             shape: const CircleBorder(),
-                            color: Colors.green,
-                            child: Icon(Icons.send,
-                                color: Colors.white, size: 28.r),
+                            color: LbeenaColors.orange,
+                            child: const LbeenaChatFieldIcon.send(),
                           )
                         ],
                       ),
@@ -1392,9 +1158,7 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                           //input field & buttons
                           !_isRecordingForTextFormFiled
                               ? Expanded(
-                            child: Card(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.r)),
+                            child: LbeenaChatComposerBox(
                               child: Row(
                                 children: [
                                   sizeWidthNormal(),
@@ -1415,12 +1179,11 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                         onChanged: (newValue) {
                                           textValueNotifier.value = newValue;
                                         },
-                                        style: TextStyle(color: Colors.black),
-                                        decoration: const InputDecoration(
-                                            hintText: 'ارسل',
-                                            hintStyle: TextStyle(
-                                                color: Colors.blueAccent),
-                                            border: InputBorder.none),
+                                        style: const TextStyle(
+                                          color: LbeenaColors.black,
+                                          fontFamily: 'Cairo',
+                                        ),
+                                        decoration: lbeenaChatInputDecoration(),
                                       )),
 
                                   //pick image from gallery button
@@ -1447,9 +1210,7 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                         }
 
                                       },
-                                      icon: Icon(Icons.image,
-                                          color: Colors.blueAccent,
-                                          size: 22.r)),
+                                      icon: const LbeenaChatFieldIcon.gallery()),
 
                                   //take image from camera button
                                   IconButton(
@@ -1472,9 +1233,7 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                               File(image.path));
                                         }
                                       },
-                                      icon: Icon(Icons.camera_alt_rounded,
-                                          color: Colors.blueAccent,
-                                          size: 24.r)),
+                                      icon: const LbeenaChatFieldIcon.camera()),
 
                                   //adding some space
                                   SizedBox(width: 6.w),
@@ -1538,21 +1297,15 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                   onTap: isPlaying
                                       ? playRecording
                                       : stopPlaying,
-                                  child: Icon(
-                                    isPlaying
-                                        ? Icons.play_arrow
-                                        : Icons.stop,
-                                    color: appTheme.black900,
-                                  ),
+                                  child: isPlaying
+                                      ? const LbeenaChatFieldIcon.play()
+                                      : const LbeenaChatFieldIcon.stop(),
                                 ),
                                 InkWell(
                                   onTap: () {
                                     restartPlay();
                                   },
-                                  child: Icon(
-                                    Icons.delete,
-                                    color: appTheme.black900,
-                                  ),
+                                  child: const LbeenaChatFieldIcon.trash(),
                                 ),
                               ],
                             ),
@@ -1587,18 +1340,15 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                 left: 10.w),
                             shape: const CircleBorder(),
                             color: _isDoneRecording
-                                ? Colors.green
+                                ? LbeenaColors.orange
                                 : _isRecording
                                 ? Colors.red
-                                : Colors.green,
-                            child: Icon(
-                                _isDoneRecording
-                                    ? Icons.send
-                                    : _isRecording
-                                    ? Icons.mic
-                                    : Icons.mic_none,
-                                color: Colors.white,
-                                size: 28.fSize),
+                                : LbeenaColors.orange,
+                            child: _isDoneRecording
+                                ? const LbeenaChatFieldIcon.send()
+                                : _isRecording
+                                    ? const LbeenaChatFieldIcon.micActive()
+                                    : const LbeenaChatFieldIcon.mic(),
                           )
                               : MaterialButton(
                             onPressed: () {
@@ -1713,9 +1463,8 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                 right: 10.w,
                                 left: 10.w),
                             shape: const CircleBorder(),
-                            color: Colors.green,
-                            child: Icon(Icons.send,
-                                color: Colors.white, size: 28.fSize),
+                            color: LbeenaColors.orange,
+                            child: const LbeenaChatFieldIcon.send(),
                           )
                         ],
                       ),
@@ -1731,9 +1480,7 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                     //input field & buttons
                     !_isRecordingForTextFormFiled
                         ? Expanded(
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15.r)),
+                      child: LbeenaChatComposerBox(
                         child: Row(
                           children: [
                             sizeWidthNormal(),
@@ -1754,12 +1501,11 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                   onChanged: (newValue) {
                                     textValueNotifier.value = newValue;
                                   },
-                                  style: TextStyle(color: Colors.black),
-                                  decoration: const InputDecoration(
-                                      hintText: 'ارسل',
-                                      hintStyle:
-                                      TextStyle(color: Colors.blueAccent),
-                                      border: InputBorder.none),
+                                  style: const TextStyle(
+                                    color: LbeenaColors.black,
+                                    fontFamily: 'Cairo',
+                                  ),
+                                  decoration: lbeenaChatInputDecoration(),
                                 )),
 
                             //pick image from gallery button
@@ -1784,9 +1530,7 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                     massage: 'صورة',
                                   );
                                 },
-                                icon: Icon(Icons.image,
-                                    color: Colors.blueAccent,
-                                    size: AppFontSize.fontSize_22)),
+                                icon: const LbeenaChatFieldIcon.gallery()),
 
                             //take image from camera button
                             IconButton(
@@ -1808,9 +1552,7 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                                     massage: 'صورة',
                                   );
                                 },
-                                icon: Icon(Icons.camera_alt_rounded,
-                                    color: Colors.blueAccent,
-                                    size: 24.fSize)),
+                                icon: const LbeenaChatFieldIcon.camera()),
 
                             //adding some space
                             SizedBox(width: 6.w),
@@ -1864,19 +1606,15 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                           sizeWidthNormal(),
                           InkWell(
                             onTap: isPlaying ? playRecording : stopPlaying,
-                            child: Icon(
-                              isPlaying ? Icons.play_arrow : Icons.stop,
-                              color: appTheme.black900,
-                            ),
+                            child: isPlaying
+                                ? const LbeenaChatFieldIcon.play()
+                                : const LbeenaChatFieldIcon.stop(),
                           ),
                           InkWell(
                             onTap: () {
                               restartPlay();
                             },
-                            child: Icon(
-                              Icons.delete,
-                              color: appTheme.black900,
-                            ),
+                            child: const LbeenaChatFieldIcon.trash(),
                           ),
                         ],
                       ),
@@ -1911,18 +1649,15 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                           top: 10.h, bottom: 10.h, right: 10.w, left: 10.w),
                       shape: const CircleBorder(),
                       color: _isDoneRecording
-                          ? Colors.green
+                          ? LbeenaColors.orange
                           : _isRecording
                           ? Colors.red
-                          : Colors.green,
-                      child: Icon(
-                          _isDoneRecording
-                              ? Icons.send
-                              : _isRecording
-                              ? Icons.mic
-                              : Icons.mic_none,
-                          color: Colors.white,
-                          size: 28.fSize),
+                          : LbeenaColors.orange,
+                      child: _isDoneRecording
+                          ? const LbeenaChatFieldIcon.send()
+                          : _isRecording
+                              ? const LbeenaChatFieldIcon.micActive()
+                              : const LbeenaChatFieldIcon.mic(),
                     )
                         : MaterialButton(
                       onPressed: () {
@@ -2011,9 +1746,8 @@ class _ChatMessagesPostState extends State<ChatMessagesPost>
                       padding: EdgeInsets.only(
                           top: 10.h, bottom: 10.h, right: 10.w, left: 10.w),
                       shape: const CircleBorder(),
-                      color: Colors.green,
-                      child: Icon(Icons.send,
-                          color: Colors.white, size: 28.fSize),
+                      color: LbeenaColors.orange,
+                      child: const LbeenaChatFieldIcon.send(),
                     )
                   ],
                 ),

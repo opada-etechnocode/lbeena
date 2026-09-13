@@ -3,31 +3,26 @@ class LbeenaPhoneCountry {
 
   static const String defaultCode = '963';
   static const String defaultSelection = '+963';
+  static const String phoneHint = '****0999';
+
+  /// Only these countries appear in the picker.
+  static const List<String> allowedIsoCodes = [
+    'SY',
+    'AE',
+    'SA',
+    'IQ',
+    'JO',
+    'LB',
+    'EG',
+    'QA',
+    'KW',
+    'BH',
+    'OM',
+  ];
 
   /// Pinned at the top of the country dialog. Syria first.
   static const List<String> favorites = [
-    '+963',
     'SY',
-    '+971',
-    'AE',
-    '+966',
-    'SA',
-    '+964',
-    'IQ',
-    '+962',
-    'JO',
-    '+961',
-    'LB',
-    '+20',
-    'EG',
-    '+974',
-    'QA',
-    '+965',
-    'KW',
-    '+973',
-    'BH',
-    '+968',
-    'OM',
   ];
 
   static const List<String> _knownCodes = [

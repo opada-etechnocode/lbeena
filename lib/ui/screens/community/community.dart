@@ -47,6 +47,7 @@ import '../../../widgets/components.dart';
 import '../../../widgets/custom_text_form_field.dart';
 import '../../../widgets/file_compress.dart';
 import '../../theme/app_decoration.dart';
+import '../../theme/lbeena_colors.dart';
 import 'cubit/community_cubit.dart';
 import 'hashtag_screen.dart';
 import 'list_coummunity.dart';
@@ -471,6 +472,25 @@ class _CommunityPageState extends State<CommunityPage>
                         return SearchPostScreen();
                       }));
                     }),
+                floatingActionButton: FloatingActionButton.extended(
+                  onPressed: () {
+                    if (DIManager.findDep<SharedPrefs>().getToken() == null) {
+                      navigatorToPush(
+                        context: context,
+                        pageName: LoginScreen(isNeedIconBac: true),
+                      );
+                      return;
+                    }
+                    _focusNode.requestFocus();
+                  },
+                  backgroundColor: LbeenaColors.orange,
+                  foregroundColor: LbeenaColors.white,
+                  icon: const Icon(Icons.edit_rounded),
+                  label: const Text(
+                    'رفع بوست',
+                    style: TextStyle(fontWeight: FontWeight.w800),
+                  ),
+                ),
                 body: SmartRefreshWidget(
                   onRefresh: () {
                     refreshPage(context, state);

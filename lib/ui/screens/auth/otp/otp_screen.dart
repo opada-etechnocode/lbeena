@@ -502,7 +502,7 @@ class _OTPScreenState extends State<OTPScreen> {
     return CustomTextFormField(
       width: 208.h,
       controller: mobileNoController,
-      hintText: "504501535",isMobile: true,
+      hintText: LbeenaPhoneCountry.phoneHint,isMobile: true,
       autofocus: false,
       // alignment: Alignment.center,
       textInputAction: TextInputAction.done,

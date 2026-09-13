@@ -15,6 +15,7 @@ import 'package:syrians_in_uae/widgets/components.dart';
 import 'package:syrians_in_uae/widgets/custom_elevated_button.dart';
 import '../../../core/di/di_manager.dart';
 import '../../../core/shared_prefs/shared_prefs.dart';
+import '../../../core/utils/lbeena_menu.dart';
 import '../../../data/models/add_ad_new/cities_model.dart';
 import '../../../data/models/ugc/ugc_category_model.dart';
 import '../../../data/models/ugc/ugc_users_model.dart';
@@ -138,6 +139,7 @@ class _UGCUsersPageState extends State<UGCUsersPage>
                                             horizontal: 5.w),
                                         child: PopupMenuButton<Cities>(
                                           color: appTheme.whiteA700,
+                                          constraints: LbeenaMenu.constraints,
                                           onSelected: (Cities newValue) {
                                             setState(() {
                                               selectedEmirate = newValue.title;
@@ -178,7 +180,7 @@ class _UGCUsersPageState extends State<UGCUsersPage>
                                               children: [
                                                 Text(
                                                   selectedEmirate ??
-                                                      "اختر الإمارة",
+                                                      "اختر المحافظة",
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .displaySmall!

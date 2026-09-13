@@ -19,6 +19,7 @@ import '../../../../core/di/di_manager.dart';
 import '../../../../core/helper/snack_bar_helper.dart';
 import '../../../../core/shared_prefs/shared_prefs.dart';
 import '../../../../core/utils/endpoints.dart';
+import '../../../../core/utils/lbeena_menu.dart';
 import '../../../../core/utils/media_permission.dart';
 import '../../../../core/utils/image_constant.dart';
 import '../../../../data/models/add_ad_new/category_model.dart';
@@ -302,6 +303,7 @@ class _CreatePostState extends State<CreatePost> {
                               padding: EdgeInsets.symmetric(horizontal: 5.w),
                               child: PopupMenuButton<Cities>(
                                 color: appTheme.whiteA700,
+                                constraints: LbeenaMenu.constraints,
                                 onSelected: (Cities newValue) {
                                   setState(() {
                                     selectedEmara = newValue.title;
@@ -333,7 +335,7 @@ class _CreatePostState extends State<CreatePost> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(selectedEmara ?? "اختر الإمارة",
+                                      Text(selectedEmara ?? "اختر المحافظة",
                                           style: Theme.of(context)
                                               .textTheme
                                               .displaySmall),

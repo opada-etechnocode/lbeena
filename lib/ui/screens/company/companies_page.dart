@@ -2,6 +2,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:syrians_in_uae/core/constants/app_font.dart';
 import 'package:syrians_in_uae/core/utils/endpoints.dart';
+import 'package:syrians_in_uae/core/utils/lbeena_menu.dart';
 import 'package:syrians_in_uae/core/utils/image_constant.dart';
 import 'package:syrians_in_uae/core/utils/size_utils.dart';
 import 'package:syrians_in_uae/data/models/company/company_model.dart';
@@ -335,6 +336,7 @@ class _CompaniesPageState extends State<CompaniesPage>with AutomaticKeepAliveCli
                           Expanded(
                             child: PopupMenuButton<Cities>(
                               color: appTheme.whiteA700,
+                              constraints: LbeenaMenu.constraints,
                               onSelected: (Cities newValue) {
                                 setState(() {
                                   selectedEmara = newValue.title;
@@ -353,7 +355,7 @@ class _CompaniesPageState extends State<CompaniesPage>with AutomaticKeepAliveCli
                               },
                               child: _filterPill(
                                 icon: FontAwesomeIcons.locationDot,
-                                label: selectedEmara ?? 'المدينة',
+                                label: selectedEmara ?? 'المحافظة',
                               ),
                             ),
                           ),

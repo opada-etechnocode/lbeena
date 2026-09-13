@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:syrians_in_uae/core/constants/app_font.dart';
 import 'package:syrians_in_uae/core/helper/snack_bar_helper.dart';
 import 'package:syrians_in_uae/core/utils/image_constant.dart';
+import 'package:syrians_in_uae/core/utils/lbeena_menu.dart';
 import 'package:syrians_in_uae/data/models/profile_company/information_company.dart';
 import 'package:syrians_in_uae/core/utils/endpoints.dart';
 import 'package:syrians_in_uae/ui/screens/auth/register/cubit/cubit.dart';
@@ -765,9 +766,10 @@ bool isNotChange =false;
             filled: true,
             fillColor: appTheme.lightBlue100,
           ),
-          validator: (value) => value == null ? "يجب أن تختار إمارة" : null,
+          validator: (value) => value == null ? "يجب أن تختار محافظة" : null,
           dropdownColor: appTheme.lightBlue100,
-          hint: textNormal(text: 'الإمارة'),
+          menuMaxHeight: LbeenaMenu.maxHeight,
+          hint: textNormal(text: 'المحافظة'),
           value: selectedCountry??'',
           focusNode: focusNode,
           onChanged: (String? newValue) {

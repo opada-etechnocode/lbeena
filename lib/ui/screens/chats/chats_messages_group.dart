@@ -32,7 +32,9 @@ import '../../../data/models/chats/data_massage_model.dart';
 import '../../../data/models/chats/message_model.dart';
 import '../../../core/utils/endpoints.dart';
 import '../../../widgets/components.dart';
+import '../../../widgets/lbeena_chat_ui.dart';
 import '../../../widgets/message_avis_widget.dart';
+import '../../theme/lbeena_colors.dart';
 import '../../app_general_bloc/handel_android_app.dart';
 import '../../theme/app_decoration.dart';
 import '../details_product/details_product.dart';
@@ -362,55 +364,43 @@ class _ChatMessagesGroupState extends State<ChatMessagesGroup>
     // print('statusUser: $statusUser');
 
     return HandelAndroidApp(
-      child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          backgroundColor: appTheme.scaffoldBackgroundColor100,
-          leading: SizedBox(),
-          title: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                onPressed: () {
-                  Navigator.pop(context);
-                  APIs.updateStatusUser(userStatus: 'resumed');
-                },
-              ),
-
-              SizedBox(width: 7.w), // Space between image and text
-              InkWell(
-                onTap: (){
-      Navigator.of(context).push(MaterialPageRoute(builder: (context){
-        return ChatDetailsGroup(
-          dataMessage: ArgumentMessageGroup(
-      groupName: widget.dataMessage!.groupName.toString(),
-      adminId: widget.dataMessage!.adminId.toString(),
-      groupId: widget.dataMessage!.groupId .toString(),),
-        );
-      }));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10,bottom: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                    Container(
-                    width: 240.w,
-                    child: textNormal(text:
-                        widget.dataMessage!.groupName.toString(),
-                        // style: themeLite.textTheme.titleSmall,
-                      ),)
-                    ],
-                  ),
-                ),
-              ),
-            ],
+        child: Scaffold(
+          resizeToAvoidBottomInset: true,
+          backgroundColor: LbeenaColors.lightBg,
+          appBar: AppBar(
+            backgroundColor: LbeenaColors.teal,
+            foregroundColor: LbeenaColors.white,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            centerTitle: false,
+            titleSpacing: 0,
+            leading: const SizedBox(),
+            title: LbeenaChatPeerBar(
+              onBack: () {
+                Navigator.pop(context);
+                APIs.updateStatusUser(userStatus: 'resumed');
+              },
+              imagePath: widget.dataMessage?.userGroups?['groupImage'] == null ||
+                      widget.dataMessage?.userGroups?['groupImage'] == 'defaultImage'
+                  ? ImageConstant.groupImage
+                  : widget.dataMessage!.userGroups!['groupImage'].toString(),
+              name: widget.dataMessage!.groupName.toString(),
+              subtitle: 'اضغط لعرض تفاصيل المجموعة',
+              showStatus: false,
+              onTitleTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                  return ChatDetailsGroup(
+                    dataMessage: ArgumentMessageGroup(
+                      groupName: widget.dataMessage!.groupName.toString(),
+                      adminId: widget.dataMessage!.adminId.toString(),
+                      groupId: widget.dataMessage!.groupId.toString(),
+                    ),
+                  );
+                }));
+              },
+            ),
+            leadingWidth: 0.w,
           ),
-          leadingWidth: 0.w,
-        ),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -615,9 +605,7 @@ class _ChatMessagesGroupState extends State<ChatMessagesGroup>
                 //input field & buttons
                 !_isRecordingForTextFormFiled
                     ? Expanded(
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.r)),
+                        child: LbeenaChatComposerBox(
                           child: Row(
                             children: [
                               sizeWidthNormal(),
@@ -638,12 +626,11 @@ class _ChatMessagesGroupState extends State<ChatMessagesGroup>
                                 onChanged: (newValue) {
                                   textValueNotifier.value = newValue;
                                 },
-                                style: TextStyle(color: Colors.black),
-                                decoration: const InputDecoration(
-                                    hintText: 'ارسل',
-                                    hintStyle:
-                                        TextStyle(color: Colors.blueAccent),
-                                    border: InputBorder.none),
+                                style: const TextStyle(
+                                  color: LbeenaColors.black,
+                                  fontFamily: 'Cairo',
+                                ),
+                                decoration: lbeenaChatInputDecoration(),
                               )),
 
                               //pick image from gallery button
@@ -668,9 +655,7 @@ class _ChatMessagesGroupState extends State<ChatMessagesGroup>
                                       massage: 'صورة',
                                     );
                                   },
-                                  icon: Icon(Icons.image,
-                                      color: Colors.blueAccent,
-                                      size: AppFontSize.fontSize_22)),
+                                  icon: const LbeenaChatFieldIcon.gallery()),
 
                               //take image from camera button
                               IconButton(
@@ -692,9 +677,7 @@ class _ChatMessagesGroupState extends State<ChatMessagesGroup>
                                       massage: 'صورة',
                                     );
                                   },
-                                  icon: Icon(Icons.camera_alt_rounded,
-                                      color: Colors.blueAccent,
-                                      size: 24.fSize)),
+                                  icon: const LbeenaChatFieldIcon.camera()),
 
                               //adding some space
                               SizedBox(width: 6.w),
@@ -754,19 +737,15 @@ class _ChatMessagesGroupState extends State<ChatMessagesGroup>
                                         await stopPlaying();
                                       }
                                     },
-                                    child: Icon(
-                                      isPlaying ? Icons.play_arrow : Icons.stop,
-                                      color: appTheme.black900,
-                                    ),
+                                    child: isPlaying
+                                        ? const LbeenaChatFieldIcon.play()
+                                        : const LbeenaChatFieldIcon.stop(),
                                   ),
                                   InkWell(
                                     onTap: () async {
                                       await restartPlay();
                                     },
-                                    child: Icon(
-                                      Icons.delete,
-                                      color: appTheme.black900,
-                                    ),
+                                    child: const LbeenaChatFieldIcon.trash(),
                                   ),
                                 ],
                               ),
@@ -803,18 +782,15 @@ class _ChatMessagesGroupState extends State<ChatMessagesGroup>
                             top: 10.h, bottom: 10.h, right: 10.w, left: 10.w),
                         shape: const CircleBorder(),
                         color: _isDoneRecording
-                            ? Colors.green
+                            ? LbeenaColors.orange
                             : _isRecording
                                 ? Colors.red
-                                : Colors.green,
-                        child: Icon(
-                            _isDoneRecording
-                                ? Icons.send
-                                : _isRecording
-                                    ? Icons.mic
-                                    : Icons.mic_none,
-                            color: Colors.white,
-                            size: 28.fSize),
+                                : LbeenaColors.orange,
+                        child: _isDoneRecording
+                            ? const LbeenaChatFieldIcon.send()
+                            : _isRecording
+                                ? const LbeenaChatFieldIcon.micActive()
+                                : const LbeenaChatFieldIcon.mic(),
                       )
                     : MaterialButton(
                         onPressed: () {
@@ -844,9 +820,8 @@ class _ChatMessagesGroupState extends State<ChatMessagesGroup>
                         padding: EdgeInsets.only(
                             top: 10.h, bottom: 10.h, right: 10.w, left: 10.w),
                         shape: const CircleBorder(),
-                        color: Colors.green,
-                        child: Icon(Icons.send,
-                            color: Colors.white, size: 28.fSize),
+                        color: LbeenaColors.orange,
+                        child: const LbeenaChatFieldIcon.send(),
                       )
               ],
             ),

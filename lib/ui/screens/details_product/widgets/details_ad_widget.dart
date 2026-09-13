@@ -24,6 +24,7 @@ import '../../../../core/helper/snack_bar_helper.dart';
 import '../../../../core/shared_prefs/shared_prefs.dart';
 import '../../../../core/utils/endpoints.dart';
 import '../../../../core/utils/image_constant.dart';
+import '../../../../core/utils/lbeena_phone_country.dart';
 import '../../../../data/models/chats/message_model.dart';
 import '../../../../widgets/components.dart';
 import '../../../../widgets/custom_elevated_button.dart';
@@ -1664,7 +1665,7 @@ class _DetailsAdWidgetState extends State<DetailsAdWidget> {
                     fillColor: appTheme.whiteA700,
                     focusNode: _thirdFocusNode1,
                     hintText: (widget.mobileNumber == '000' || widget.mobileNumber == 'null')
-                        ? "504501535"
+                        ? LbeenaPhoneCountry.phoneHint
                         : newString,
                     autofocus: false,
                     isMobile: true,

@@ -7,8 +7,6 @@ import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:syrians_in_uae/core/di/di_manager.dart';
 import 'package:syrians_in_uae/core/link_app.dart';
 import 'package:syrians_in_uae/core/shared_prefs/shared_prefs.dart';
-import 'package:syrians_in_uae/ui/screens/cart/cubit/cart_cubit.dart';
-import 'package:syrians_in_uae/ui/screens/cart/cubit/cart_state.dart';
 import 'package:syrians_in_uae/ui/screens/chats/cubit/cubit.dart';
 import 'package:syrians_in_uae/ui/screens/chats/cubit/states.dart';
 import 'package:syrians_in_uae/ui/theme/lbeena_colors.dart';
@@ -21,15 +19,15 @@ class LbeenaBottomNav extends StatelessWidget {
     required this.chatBloc,
   });
 
-  /// `-1` home, `0` cart, `1` chats, `2` settings, `3` directory.
+  /// `-1` home, `1` chats, `2` settings, `3` directory, `4` create ad.
   final int selectScreen;
   final ValueChanged<int> onSelect;
   final ChatCubitFirebase chatBloc;
 
   static const double barHeight = 62;
 
-  static const _selectToGlass = {-1: 2, 1: 1, 0: 3, 2: 0, 3: 4};
-  static const _glassToSelect = [2, 1, -1, 0, 3];
+  static const _selectToGlass = {-1: 0, 1: 1, 4: 2, 3: 3, 2: 4};
+  static const _glassToSelect = [-1, 1, 4, 3, 2];
 
   @override
   Widget build(BuildContext context) {
@@ -48,20 +46,17 @@ class LbeenaBottomNav extends StatelessWidget {
       );
     }
 
-    return BlocBuilder<CartCubit, CartState>(
-      builder: (context, _) {
-        return BlocConsumer<ChatCubitFirebase, ChatStateFirebase>(
+    return BlocConsumer<ChatCubitFirebase, ChatStateFirebase>(
           bloc: chatBloc,
           listener: (context, state) {},
           builder: (context, state) {
             final chatCount = chatBloc.notification.length;
-            final cartCount = CartCubit.get(context).lengthListCart;
             final ink = isDark ? LbeenaColors.white : const Color(0xFF121215);
 
             final items = <LiquidGlassTabBarItem>[
               _glassTab(
-                icon: Icons.settings_rounded,
-                label: l10n.settings,
+                icon: Icons.home_rounded,
+                label: isAr ? 'الرئيسية' : 'Home',
               ),
               _glassTab(
                 icon: Icons.chat_rounded,
@@ -70,22 +65,20 @@ class LbeenaBottomNav extends StatelessWidget {
                 badge: chatCount,
               ),
               _glassTab(
-                icon: Icons.home_rounded,
-                label: isAr ? 'الرئيسية' : 'Home',
-              ),
-              _glassTab(
-                icon: Icons.shopping_bag_outlined,
-                selectedIcon: Icons.shopping_bag_rounded,
-                label: isAr ? 'السلة' : 'Cart',
-                badge: cartCount,
+                icon: Icons.add_box_rounded,
+                label: isAr ? 'رفع إعلان' : 'Post ad',
               ),
               _glassTab(
                 icon: Icons.menu_book_rounded,
                 label: isAr ? 'الدليل' : 'Directory',
               ),
+              _glassTab(
+                icon: Icons.settings_rounded,
+                label: l10n.settings,
+              ),
             ];
             final barItems = isRtl ? items.reversed.toList() : items;
-            final logicalIndex = _selectToGlass[selectScreen] ?? 2;
+            final logicalIndex = _selectToGlass[selectScreen] ?? 0;
             final barIndex = isRtl ? items.length - 1 - logicalIndex : logicalIndex;
 
             return MediaQuery(
@@ -167,8 +160,6 @@ class LbeenaBottomNav extends StatelessWidget {
               ),
             );
           },
-        );
-      },
     );
   }
 

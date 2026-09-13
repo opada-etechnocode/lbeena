@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:syrians_in_uae/core/di/di_manager.dart';
 import 'package:syrians_in_uae/core/utils/image_constant.dart';
 import 'package:syrians_in_uae/ui/screens/chats/chats_details_group.dart';
@@ -13,6 +14,7 @@ import '../../../core/shared_prefs/shared_prefs.dart';
 import '../../../data/models/chats/message_model.dart';
 import '../../../widgets/custom_image_view.dart';
 import '../../theme/app_decoration.dart';
+import '../../theme/lbeena_colors.dart';
 import '../../theme/theme_helper.dart';
 import 'chats_messages_group.dart';
 import 'cubit/cubit.dart';
@@ -111,28 +113,37 @@ class _UserGroupsScreenState extends State<UserGroupsScreen> {
                       );
                     },
                     child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
+                      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 5.h),
                       child: Container(
-                        height: 70.h,
-                        decoration: AppDecoration.card3d,
+                        decoration: LbeenaColors.cardWith(),
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
                           child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              userGroups[i]['groupImage'] == 'defaultImage' || userGroups[i]['groupImage'] == null
-                                  ? CustomImageView(
-                                imagePath: ImageConstant.groupImage,
-                                width: 35.w,
-                                height: 35.w,
-                              )
-                                  : CustomImageView(
-                                imagePath: userGroups[i]['groupImage'],
-                                width: 35.w,
-                                height: 35.w,
-                                fit: BoxFit.fill,
-                                radius: BorderRadius.circular(333),
+                              Container(
+                                width: 48,
+                                height: 48,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: LbeenaColors.orange, width: 1.6),
+                                ),
+                                child: ClipOval(
+                                  child: userGroups[i]['groupImage'] == 'defaultImage' ||
+                                          userGroups[i]['groupImage'] == null
+                                      ? CustomImageView(
+                                          imagePath: ImageConstant.groupImage,
+                                          width: 48,
+                                          height: 48,
+                                          fit: BoxFit.cover,
+                                        )
+                                      : CustomImageView(
+                                          imagePath: userGroups[i]['groupImage'],
+                                          width: 48,
+                                          height: 48,
+                                          fit: BoxFit.cover,
+                                        ),
+                                ),
                               ),
                               sizeWidthNormal(width: 15.w),
                               Container(
@@ -146,6 +157,8 @@ class _UserGroupsScreenState extends State<UserGroupsScreen> {
                                       child: textNormal(
                                         text: userGroups[i]['groupName'] ?? "بدون اسم",
                                         fontSize: 15.5.sp,
+                                        fontWeight: FontWeight.w800,
+                                        color: LbeenaColors.tealDark,
                                       ),
                                     ),
                                     buildLastMessage(userGroups[i]['groupId']),
@@ -163,33 +176,69 @@ class _UserGroupsScreenState extends State<UserGroupsScreen> {
                                       fontSize: 11.sp,
                                     ),
                                     sizeHeightNormal(height: 4.h),
-                                    if (userGroups[i]['adminId'] == DIManager.findDep<SharedPrefs>().getUserID().toString()) ...{
-                                      Container(
-                                        width: 25.w,
-                                        height: 25.w,
-                                        child: IconButton(
-                                          iconSize: 25.sp,
-                                          padding: EdgeInsets.zero,
-                                          onPressed: () {
-                                            deleteGroup(context, userGroups[i]['groupId'], isFromDetailsGroup: false);
-                                          },
-                                          icon: Icon(Icons.delete_outline),
+                                    PopupMenuButton<String>(
+                                      tooltip: 'المزيد',
+                                      color: LbeenaColors.white,
+                                      padding: EdgeInsets.zero,
+                                      offset: const Offset(0, 36),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(14),
+                                      ),
+                                      onSelected: (value) {
+                                        if (value == 'delete') {
+                                          deleteGroup(
+                                            context,
+                                            userGroups[i]['groupId'],
+                                            isFromDetailsGroup: false,
+                                          );
+                                        } else if (value == 'leave') {
+                                          logoutGroup(
+                                            context,
+                                            userGroups[i]['groupId'],
+                                            isFromDetailsGroup: false,
+                                          );
+                                        }
+                                      },
+                                      itemBuilder: (context) {
+                                        final isAdmin = userGroups[i]['adminId'] ==
+                                            DIManager.findDep<SharedPrefs>()
+                                                .getUserID()
+                                                .toString();
+                                        return [
+                                          PopupMenuItem<String>(
+                                            value: isAdmin ? 'delete' : 'leave',
+                                            child: Row(
+                                              children: [
+                                                FaIcon(
+                                                  isAdmin
+                                                      ? FontAwesomeIcons.trashCan
+                                                      : FontAwesomeIcons.rightFromBracket,
+                                                  size: 15,
+                                                  color: LbeenaColors.orange,
+                                                ),
+                                                const SizedBox(width: 10),
+                                                Text(
+                                                  isAdmin ? 'حذف المجموعة' : 'مغادرة المجموعة',
+                                                  style: TextStyle(
+                                                    color: LbeenaColors.tealDark,
+                                                    fontWeight: FontWeight.w700,
+                                                    fontFamily: 'Cairo',
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ];
+                                      },
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(top: 4),
+                                        child: FaIcon(
+                                          FontAwesomeIcons.ellipsisVertical,
+                                          size: 16,
+                                          color: LbeenaColors.muted,
                                         ),
                                       ),
-                                    } else ...{
-                                      Container(
-                                        width: 25.w,
-                                        height: 25.w,
-                                        child: IconButton(
-                                          iconSize: 20.sp,
-                                          padding: EdgeInsets.zero,
-                                          onPressed: () {
-                                            logoutGroup(context, userGroups[i]['groupId'], isFromDetailsGroup: false);
-                                          },
-                                          icon: Icon(Icons.logout),
-                                        ),
-                                      ),
-                                    }
+                                    ),
                                   ],
                                 ),
                               ),

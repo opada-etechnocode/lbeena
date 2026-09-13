@@ -25,21 +25,54 @@ class LbeenaCountryCodePicker extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: LbeenaColors.fieldBorder),
       ),
-      child: Directionality(
-        textDirection: TextDirection.ltr,
-        child: CountryCodePicker(
+      child: CountryCodePicker(
           key: ValueKey(initialSelection),
           padding: EdgeInsets.zero,
           backgroundColor: LbeenaColors.white,
           dialogBackgroundColor: LbeenaColors.white,
           barrierColor: LbeenaColors.black.withValues(alpha: 0.45),
           initialSelection: initialSelection,
+          countryFilter: LbeenaPhoneCountry.allowedIsoCodes,
           favorite: LbeenaPhoneCountry.favorites,
-          showDropDownButton: true,
+          showDropDownButton: false,
           showFlag: true,
           flagWidth: 22,
           alignLeft: false,
           enabled: true,
+          builder: (country) {
+            if (country == null) return const SizedBox.shrink();
+            return Directionality(
+              textDirection: TextDirection.ltr,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (country.flagUri != null)
+                      Image.asset(
+                        country.flagUri!,
+                        package: 'country_code_picker',
+                        width: 22,
+                      ),
+                    const SizedBox(width: 6),
+                    Text(
+                      country.dialCode ?? '+${LbeenaPhoneCountry.defaultCode}',
+                      style: const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: LbeenaColors.black,
+                      ),
+                    ),
+                    Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: LbeenaColors.teal,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
           headerText: 'اختر الدولة',
           headerTextStyle: TextStyle(
             fontSize: 16,
@@ -80,7 +113,6 @@ class LbeenaCountryCodePicker extends StatelessWidget {
           onChanged: (value) {
             onChanged(LbeenaPhoneCountry.digits(value.dialCode));
           },
-        ),
       ),
     );
   }

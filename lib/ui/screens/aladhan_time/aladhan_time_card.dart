@@ -4,9 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../core/di/di_manager.dart';
 import '../../../core/shared_prefs/shared_prefs.dart';
+import '../../../core/utils/lbeena_menu.dart';
 import '../../../widgets/BoothShimmer.dart';
 import '../../theme/lbeena_colors.dart';
 import '../../theme/theme_helper.dart';
+import 'analog_clock.dart';
 import 'cubit/aladhan_time_cubit.dart';
 import 'cubit/aladhan_time_state.dart';
 
@@ -84,7 +86,8 @@ class _AladhanTimeCardWidgetState extends State<AladhanTimeCardWidget> {
         break;
       }
     }
-    next ??= _parseTime(timings['fajr'] ?? '00:00', now).add(const Duration(days: 1));
+    next ??=
+        _parseTime(timings['fajr'] ?? '00:00', now).add(const Duration(days: 1));
     final diff = next.difference(now);
     final h = diff.inHours;
     final m = diff.inMinutes.remainder(60);
@@ -101,13 +104,14 @@ class _AladhanTimeCardWidgetState extends State<AladhanTimeCardWidget> {
       child: BlocBuilder<AladhanTimeCubit, AladhanTimeState>(
         builder: (context, state) {
           if (state is LoadingAladhanTimeState) {
-            return const SizedBox(height: 168, child: BoothShimmer());
+            return const SizedBox(height: 148, child: BoothShimmer());
           }
           if (state is! SuccessAladhanTimeState) {
             return const SizedBox.shrink();
           }
 
-          final model = AladhanTimeCubit.get(context).aladhanTimeModel!.data!.timings!;
+          final model =
+              AladhanTimeCubit.get(context).aladhanTimeModel!.data!.timings!;
           final timings = {
             'fajr': model.fajr,
             'sunrise': model.sunrise,
@@ -121,183 +125,168 @@ class _AladhanTimeCardWidgetState extends State<AladhanTimeCardWidget> {
               AladhanTimeCubit.defaultCity;
 
           return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                colors: isDark
-                    ? const [LbeenaColors.cardDark, Color(0xFF1A2E2C)]
-                    : [LbeenaColors.tealDark, LbeenaColors.teal],
-              ),
-              borderRadius: BorderRadius.circular(22),
-              boxShadow: [
-                BoxShadow(
-                  color: LbeenaColors.teal.withOpacity(0.28),
-                  blurRadius: 18,
-                  offset: const Offset(0, 8),
-                ),
-              ],
+            decoration: LbeenaColors.cardWith(
+              color: isDark ? LbeenaColors.cardDark : LbeenaColors.white,
             ),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
-              child: Column(
-                children: [
-                  Row(
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const AnalogClockWidget(size: 92),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          color: LbeenaColors.white.withOpacity(0.14),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Center(
-                          child: FaIcon(
-                            FontAwesomeIcons.mosque,
-                            size: 16,
-                            color: LbeenaColors.orange,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
                               'أوقات الصلاة · سوريا',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                color: LbeenaColors.white,
+                                color: isDark
+                                    ? LbeenaColors.white
+                                    : LbeenaColors.tealDark,
                                 fontWeight: FontWeight.w800,
-                                fontSize: 14,
+                                fontSize: 13,
                               ),
                             ),
-                            Text(
-                              '$_nextPrayer · ${_remainingLabel(timings)}',
-                              style: TextStyle(
-                                color: LbeenaColors.orange.withOpacity(0.95),
-                                fontWeight: FontWeight.w700,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
+                          ),
+                          const SizedBox(width: 6),
+                          _cityPicker(context, city, isDark),
+                        ],
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '$_nextPrayer · ${_remainingLabel(timings)}',
+                        style: TextStyle(
+                          color: LbeenaColors.orange,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 11,
                         ),
                       ),
-                      PopupMenuButton<String>(
-                        color: isDark ? LbeenaColors.cardDark : LbeenaColors.white,
-                        onSelected: (value) {
-                          AladhanTimeCubit.get(context).getPrayerTimes(value);
-                        },
-                        itemBuilder: (context) {
-                          return AladhanTimeCubit.get(context)
-                              .prayerCitiesCoordinates
-                              .keys
-                              .map((cityName) {
-                            return PopupMenuItem<String>(
-                              value: cityName,
-                              child: Text(
-                                cityName,
-                                style: TextStyle(
-                                  color: cityName == city
-                                      ? LbeenaColors.orange
-                                      : appTheme.black900,
-                                  fontWeight: cityName == city
-                                      ? FontWeight.w800
-                                      : FontWeight.w600,
+                      const SizedBox(height: 6),
+                      GridView.count(
+                        padding: EdgeInsets.all(0),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        crossAxisCount: 3,
+                        mainAxisSpacing: 6,
+                        crossAxisSpacing: 6,
+                        childAspectRatio: 1.35,
+                        children: _order.map((item) {
+                          final isNext = _nextPrayer == item.$2;
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: isNext
+                                  ? LbeenaColors.orange
+                                  : (isDark
+                                      ? LbeenaColors.surfaceDark
+                                      : LbeenaColors.iconTile),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  item.$1,
+                                  style: TextStyle(
+                                    color: isNext
+                                        ? LbeenaColors.white
+                                        : LbeenaColors.muted,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                              ),
-                            );
-                          }).toList();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 6,
-                          ),
-                          decoration: BoxDecoration(
-                            color: LbeenaColors.white.withOpacity(0.14),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const FaIcon(
-                                FontAwesomeIcons.locationDot,
-                                size: 11,
-                                color: LbeenaColors.white,
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                city,
-                                style: const TextStyle(
-                                  color: LbeenaColors.white,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 12,
+                                const SizedBox(height: 2),
+                                Text(
+                                  _cleanTime(timings[item.$3]),
+                                  style: TextStyle(
+                                    color: isNext
+                                        ? LbeenaColors.white
+                                        : (isDark
+                                            ? LbeenaColors.white
+                                            : LbeenaColors.tealDark),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w800,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 2),
-                              const Icon(
-                                Icons.keyboard_arrow_down_rounded,
-                                color: LbeenaColors.white,
-                                size: 18,
-                              ),
-                            ],
-                          ),
-                        ),
+                              ],
+                            ),
+                          );
+                        }).toList(),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 3,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                    childAspectRatio: 1.55,
-                    children: _order.map((item) {
-                      final isNext = _nextPrayer == item.$2;
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: isNext
-                              ? LbeenaColors.orange
-                              : LbeenaColors.white.withOpacity(0.12),
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              item.$1,
-                              style: TextStyle(
-                                color: isNext
-                                    ? LbeenaColors.white
-                                    : LbeenaColors.white.withOpacity(0.75),
-                                fontSize: 11,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              _cleanTime(timings[item.$3]),
-                              style: TextStyle(
-                                color: LbeenaColors.white,
-                                fontSize: 14,
-                                fontWeight:
-                                    isNext ? FontWeight.w800 : FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _cityPicker(BuildContext context, String city, bool isDark) {
+    return PopupMenuButton<String>(
+      color: isDark ? LbeenaColors.cardDark : LbeenaColors.white,
+      constraints: LbeenaMenu.constraints,
+      padding: EdgeInsets.zero,
+      onSelected: (value) {
+        AladhanTimeCubit.get(context).getPrayerTimes(value);
+      },
+      itemBuilder: (context) {
+        return AladhanTimeCubit.get(context)
+            .prayerCitiesCoordinates
+            .keys
+            .map((cityName) {
+          return PopupMenuItem<String>(
+            value: cityName,
+            child: Text(
+              cityName,
+              style: TextStyle(
+                color: cityName == city
+                    ? LbeenaColors.orange
+                    : appTheme.black900,
+                fontWeight:
+                    cityName == city ? FontWeight.w800 : FontWeight.w600,
+              ),
+            ),
+          );
+        }).toList();
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: LbeenaColors.teal.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FaIcon(
+              FontAwesomeIcons.locationDot,
+              size: 10,
+              color: LbeenaColors.teal,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              city,
+              style: TextStyle(
+                color: LbeenaColors.teal,
+                fontWeight: FontWeight.w700,
+                fontSize: 11,
+              ),
+            ),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: LbeenaColors.teal,
+              size: 16,
+            ),
+          ],
+        ),
       ),
     );
   }

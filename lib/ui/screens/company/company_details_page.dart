@@ -51,6 +51,7 @@ import '../../../widgets/components.dart';
 import '../../../widgets/custom_image_view.dart';
 import '../../../widgets/ads_product_widget.dart';
 import '../../theme/app_decoration.dart';
+import '../../theme/lbeena_colors.dart';
 import '../../theme/theme_helper.dart';
 import '../community/list_coummunity.dart';
 import '../profile/profile_page.dart';
@@ -257,6 +258,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
   Widget screenPage(context, state) {
     return HandelAndroidApp(
       child: Scaffold(
+        backgroundColor: LbeenaColors.lightBg,
         appBar: (isOwnerAccount())
             ? appBarNormalWithIcon(
                 text: DIManager.findDep<SharedPrefs>().getAccountType() ==
@@ -309,7 +311,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                         : loadingShimmer
                             ? CompanyInformationShimmer()
                             : Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                               child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -317,27 +319,28 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                                     if (isLoadingShareAds) ...{loadingButton()},
 
                                     Container(
-                                      // width: 350.w,
-                                      decoration: AppDecoration.profileUi,
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 8),
-                                        child: Column(
+                                      decoration: LbeenaColors.cardWith(),
+                                      padding: const EdgeInsets.fromLTRB(12, 4, 12, 14),
+                                      child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
                                             userMetricsCard(),
-
-                                            Row(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                            const SizedBox(height: 8),
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                color: LbeenaColors.iconTile,
+                                                borderRadius: BorderRadius.circular(14),
+                                              ),
+                                              padding: const EdgeInsets.symmetric(vertical: 10),
+                                              child: Row(
                                               children: [
-                                                profileOverviewCompany(
-                                                    titleTop: '${followersCount ?? 0}',
-                                                    titleBottom: 'متابع',
-                                                    onTap: () {
+                                                _profileStat(
+                                                    '${followersCount ?? 0}',
+                                                    'متابع',
+                                                    () {
                                                       navigatorToPush(
                                                           context: context,
                                                           pageName: FollowingUsersPage(
@@ -346,10 +349,10 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                                                             userId: widget.idCompany,
                                                           ));
                                                     }),
-                                                profileOverviewCompany(
-                                                    titleTop: '${followingCount ?? 0}',
-                                                    titleBottom: 'يتابع',
-                                                    onTap: () {
+                                                _profileStat(
+                                                    '${followingCount ?? 0}',
+                                                    'يتابع',
+                                                    () {
                                                       navigatorToPush(
                                                           context: context,
                                                           pageName: FollowingUsersPage(
@@ -358,15 +361,16 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                                                             userId: widget.idCompany,
                                                           ));
                                                     }),
-                                                profileOverviewCompany(
-                                                    titleTop: '${adsCount ?? '0'}',
-                                                    titleBottom: 'إعلانات',
-                                                    onTap: () {}),
-                                                profileOverviewCompany(
-                                                    titleTop: '${postCount ?? '0'}',
-                                                    titleBottom: 'منشورات',
-                                                    onTap: () {}),
+                                                _profileStat(
+                                                    '${adsCount ?? '0'}',
+                                                    'إعلانات',
+                                                    () {}),
+                                                _profileStat(
+                                                    '${postCount ?? '0'}',
+                                                    'منشورات',
+                                                    () {}),
                                               ],
+                                            ),
                                             ),
                                             SizedBox(height: 4.h),
                                             if (isOwnerAccount() &&  DIManager.findDep<SharedPrefs>().getAccountType() =='company') ...{
@@ -387,7 +391,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                                                           : 'أضف روابط لشركتك',
                                                       fontSize:
                                                           AppFontSize.fontSize_10,
-                                                      color: appTheme.greenColor,
+                                                      color: LbeenaColors.orange,
                                                       decoration: TextDecoration
                                                           .underline,
                                                       fontWeight:
@@ -406,7 +410,6 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                                                 userButton(context, state),
                                           ],
                                         ),
-                                      ),
                                     ),
 
                                     sizeHeightNormal(),
@@ -415,85 +418,37 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                                           CrossAxisAlignment.center,
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        Row(
-                                          children: [
-
-                                            Expanded(
-                                              child: InkWell(
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: LbeenaColors.white,
+                                            borderRadius: BorderRadius.circular(14),
+                                            border: Border.all(color: LbeenaColors.fieldBorder),
+                                          ),
+                                          padding: const EdgeInsets.all(4),
+                                          child: Row(
+                                            children: [
+                                              _profileTab(
+                                                label: 'إعلانات',
+                                                selected: isPressing2,
                                                 onTap: () {
                                                   setState(() {
                                                     isPressing2 = true;
-                                                    typeAds =2;
-                                                    // isCompany = false;
+                                                    typeAds = 2;
                                                   });
                                                 },
-                                                child: Container(
-
-                                                  decoration: !isPressing2
-                                                      ? BoxDecoration(
-                                                    color: appTheme.white,
-                                                    borderRadius: BorderRadius.circular(8)
-                                                  )
-                                                      : BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(8),
-                                                      color: appTheme
-                                                          .deepPurpleA10001,
-                                                  ),
-                                                  child:     Padding(
-                                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                                    child: Center(
-                                                      child: textNormal(
-                                                        text:   'إعلانات',
-                                                        color: isPressing2
-                                                            ? Colors
-                                                            .white
-                                                            : Colors
-                                                            .grey,
-
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
                                               ),
-                                            ),
-                                            Expanded(
-                                              child: InkWell(
+                                              _profileTab(
+                                                label: 'منشورات',
+                                                selected: !isPressing2,
                                                 onTap: () {
                                                   setState(() {
                                                     isPressing2 = false;
                                                     typeAds = 5;
-                                                    // isCompany = true;
                                                   });
                                                 },
-                                                child: Container(
-                                                  decoration: isPressing2
-                                                      ? BoxDecoration(
-                                                    color: appTheme.white,  borderRadius: BorderRadius.circular(8)
-                                                  )
-                                                      : BoxDecoration(
-                                                      borderRadius: BorderRadius.circular(8),
-
-                                                      color: appTheme
-                                                          .deepPurpleA10001,
-                                                   ),
-                                                  child:   Padding(
-                                                    padding: const EdgeInsets.symmetric(vertical: 8),
-                                                    child: Center(
-                                                      child: textNormal(
-                                                      text:   'منشورات',
-                                                        color: !isPressing2
-                                                            ? Colors
-                                                            .white
-                                                            : Colors
-                                                            .grey,
-
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                         sizeHeightNormal(height:  isOwnerAccount() && isPressing2? 20:5),
                                         isOwnerAccount() && isPressing2
@@ -563,7 +518,70 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
     );
   }
 
+  Widget _profileStat(String value, String label, VoidCallback onTap) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Column(
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                color: LbeenaColors.tealDark,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w800,
+                fontSize: 14,
+              ),
+            ),
+            Text(
+              label,
+              style: const TextStyle(
+                color: LbeenaColors.muted,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w600,
+                fontSize: 11,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _profileTab({
+    required String label,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: selected ? LbeenaColors.teal : Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: TextStyle(
+                color: selected ? LbeenaColors.white : LbeenaColors.muted,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w800,
+                fontSize: 13,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget buttonChoose({required int indexTypeAds,required String title}){
+    final selected = typeAds == indexTypeAds;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 3),
       child: GestureDetector(
@@ -573,36 +591,25 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
           });
         },
         child: Container(
-          // height: 50,
-          decoration: typeAds != indexTypeAds
-              ? BoxDecoration(
-            color: appTheme.scaffoldBackgroundColor100,
-            borderRadius: BorderRadius.all(Radius.circular(25)),
+          decoration: BoxDecoration(
+            color: selected
+                ? LbeenaColors.orange.withValues(alpha: 0.12)
+                : LbeenaColors.white,
+            borderRadius: const BorderRadius.all(Radius.circular(20)),
             border: Border.all(
-                color: Colors
-                    .grey),
-          )
-              : BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(25)),
-              border: Border.all(
-                  color: appTheme.greenColor),
-              color: appTheme.scaffoldBackgroundColor100,
-              ),
+              color: selected ? LbeenaColors.orange : LbeenaColors.fieldBorder,
+            ),
+          ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 8),
-            child: Text(title,
-              style: themeLite
-                  .textTheme
-                  .bodyLarge
-                  ?.copyWith(
-                  color: typeAds == indexTypeAds?appTheme.greenColor: Colors
-                      .grey,
-                  fontSize:
-                  AppFontSize
-                      .fontSize_12,
-                  fontWeight:
-                  FontWeight
-                      .w400),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Text(
+              title,
+              style: TextStyle(
+                color: selected ? LbeenaColors.orange : LbeenaColors.muted,
+                fontFamily: 'Cairo',
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ),
@@ -670,10 +677,10 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
       key: _formKey,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        decoration:BoxDecoration(
-          color: appTheme.greenColor,
-          borderRadius: BorderRadius.all(Radius.circular(15.r)),
-          border: Border.all(    color: Color(0xffc3ccd1)),
+        decoration: BoxDecoration(
+          color: LbeenaColors.iconTile,
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+          border: Border.all(color: LbeenaColors.fieldBorder),
         ),
         child: AnimatedCrossFade(
           firstChild: Container(
@@ -779,19 +786,19 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                           : textNormal(
                               text: ugcList![0].category_name ?? '',
                               fontSize: AppFontSize.fontSize_10,
-                              color: appTheme.greenColor),
+                              color: LbeenaColors.teal),
                       ugcList![0].city_name == null
                           ? Container()
                           : textNormal(
                               text: ' ,',
                               fontSize: AppFontSize.fontSize_10,
-                              color: appTheme.greenColor),
+                              color: LbeenaColors.teal),
                       ugcList![0].city_name == null
                           ? Container()
                           : textNormal(
                               text: ugcList![0].city_name ?? '',
                               fontSize: AppFontSize.fontSize_10,
-                              color: appTheme.greenColor),
+                              color: LbeenaColors.teal),
                     ],
                   )
                 : Container(),
@@ -818,15 +825,15 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                   isOwnerAccount()?   textNormal(
                       text:'رقم العضوية: ${ DIManager.findDep<SharedPrefs>().getMembershipNumber().toString()}',
 
-                      color:appTheme.greenColor,
+                      color: LbeenaColors.teal,
                       fontWeight: FontWeight.w400)
                       : textNormal(text:'رقم العضوية: ${companyInformation![0].membershipNumber.toString()}',
 
-                      color:appTheme.greenColor,
+                      color: LbeenaColors.teal,
                       fontWeight: FontWeight.w400
                   ),
                   textNormal(text:'تاريخ العضوية: $createdAtTime',
-                      color:Color(0xff8B8B8B),
+                      color: LbeenaColors.muted,
                       fontWeight: FontWeight.w400),
 
 
@@ -851,7 +858,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                             padding: EdgeInsets.only(bottom: 5.h),
                             child: textNormal(
                               text: 'الشركة فعالة',
-                              color: Colors.green,
+                              color: LbeenaColors.teal,
                               fontSize: AppFontSize.fontSize_10,
                             ),
                           )
@@ -899,15 +906,15 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
               isOwnerAccount()?   textNormal(
                   text:'رقم العضوية: ${ DIManager.findDep<SharedPrefs>().getMembershipNumber().toString()}',
 
-                  color:appTheme.greenColor,
+                  color: LbeenaColors.teal,
                   fontWeight: FontWeight.w400)
                   : textNormal(text:'رقم العضوية: ${companyInformation![0].membershipNumber.toString()}',
 
-                  color:appTheme.greenColor,
+                  color: LbeenaColors.teal,
                   fontWeight: FontWeight.w400
               ),
               textNormal(text:'تاريخ العضوية: $createdAtTime',
-                  color:Color(0xff8B8B8B),
+                  color: LbeenaColors.muted,
                   fontWeight: FontWeight.w400),
               if (isOwnerAccount() &&
                   DIManager.findDep<SharedPrefs>().getAccountType() ==
@@ -922,7 +929,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                               companyInformation?[0].business_activities_name ??
                                   '',
                           fontSize: AppFontSize.fontSize_10,
-                          color: appTheme.greenColor),
+                          color: LbeenaColors.teal),
                   sizeWidthNormal(width: 4.w),
                   if (isOwnerAccount()) ...{
                     statusCompany == '0'
@@ -934,7 +941,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                         : statusCompany == '1'
                             ? textNormal(
                                 text: 'الشركة فعالة',
-                                color: Colors.green,
+                                color: LbeenaColors.teal,
                                 fontSize: AppFontSize.fontSize_10,
                               )
                             : statusCompany == '2'
@@ -998,9 +1005,9 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                       child: textNormal(
                           overflow: TextOverflow.ellipsis,
                           text: 'قراءة المزيد',
-                          color: Colors.blue,
+                          color: LbeenaColors.orange,
                           fontSize: 10.fSize,
-                          fontWeight: FontWeight.w200),
+                          fontWeight: FontWeight.w700),
                     ):Container(),
             ],
           );
@@ -1140,11 +1147,12 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                           }
                         },
                         child: Container(
-                          height: 38.h,
-                          width: 120.w,
+                          height: 42,
                           decoration: BoxDecoration(
-                              color: appTheme.greenColor,
-                              borderRadius: BorderRadius.circular(16.h)),
+                              color: isFollowUser == 1
+                                  ? LbeenaColors.iconTile
+                                  : LbeenaColors.orange,
+                              borderRadius: BorderRadius.circular(14)),
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -1156,8 +1164,13 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                                       isFollowUser == 1
                                           ? 'إلغاء المتابعة'
                                           : 'متابعة',
-                                      style: themeLite.textTheme.titleSmall!
-                                          .copyWith(color: Colors.white),
+                                      style: TextStyle(
+                                        color: isFollowUser == 1
+                                            ? LbeenaColors.tealDark
+                                            : LbeenaColors.white,
+                                        fontFamily: 'Cairo',
+                                        fontWeight: FontWeight.w800,
+                                      ),
                                     ),
                             ],
                           ),
@@ -1184,17 +1197,22 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
       child: InkWell(
         onTap: onTap,
         child: Container(
-          height: 38.h,
-          width: 120.h,
+          height: 42,
           decoration: BoxDecoration(
-              color: isChangeColor?appTheme.backgroundContainer: appTheme.greenColor,
-              border: isChangeColor?Border.all(color: appTheme.greenColor):null,
-              borderRadius: BorderRadius.circular(16)),
+              color: isChangeColor ? LbeenaColors.white : LbeenaColors.orange,
+              border: Border.all(
+                color: isChangeColor ? LbeenaColors.teal : LbeenaColors.orange,
+              ),
+              borderRadius: BorderRadius.circular(14)),
           child: Center(
             child: Text(
               text,
-              style:
-                  themeLite.textTheme.titleSmall!.copyWith(color: isChangeColor?appTheme.greenColor: Colors.white),
+              style: TextStyle(
+                color: isChangeColor ? LbeenaColors.teal : LbeenaColors.white,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w800,
+                fontSize: 12,
+              ),
             ),
           ),
         ),
@@ -1342,7 +1360,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           final hasLink = linksCompany.length > index && linksCompany[index].isNotEmpty;
-          final iconColor = hasLink ? appTheme.greenColor : Colors.grey;
+          final iconColor = hasLink ? LbeenaColors.teal : LbeenaColors.muted;
 
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: 5.7.w),

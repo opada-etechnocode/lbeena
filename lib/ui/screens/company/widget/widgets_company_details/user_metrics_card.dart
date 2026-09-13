@@ -1,34 +1,26 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:syrians_in_uae/core/helper/snack_bar_helper.dart';
 import 'package:syrians_in_uae/core/link_app.dart';
-import 'package:syrians_in_uae/core/utils/size_utils.dart';
+import 'package:syrians_in_uae/core/utils/lbeena_menu.dart';
 import 'package:syrians_in_uae/ui/screens/profile/cubit/status.dart';
+import 'package:syrians_in_uae/ui/theme/lbeena_colors.dart';
+import 'package:syrians_in_uae/widgets/loader_for_page.dart';
 
-import '../../../../../core/constants/app_font.dart';
 import '../../../../../core/di/di_manager.dart';
 import '../../../../../core/shared_prefs/shared_prefs.dart';
 import '../../../../../core/utils/endpoints.dart';
-import '../../../../../core/utils/image_constant.dart';
 import '../../../../../data/models/profile_company/profile_company_model.dart';
-import '../../../../../widgets/components.dart';
-import '../../../../../widgets/custom_image_view.dart';
-import '../../../../../widgets/loader_for_page.dart';
 import '../../../../../widgets/user_image_profile.dart';
-import '../../../../theme/app_decoration.dart';
-import '../../../../theme/theme_helper.dart';
 import '../../../profile/cubit/cubit.dart';
-import '../../info_company.dart';
-import '../following_users_page.dart';
 
 class UserMetricsCard extends StatefulWidget {
   UserMetricsCard({
@@ -61,8 +53,18 @@ class UserMetricsCard extends StatefulWidget {
 }
 
 class _UserMetricsCardState extends State<UserMetricsCard> {
+  bool isLoadingShareAds = false;
 
+  bool get _isDark => DIManager.findDep<SharedPrefs>().getThemeApp() == 'd';
 
+  bool get _hideCompletionRing {
+    if (widget.isOwnerAccount) {
+      return widget.ugcList.isEmpty &&
+          DIManager.findDep<SharedPrefs>().getAccountType() == 'individual';
+    }
+    return widget.ugcList.isEmpty &&
+        widget.companyInformation[0].account_type == 'individual';
+  }
 
   double _calculateProfileCompletion() {
     double completion = 0;
@@ -71,363 +73,363 @@ class _UserMetricsCardState extends State<UserMetricsCard> {
       completion += 40;
     }
 
-    if(widget.isOwnerAccount){
-      if(DIManager.findDep<SharedPrefs>().getAccountType() ==
-          'individual'){
-        int linkCount = widget.ugcList.isEmpty ? 0:  widget.ugcList[0].links?.length??0;
-        double linksPercentage = (linkCount / 4) * 60; // 4 روابط = 100%
-
-        // لا تتجاوز النسبة 60% للروابط
-        completion += linksPercentage.clamp(0, 60);
-
-      }else{
-        int linkCount = widget.links.length;
-        double linksPercentage = (linkCount / 5) * 60; // 4 روابط = 100%
-
-        // لا تتجاوز النسبة 60% للروابط
-        completion += linksPercentage.clamp(0, 60);
-
+    if (widget.isOwnerAccount) {
+      if (DIManager.findDep<SharedPrefs>().getAccountType() == 'individual') {
+        int linkCount =
+            widget.ugcList.isEmpty ? 0 : widget.ugcList[0].links?.length ?? 0;
+        completion += ((linkCount / 4) * 60).clamp(0, 60);
+      } else {
+        completion += ((widget.links.length / 5) * 60).clamp(0, 60);
       }
-
-    }else{
-
-
-      if(widget.companyInformation[0].account_type ==
-          'individual'){
-        int linkCount = widget.ugcList.isEmpty ? 0:  widget.ugcList[0].links?.length??0;
-        double linksPercentage = (linkCount / 4) * 60; // 4 روابط = 100%
-
-        // لا تتجاوز النسبة 60% للروابط
-        completion += linksPercentage.clamp(0, 60);
-
-      }else{
-        int linkCount = widget.links.length;
-        double linksPercentage = (linkCount / 5) * 60; // 4 روابط = 100%
-
-        // لا تتجاوز النسبة 60% للروابط
-        completion += linksPercentage.clamp(0, 60);
-
+    } else {
+      if (widget.companyInformation[0].account_type == 'individual') {
+        int linkCount =
+            widget.ugcList.isEmpty ? 0 : widget.ugcList[0].links?.length ?? 0;
+        completion += ((linkCount / 4) * 60).clamp(0, 60);
+      } else {
+        completion += ((widget.links.length / 5) * 60).clamp(0, 60);
       }
-
-
     }
 
-    // لا تتجاوز النسبة 100%
     return completion.clamp(0, 100);
   }
 
   @override
   Widget build(BuildContext context) {
-    double completionPercentage = _calculateProfileCompletion();
+    final completion = _calculateProfileCompletion();
+    final name = widget.companyInformation.isEmpty
+        ? ''
+        : widget.companyInformation[0].companyName.toString();
+    final rating =
+        double.tryParse(widget.companyInformation[0].rating ?? '0') ?? 0;
+    final titleColor = _isDark ? LbeenaColors.white : LbeenaColors.tealDark;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 10),
+      padding: const EdgeInsets.fromLTRB(4, 12, 4, 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Expanded(flex: ((widget.isOwnerAccount) &&  ( widget.ugcList.isEmpty &&  DIManager.findDep<SharedPrefs>().getAccountType() == 'individual')) ?1:
-          ( widget.ugcList.isEmpty &&  widget.companyInformation[0].account_type == 'individual')?1:2,
-            child: Stack(
-              // alignment: Alignment.topLeft,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(0),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      if(widget.isOwnerAccount)...{
-                        ( widget.ugcList.isEmpty &&  DIManager.findDep<SharedPrefs>().getAccountType() == 'individual')   ?Container():   SizedBox(
-                          width: 58.sp,
-                          height: 58.sp,
-                          child: CircularProgressIndicator(
-                            value: completionPercentage / 100,
-                            strokeWidth: 1.4,
-                            backgroundColor: Colors.grey[200],
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              completionPercentage >= 90
-                                  ? Colors.green
-                                  : completionPercentage >= 70
-                                  ? Colors.blue
-                                  : Colors.orange,
-                            ),
-                          ),
-                        ),
-                      }else...{
-                        ( widget.ugcList.isEmpty &&  widget.companyInformation[0].account_type == 'individual')   ?Container():   SizedBox(
-                          width: 58.sp,
-                          height: 58.sp,
-                          child: CircularProgressIndicator(
-                            value: completionPercentage / 100,
-                            strokeWidth: 1.4,
-                            backgroundColor: Colors.grey[200],
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              completionPercentage >= 90
-                                  ? appTheme.greenColor
-                                  : completionPercentage >= 70
-                                  ? Colors.blue
-                                  : Colors.orange,
-                            ),
-                          ),
-                        ),
-                      },
-
-
-                      UserImageProfile(
-                          imageUrl:  widget.imageCompany.toString(),
-                      height:60.sp,
-                      width: 60.sp,),
-                      if(widget.isOwnerAccount)...{
-                        ( widget.ugcList.isEmpty &&  DIManager.findDep<SharedPrefs>().getAccountType() == 'individual')   ?Container():   Positioned(
-                          right: 2,
-                          bottom: 5,
-                          child: Container(
-                            decoration: AppDecoration.outlineCircular3.copyWith(borderRadius:BorderRadius.all(Radius.circular(66.r)),   boxShadow: [])  ,
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(
-                                '${completionPercentage.round()}%',
-                                style: TextStyle(
-                                  fontSize: 7.fSize,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      }else...{
-                        ( widget.ugcList.isEmpty &&  widget.companyInformation[0].account_type == 'individual')   ?Container():   Positioned(
-                          right: 2,
-                          bottom: 5,
-                          child: Container(
-                            decoration: AppDecoration.outlineCircular3.copyWith(borderRadius:BorderRadius.all(Radius.circular(66.r)),   boxShadow: [])  ,
-                            child: Padding(
-                              padding: const EdgeInsets.all(4.0),
-                              child: Text(
-                                '${completionPercentage.round()}%',
-                                style: TextStyle(
-                                  fontSize: 7.fSize,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      },
-
-                    ],
-                  ),
-                ),
-
-                widget.isOwnerAccount
-                    ? Positioned(
-                  top: -5,
-                      right: ((widget.isOwnerAccount) &&  ( widget.ugcList.isEmpty &&  DIManager.findDep<SharedPrefs>().getAccountType() == 'individual')) ?10: isTypeIpad(context)?50: 36,
-                      child: IconButton(
-                          onPressed: () {
-                            ProfileCubit.get(context).loadImages();
-                          },
-                          icon: Icon(
-                            Icons.camera_alt,
-                                        size: 20.fSize,
-                            color: appTheme.deepPurpleA10001,
-                          )),
-                    )
-                    : Container(),
-              ],
-            ),
-          ),
-          Expanded(flex: 6,
+          _avatar(completion),
+          const SizedBox(width: 12),
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                sizeHeightNormal(
-                  height: 10
-                ),
-                Container(
-                  width: 220.w,
-                  child: Text(
-                    widget.companyInformation?[0].companyName.toString() ?? '',
-                    style: themeLite.textTheme.titleSmall!
-                        .copyWith(fontSize: 15),
+                const SizedBox(height: 6),
+                Text(
+                  name,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: titleColor,
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
+                    height: 1.25,
                   ),
                 ),
-                sizeHeightNormal(height: 5),
+                const SizedBox(height: 6),
                 widget.isOwnerAccount
-                    ? Container(
-                  child: RatingBarIndicator(
-                    rating: double.parse(widget.companyInformation?[0].rating ?? '0')
-                        .toDouble(),
-                    itemCount: 5,
-                    itemSize: 20,
-                    unratedColor: Color(0xffc3c3c3),
-                    direction: Axis.horizontal,
-                    itemBuilder: (context, _) => CustomImageView(
-                      imagePath: ImageConstant.starIcon,
-                      width: 20,
-                      height: 20,
-                      color: Colors.yellow,
-                    ),
-                  ),
-                )
+                    ? _stars(rating)
                     : Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-
-                    BlocConsumer<ProfileCubit,ProfileStates>(builder: (context,state){
-                      return InkWell(
-                          onTap: () {
-                            showRatingAds(context, widget.idCompany,double.parse(widget.companyInformation?[0].rating ?? '0')
-                                .toDouble(),);
-                          },
-                          child: state is LoadingEvaluateCompanyState
-                              ? loaderNormal(size: 13)
-                              : textNormal(
-                              text: 'قيم الآن',
-                              fontSize: AppFontSize.fontSize_12,color: Colors.grey,));
-                    }, listener: (context,state){
-                      if(state is SuccessEvaluateCompanyState){
-                        SnackBarHelper.mySnackBarSuccess('تم تقييم الشركة بنجاح', context);
-                      }else if(state is ErrorEvaluateCompanyState){
-                        SnackBarHelper.mySnackBarError( state.error,context);
-                      }
-                    } ),
-
-                    sizeWidthNormal(width: 5.w),
-                    Container(
-                      child: RatingBarIndicator(
-                        rating:
-                        double.parse(widget.companyInformation?[0].rating ?? '0')
-                            .toDouble(),
-                        itemCount: 5,
-                        itemSize: 20,
-                        unratedColor: Color(0xffc3c3c3),
-                        direction: Axis.horizontal,
-                        itemBuilder: (context, index) =>  CustomImageView(
-                          imagePath: ImageConstant.starIcon,
-                          width: 20,
-                          height: 20,
-                          color: Colors.yellow,
-                        ),
+                        children: [
+                          BlocConsumer<ProfileCubit, ProfileStates>(
+                            builder: (context, state) {
+                              return InkWell(
+                                onTap: () {
+                                  showRatingAds(
+                                    context,
+                                    widget.idCompany,
+                                    rating,
+                                  );
+                                },
+                                child: state is LoadingEvaluateCompanyState
+                                    ? loaderNormal(
+                                        size: 14,
+                                        color: LbeenaColors.orange,
+                                      )
+                                    : Text(
+                                        'قيّم الآن',
+                                        style: TextStyle(
+                                          color: LbeenaColors.orange,
+                                          fontFamily: 'Cairo',
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                              );
+                            },
+                            listener: (context, state) {
+                              if (state is SuccessEvaluateCompanyState) {
+                                SnackBarHelper.mySnackBarSuccess(
+                                  'تم تقييم الشركة بنجاح',
+                                  context,
+                                );
+                              } else if (state is ErrorEvaluateCompanyState) {
+                                SnackBarHelper.mySnackBarError(
+                                  state.error,
+                                  context,
+                                );
+                              }
+                            },
+                          ),
+                          const SizedBox(width: 8),
+                          _stars(rating),
+                        ],
                       ),
-                    ),
-
-                  ],
-                ),
               ],
             ),
           ),
-          // Spacer(),
-          Padding(
-            padding: EdgeInsets.only(bottom: 10, right: 1.w),
-            child: PopupMenuButton(
-              padding: EdgeInsets.zero,
-              color: appTheme.lightBlueBottomNavigatorBar,
-              child: Icon(
-                Icons.more_vert,
-                color: appTheme.greenColor,
-                size: 25.fSize,
-              ),
-              // Use a specific widget
-              itemBuilder: (BuildContext context) => [
-                PopupMenuItem(
-                  value: 'share',
-                  child: textNormal(text: 'مشاركة', fontSize: 13.fSize),
-                ),
-              ],
-              onSelected: (value) {
-                if (value == "share") {
-                  shareCompany(
-                    idCompany: widget.idCompany.toString(),
-                    accountType: widget.companyInformation[0].account_type.toString(),
-                    imageUrl: widget.imageCompany.toString() != 'null'
-                        ? (widget.imageCompany.toString().contains('http')
-                            ? widget.imageCompany.toString()
-                            : AppEndpoints.baseUrlWithoutApi +
-                                widget.imageCompany.toString())
-                        : 'null',
-                    nameCompany:
-                        widget.companyInformation?[0].companyName.toString() ??
-                            '',
-                  );
-                }
-              },
+          PopupMenuButton<String>(
+            tooltip: 'المزيد',
+            color: LbeenaColors.white,
+            padding: EdgeInsets.zero,
+            constraints: LbeenaMenu.constraints,
+            offset: const Offset(0, 36),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
             ),
-          )
+            onSelected: (value) {
+              if (value == 'share') {
+                shareCompany(
+                  idCompany: widget.idCompany.toString(),
+                  accountType:
+                      widget.companyInformation[0].account_type.toString(),
+                  imageUrl: widget.imageCompany.toString() != 'null'
+                      ? (widget.imageCompany.toString().contains('http')
+                          ? widget.imageCompany.toString()
+                          : AppEndpoints.baseUrlWithoutApi +
+                              widget.imageCompany.toString())
+                      : 'null',
+                  nameCompany: name,
+                );
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem<String>(
+                value: 'share',
+                child: Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.shareNodes,
+                      size: 15,
+                      color: LbeenaColors.orange,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      'مشاركة',
+                      style: TextStyle(
+                        color: LbeenaColors.tealDark,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Cairo',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+            child: Padding(
+              padding: const EdgeInsets.all(6),
+              child: isLoadingShareAds
+                  ? SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: LbeenaColors.orange,
+                      ),
+                    )
+                  : FaIcon(
+                      FontAwesomeIcons.ellipsisVertical,
+                      size: 16,
+                      color: LbeenaColors.muted,
+                    ),
+            ),
+          ),
         ],
       ),
     );
   }
 
-  void showRatingAds(BuildContext context, companyId ,double? ratingOld) {
+  Widget _stars(double rating) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        return Padding(
+          padding: const EdgeInsets.only(left: 2),
+          child: FaIcon(
+            index < rating.round()
+                ? FontAwesomeIcons.solidStar
+                : FontAwesomeIcons.star,
+            size: 12,
+            color: LbeenaColors.star,
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _avatar(double completion) {
+    return SizedBox(
+      width: 78,
+      height: 78,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          if (!_hideCompletionRing)
+            SizedBox(
+              width: 78,
+              height: 78,
+              child: CircularProgressIndicator(
+                value: completion / 100,
+                strokeWidth: 3,
+                backgroundColor:
+                    _isDark ? LbeenaColors.surfaceDark : LbeenaColors.iconTile,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  completion >= 90 ? LbeenaColors.teal : LbeenaColors.orange,
+                ),
+              ),
+            ),
+          UserImageProfile(
+            imageUrl: widget.imageCompany.toString(),
+            height: 64,
+            width: 64,
+          ),
+          if (!_hideCompletionRing)
+            Positioned(
+              left: 0,
+              bottom: 0,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                decoration: BoxDecoration(
+                  color: LbeenaColors.orange,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '${completion.round()}%',
+                  style: const TextStyle(
+                    fontSize: 8,
+                    fontWeight: FontWeight.w800,
+                    color: LbeenaColors.white,
+                    fontFamily: 'Cairo',
+                  ),
+                ),
+              ),
+            ),
+          if (widget.isOwnerAccount)
+            Positioned(
+              right: 0,
+              top: 0,
+              child: Material(
+                color: LbeenaColors.orange,
+                shape: const CircleBorder(),
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () => ProfileCubit.get(context).loadImages(),
+                  child: const SizedBox(
+                    width: 26,
+                    height: 26,
+                    child: Center(
+                      child: FaIcon(
+                        FontAwesomeIcons.camera,
+                        size: 11,
+                        color: LbeenaColors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  void showRatingAds(BuildContext context, companyId, double? ratingOld) {
     ProfileCubit cubit = BlocProvider.of(context);
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        double rating = ratingOld?? 0.0;
+        double rating = ratingOld ?? 0.0;
         return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setState) {
-              return AlertDialog(
-                backgroundColor: appTheme.buttonColor,
-                title: textNormal(
-                    text: 'قيّم الشركة',
-                    color: Colors.white,
-                    fontSize: AppFontSize.fontSize_16),
-                content: RatingBar(
-                  initialRating: rating,
-                  minRating: 1,
-                  direction: Axis.horizontal,
-                  allowHalfRating: false,
-                  itemCount: 5,
-                  itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
-                  onRatingUpdate: (value) {
-                    rating = value;
-                  },
-                  ratingWidget: RatingWidget(
-                    full: Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                      size: AppFontSize.fontSize_20,
-                    ),
-                    half: Icon(Icons.star_half, // لن تُستخدم لأن allowHalfRating = false
-                        color: Colors.amber, size: AppFontSize.fontSize_20),
-                    empty: Icon(Icons.star_border,
-                        color: Colors.amber, size: AppFontSize.fontSize_20),
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              backgroundColor: LbeenaColors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              title: Text(
+                'قيّم الشركة',
+                style: TextStyle(
+                  color: LbeenaColors.tealDark,
+                  fontFamily: 'Cairo',
+                  fontWeight: FontWeight.w800,
+                  fontSize: 16,
+                ),
+              ),
+              content: RatingBar(
+                initialRating: rating,
+                minRating: 1,
+                direction: Axis.horizontal,
+                allowHalfRating: false,
+                itemCount: 5,
+                itemPadding: const EdgeInsets.symmetric(horizontal: 2),
+                onRatingUpdate: (value) {
+                  rating = value;
+                },
+                ratingWidget: RatingWidget(
+                  full: Icon(Icons.star, color: LbeenaColors.star, size: 28),
+                  half: Icon(Icons.star_half, color: LbeenaColors.star, size: 28),
+                  empty: Icon(
+                    Icons.star_border,
+                    color: LbeenaColors.star,
+                    size: 28,
                   ),
                 ),
-
-                actions: [
-                  InkWell(
-                    child: textNormal(
-                      text: AppLocalizations.of(context)!.cancel,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    AppLocalizations.of(context)!.cancel,
+                    style: const TextStyle(
+                      color: LbeenaColors.muted,
+                      fontFamily: 'Cairo',
+                      fontWeight: FontWeight.w700,
                     ),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                    },
                   ),
-                  sizeWidthNormal(width: 2.w),
-                  InkWell(
-                    child: textNormal(text: 'تأكيّد'),
-                    onTap: () async {
-                      // Save the rating                        // and close the dialog box
-                      Navigator.of(context).pop();
-
-                      cubit.evaluateCompany(
-                          companyId: int.parse(companyId.toString()),
-                          value: rating);
-                    },
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    cubit.evaluateCompany(
+                      companyId: int.parse(companyId.toString()),
+                      value: rating,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: LbeenaColors.orange,
+                    foregroundColor: LbeenaColors.white,
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                ],
-              );
-            });
+                  child: const Text(
+                    'تأكيد',
+                    style: TextStyle(
+                      fontFamily: 'Cairo',
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
       },
     );
   }
-
-  bool isLoadingShareAds = false;
 
   Future<void> shareCompany({
     required String nameCompany,
@@ -439,15 +441,21 @@ class _UserMetricsCardState extends State<UserMetricsCard> {
       setState(() {
         isLoadingShareAds = true;
       });
-      String nameAdsUrl = accountType == 'individual' ? 'اسم المستخدم: $nameCompany\n':'اسم الشركة: $nameCompany\n';
-      String urlShare = accountType == 'individual' ?  '${AppEndpoints.deepLinksUrl}/user/$idCompany':  '${AppEndpoints.deepLinksUrl}/company/$idCompany';
+      String nameAdsUrl = accountType == 'individual'
+          ? 'اسم المستخدم: $nameCompany\n'
+          : 'اسم الشركة: $nameCompany\n';
+      String urlShare = accountType == 'individual'
+          ? '${AppEndpoints.deepLinksUrl}/user/$idCompany'
+          : '${AppEndpoints.deepLinksUrl}/company/$idCompany';
       String url = imageUrl;
       print(imageUrl);
       if (imageUrl != 'null') {
         String filename = basename(url);
         Dio dio = Dio();
-        Response response = await dio.get(url,
-            options: Options(responseType: ResponseType.bytes));
+        Response response = await dio.get(
+          url,
+          options: Options(responseType: ResponseType.bytes),
+        );
         Directory tempDir = await getTemporaryDirectory();
         String tempPath = tempDir.path;
         File file = File('$tempPath/$filename.jpg');
@@ -455,8 +463,10 @@ class _UserMetricsCardState extends State<UserMetricsCard> {
         file.writeAsBytesSync(response.data);
         print(file.existsSync());
         if (file.existsSync() == true) {
-          await Share.shareXFiles([XFile(file.path)],
-              text: nameAdsUrl + urlShare);
+          await Share.shareXFiles(
+            [XFile(file.path)],
+            text: nameAdsUrl + urlShare,
+          );
         }
       } else {
         await Share.share(nameAdsUrl + urlShare);
@@ -465,7 +475,6 @@ class _UserMetricsCardState extends State<UserMetricsCard> {
       setState(() {
         isLoadingShareAds = false;
       });
-      // print('ssssssssssssssssss');
     } catch (e) {
       setState(() {
         isLoadingShareAds = false;

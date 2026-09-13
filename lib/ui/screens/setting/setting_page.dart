@@ -23,6 +23,9 @@ import '../../theme/cubit/them_app_cubit.dart';
 import '../../theme/lbeena_colors.dart';
 import '../../widget/url_webview.dart';
 import '../auth/login/login_screen.dart';
+import '../cart/cart_page.dart';
+import '../cart/cubit/cart_cubit.dart';
+import '../cart/cubit/cart_state.dart';
 import '../cart/order_page.dart';
 import '../home/cubit/cubit.dart';
 import 'customer_serves_page.dart';
@@ -110,6 +113,20 @@ class _SettingPageState extends State<SettingPage> {
                           label: 'المفضلة',
                           onTap: () => navigatorToPush(
                               context: context, pageName: FavoriteScreen()),
+                        ),
+                        _divider(),
+                        BlocBuilder<CartCubit, CartState>(
+                          builder: (context, _) {
+                            final count = CartCubit.get(context).lengthListCart;
+                            return _tile(
+                              icon: FontAwesomeIcons.cartShopping,
+                              label: count > 0 ? 'السلة ($count)' : 'السلة',
+                              onTap: () => navigatorToPush(
+                                context: context,
+                                pageName: CartPage(isShowBack: true),
+                              ),
+                            );
+                          },
                         ),
                         _divider(),
                         _tile(

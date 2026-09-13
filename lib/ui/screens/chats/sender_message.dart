@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:just_audio_background/just_audio_background.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:syrians_in_uae/ui/screens/chats/test_code2.dart';
+import 'package:syrians_in_uae/ui/theme/lbeena_colors.dart';
 import 'package:syrians_in_uae/ui/theme/theme_helper.dart';
 import 'package:syrians_in_uae/widgets/custom_image_view.dart';
 import 'package:flutter/material.dart';
@@ -224,7 +225,7 @@ class _SenderMessageWidgetState extends State<SenderMessageWidget>   with Widget
                 // alignment: Alignment.topRight,
                 // margin: EdgeInsets.only(top: 20),
 
-                backGroundColor: appTheme.deepPurpleA10001,
+                backGroundColor: LbeenaColors.teal,
                 child:
                     // data?.type == "text"
                     //     ?
@@ -237,7 +238,11 @@ class _SenderMessageWidgetState extends State<SenderMessageWidget>   with Widget
                             child: Container(
                                 width: 80 .w,
                                 height: 20.h,
-                                child: textNormal(text: widget.dataMessages!.senderName.toString(),fontSize: 10)
+                                child: textNormal(
+                                  text: widget.dataMessages!.senderName.toString(),
+                                  fontSize: 10,
+                                  color: LbeenaColors.white,
+                                )
                             ),
                           )
 

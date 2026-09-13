@@ -514,7 +514,7 @@ class _AddRemindersPageState extends State<AddRemindersPage> {
                   fillColor: appTheme.lightBlue100,
                 ),
                 validator: (value) =>
-                    value == null ? "يجب أن تختار إمارة" : null,
+                    value == null ? "يجب أن تختار نوع التذكير" : null,
                 dropdownColor: appTheme.lightBlue100,
                 hint: textNormal(text: 'تكرار تذكير كل'),
                 value: selectedTypeReminder ?? '',
@@ -569,7 +569,7 @@ class _AddRemindersPageState extends State<AddRemindersPage> {
     return CustomTextFormField(
       width: 230.w,
       controller: mobileNoController,
-      hintText: "504501535",
+      hintText: LbeenaPhoneCountry.phoneHint,
       autofocus: false,
       isMobile: true,
       // alignment: Alignment.center,

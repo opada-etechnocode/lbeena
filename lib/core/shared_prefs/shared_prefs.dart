@@ -36,6 +36,10 @@ class SharedPrefs {
   ReadWriteValue('isUgc${AppConsts.appName}', false);
   ReadWriteValue<String> yourCountry =
   ReadWriteValue('yourCountry${AppConsts.appName}', 'دمشق');
+  ReadWriteValue<String> exchangeMarket =
+      ReadWriteValue('exchangeMarket${AppConsts.appName}', 'damascus');
+  ReadWriteValue<String> extraCurrency =
+      ReadWriteValue('extraCurrency${AppConsts.appName}', 'AED');
   ReadWriteValue<String?> statusUser =
   ReadWriteValue('statusUser${AppConsts.appName}', null);
   ReadWriteValue<String?> passwordToken =
@@ -352,6 +356,22 @@ class SharedPrefs {
   }
   getYourCountry() {
     return yourCountry.val ;
+  }
+
+  setExchangeMarket(String value) {
+    exchangeMarket.val = value;
+  }
+
+  String getExchangeMarket() {
+    return exchangeMarket.val;
+  }
+
+  setExtraCurrency(String value) {
+    extraCurrency.val = value;
+  }
+
+  String getExtraCurrency() {
+    return extraCurrency.val;
   }
   setCounterNotifications(int? counter) {
     // print("SetToken : $counter");

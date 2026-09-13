@@ -557,7 +557,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return CustomTextFormField(
       fillColor: LbeenaColors.fieldFill,
       controller: mobileNoController,
-      hintText: "504501535",isMobile: true,
+      hintText: LbeenaPhoneCountry.phoneHint,isMobile: true,
       autofocus: false,
       textInputAction: TextInputAction.done,
       textInputType: TextInputType.phone,

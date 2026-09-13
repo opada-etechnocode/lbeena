@@ -136,7 +136,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get license_number => 'رقم الرخصة';
 
   @override
-  String get emirate => 'الإمارة';
+  String get emirate => 'المحافظة';
 
   @override
   String get upload_license => 'تحميل الرخصة التجارية';

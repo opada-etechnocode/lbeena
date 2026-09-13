@@ -47,7 +47,6 @@ import '../../../data/models/home_page/categories_main.dart';
 import '../../../data/models/home_page/banner_product_model.dart';
 import '../../../data/models/home_page/home_page_model.dart';
 import '../../../core/utils/endpoints.dart';
-import '../../../widgets/FloatingActionButtonWidget.dart';
 import '../../../widgets/adaptive_status_bar.dart';
 import '../../../widgets/custom_page_shimmer.dart';
 import '../../../widgets/custom_image_view.dart';
@@ -61,6 +60,8 @@ import '../../theme/cubit/them_app_cubit.dart';
 import '../../theme/theme_helper.dart';
 import '../Notification/Notification.dart';
 import '../aladhan_time/aladhan_time_card.dart';
+import '../exchange_rates/cubit/exchange_rates_cubit.dart';
+import '../exchange_rates/exchange_rates_card.dart';
 import '../cart/cart_page.dart';
 import '../cart/cubit/cart_cubit.dart';
 import '../chats/cubit/apis_chat_firebase.dart';
@@ -260,8 +261,6 @@ class _HomePageState extends State<HomePage>
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         resizeToAvoidBottomInset: false,
-        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-        floatingActionButton: FloatingActionButtonWidget(),
         body: GestureDetector(
           onTap: () {
             FocusScope.of(context).unfocus();
@@ -395,6 +394,10 @@ class _HomePageState extends State<HomePage>
                             selectScreen: selectScreen,
                             chatBloc: chatBlocFirebase,
                             onSelect: (index) {
+                              if (index == 4) {
+                                _openCreateAd(context);
+                                return;
+                              }
                               setState(() {
                                 selectScreen = index;
                               });
@@ -428,6 +431,24 @@ class _HomePageState extends State<HomePage>
         }
       }
     });
+  }
+
+  void _openCreateAd(BuildContext context) {
+    if (DIManager.findDep<SharedPrefs>().getToken() == null) {
+      navigatorToPush(context: context, pageName: LoginScreen());
+      return;
+    }
+    if (DIManager.findDep<SharedPrefs>().getStatusUser() == '2') {
+      SnackBarHelper.mySnackBarError(
+          ' تم رفض حسابك الرجاء مراجعة الدعم ..', context);
+      return;
+    }
+    if (DIManager.findDep<SharedPrefs>().getStatusUser() == '0') {
+      SnackBarHelper.mySnackBarPending(
+          'حساب شركتك قيد المراجعة يرجى الانتظار ..', context);
+      return;
+    }
+    navigatorToPush(context: context, pageName: const CreatePost());
   }
 
   List<Widget> widgetApp = [
@@ -479,7 +500,9 @@ class _HomePageState extends State<HomePage>
                                 homePageModel: homePageModel
                             ),
                             ),
+                            const SizedBox(height: 12),
                             const AladhanTimeCardWidget(),
+                            const ExchangeRatesCardWidget(),
 
                             homePageModel!.data!.adsBanner.isNotEmpty
                                 ? sizeHeightNormal(height: 8)
@@ -802,6 +825,7 @@ class _HomePageState extends State<HomePage>
 
   onRefreshHomePage(context) async {
     await HomeCubit.get(context).getAllDataInHomePage(isNeedRefresh: false);
+    ExchangeRatesCubit.get(context).getSnapshot();
 
     ///RadioWork
     // await HomeCubit.get(context).playNowRadio();
@@ -848,7 +872,7 @@ class _HomePageState extends State<HomePage>
                 CustomImageView(
                   imagePath: ImageConstant.logoAppbarWhite,
                   height: 58,
-                  width: 150,
+
                   fit: BoxFit.contain,
                 ),
                 const Spacer(),

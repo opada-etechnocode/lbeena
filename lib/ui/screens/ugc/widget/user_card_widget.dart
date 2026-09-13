@@ -1,17 +1,12 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:syrians_in_uae/core/utils/size_utils.dart';
-import '../../../../core/constants/app_font.dart';
+import 'package:syrians_in_uae/ui/theme/lbeena_colors.dart';
 import '../../../../core/di/di_manager.dart';
 import '../../../../core/shared_prefs/shared_prefs.dart';
 import '../../../../core/utils/endpoints.dart';
@@ -19,9 +14,6 @@ import '../../../../core/utils/image_constant.dart';
 import '../../../../data/models/ugc/ugc_users_model.dart';
 import '../../../../widgets/components.dart';
 import '../../../../widgets/custom_image_view.dart';
-import '../../../theme/app_decoration.dart';
-import '../../../theme/theme_helper.dart';
-import '../../../widget/url_webview.dart';
 import '../../company/widget/following_users_page.dart';
 
 class UserCardWidget extends StatefulWidget {
@@ -34,337 +26,314 @@ class UserCardWidget extends StatefulWidget {
 }
 
 class _UserCardWidgetState extends State<UserCardWidget> {
-  //  color: widget.data.gender == 'male'
-  //               ? Colors.lightBlue.withOpacity(.6)
-  //               : Colors.pinkAccent.withOpacity(.6),
+  bool isLoadingShareAds = false;
+
+  bool get _isDark => DIManager.findDep<SharedPrefs>().getThemeApp() == 'd';
+
+  bool get _isFemale =>
+      widget.data.gender.toString().toLowerCase() == 'female';
+
+  String get _photo {
+    final pic = widget.data.profilePic?.toString();
+    if (pic == null || pic == 'null' || pic.isEmpty) {
+      return ImageConstant.imgPerson;
+    }
+    if (pic.contains('http')) return pic;
+    return AppEndpoints.baseUrlWithoutApi + pic;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final completion = _calculateProfileCompletion();
+    final titleColor = _isDark ? LbeenaColors.white : LbeenaColors.tealDark;
+    final muted = _isDark ? LbeenaColors.fieldHint : LbeenaColors.muted;
+
     return Container(
-      // width: 350.w,
-      decoration:
-          AppDecoration.itemIcon.copyWith(color: appTheme.backgroundUGC),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            userMetricsCard(context),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      decoration: LbeenaColors.cardWith(
+        color: _isDark ? LbeenaColors.cardDark : LbeenaColors.white,
+      ),
+      padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _avatar(completion),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.data.userName ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: titleColor,
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Cairo',
+                        fontSize: 14,
+                      ),
+                    ),
+                    if (widget.data.categoryName != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        widget.data.categoryName!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: muted,
+                          fontFamily: 'Cairo',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        ...List.generate(5, (index) {
+                          final rating =
+                              double.tryParse(widget.data.rating ?? '0') ?? 0;
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 1),
+                            child: FaIcon(
+                              index < rating.round()
+                                  ? FontAwesomeIcons.solidStar
+                                  : FontAwesomeIcons.star,
+                              size: 11,
+                              color: LbeenaColors.star,
+                            ),
+                          );
+                        }),
+                        const SizedBox(width: 6),
+                        Text(
+                          widget.data.rating ?? '0',
+                          style: TextStyle(
+                            color: muted,
+                            fontFamily: 'Cairo',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  shareCompany(
+                    idCompany: widget.data.userId.toString(),
+                    imageUrl: widget.data.profilePic != null
+                        ? (widget.data.profilePic.toString().contains('http')
+                            ? widget.data.profilePic.toString()
+                            : AppEndpoints.baseUrlWithoutApi +
+                                widget.data.profilePic.toString())
+                        : 'null',
+                    nameCompany: widget.data.userName ?? '',
+                    accountType: widget.data.accountType.toString(),
+                  );
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: _isDark
+                        ? LbeenaColors.surfaceDark
+                        : LbeenaColors.iconTile,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Center(
+                    child: isLoadingShareAds
+                        ? SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: LbeenaColors.orange,
+                            ),
+                          )
+                        : FaIcon(
+                            FontAwesomeIcons.shareNodes,
+                            size: 14,
+                            color: LbeenaColors.teal,
+                          ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: [
+              _chip(
+                icon: _isFemale
+                    ? FontAwesomeIcons.venus
+                    : FontAwesomeIcons.mars,
+                label: _isFemale ? 'أنثى' : 'ذكر',
+                color: LbeenaColors.orange,
+              ),
+              if ((widget.data.cityName ?? '').isNotEmpty)
+                _chip(
+                  icon: FontAwesomeIcons.locationDot,
+                  label: widget.data.cityName!,
+                  color: LbeenaColors.teal,
+                ),
+              if (widget.data.hasMoreThan3000.toString() == '1')
+                _chip(
+                  icon: FontAwesomeIcons.fire,
+                  label: '3K+',
+                  color: LbeenaColors.orange,
+                  filled: true,
+                ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Container(
+            decoration: BoxDecoration(
+              color: _isDark ? LbeenaColors.surfaceDark : LbeenaColors.iconTile,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Row(
               children: [
-                profileOverviewCompany(
-                    titleTop: '${widget.data.followersCount ?? 0}',
-                    colorBackGround: appTheme.white2,
-                    titleBottom: 'متابع',
-                    onTap: () {
-                      navigatorToPush(
-                          context: context,
-                          pageName: FollowingUsersPage(
-                            titleAppBar: 'متابع',
-                            isFollowers: true,
-                            userId: widget.data.userId!,
-                          ));
-                    }),
-                profileOverviewCompany(
-                    titleTop: '${widget.data.followingCount ?? 0}',
-                    titleBottom: 'يتابع',
-                    colorBackGround: appTheme.white2,
-                    onTap: () {
-                      navigatorToPush(
-                          context: context,
-                          pageName: FollowingUsersPage(
-                            titleAppBar: 'يتابع',
-                            isFollowers: false,
-                            userId: widget.data.userId!,
-                          ));
-                    }),
-                profileOverviewCompany(
-                    titleTop: '${widget.data.adsCount ?? '0'}',
-                    titleBottom: 'إعلانات',
-                    colorBackGround: appTheme.white2,
-                    onTap: () {}),
-                profileOverviewCompany(
-                    titleTop: '${widget.data.postsCount ?? '0'}',
-                    titleBottom: 'منشورات',
-                    colorBackGround: appTheme.white2,
-                    onTap: () {}),
+                _stat(
+                  widget.data.followersCount ?? '0',
+                  'متابع',
+                  onTap: () {
+                    navigatorToPush(
+                      context: context,
+                      pageName: FollowingUsersPage(
+                        titleAppBar: 'متابع',
+                        isFollowers: true,
+                        userId: widget.data.userId!,
+                      ),
+                    );
+                  },
+                ),
+                _stat(
+                  widget.data.followingCount ?? '0',
+                  'يتابع',
+                  onTap: () {
+                    navigatorToPush(
+                      context: context,
+                      pageName: FollowingUsersPage(
+                        titleAppBar: 'يتابع',
+                        isFollowers: false,
+                        userId: widget.data.userId!,
+                      ),
+                    );
+                  },
+                ),
+                _stat(widget.data.adsCount ?? '0', 'إعلانات', onTap: () {}),
+                _stat(widget.data.postsCount ?? '0', 'منشورات', onTap: () {}),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8, ),
-              child: Row(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal:widget.data.gender.toString().toLowerCase() =='female'? 5:3, vertical:widget.data.gender.toString().toLowerCase() =='female'? 5:3),
-                    decoration: AppDecoration.outlineButtonLite.copyWith(
-                      color: appTheme.whiteA700,
-                      border: Border.all(
-                        color:  widget.data.gender.toString().toLowerCase() =='female'? Colors.red:Colors.blue,),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          spreadRadius: 0.2,
-                          blurRadius: 3,
-                          offset: Offset(0, 2), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                  child: CustomImageView(
-                    imagePath: widget.data.gender.toString().toLowerCase() =='female'?ImageConstant.femaleIcon:ImageConstant.maleIcon,
-                    color: widget.data.gender.toString().toLowerCase() =='female'? Colors.red:Colors.blue,
-                  ),),
-                  sizeWidthNormal(),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-                    decoration: AppDecoration.outlineButtonLite.copyWith(
-                      color: appTheme.whiteA700,
-                      border: Border.all(color: appTheme.greenColor),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          spreadRadius: 0.2,
-                          blurRadius: 3,
-                          offset: Offset(0, 2), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        CustomImageView(
-                          imagePath: ImageConstant.locationIcon,
-                        ),
-                        sizeWidthNormal(width: 5),
-                        textNormal(
-                            text: widget.data.cityName ?? '',
-                            fontSize: AppFontSize.fontSize_10,
-                            fontWeight: FontWeight.bold,
-                            color: appTheme.greenColor),
-                      ],
-                    ),
-                  ),
-                ],
+          ),
+          const SizedBox(height: 10),
+          if (widget.data.membershipNumber != null)
+            Text(
+              'رقم العضوية: ${widget.data.membershipNumber}',
+              style: TextStyle(
+                color: LbeenaColors.teal,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w700,
+                fontSize: 12,
               ),
             ),
-            // _buildProfileCompletionCircle(),
-            userRatingAndBusinessName(context),
-            SizedBox(height: 4),
-            userEngagementInfo(context),
+          if (widget.data.createdAt != null) ...[
+            const SizedBox(height: 2),
+            Text(
+              'تاريخ العضوية: ${formatDateWithArabicMonth(widget.data.createdAt!)}',
+              style: TextStyle(
+                color: muted,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w600,
+                fontSize: 11,
+              ),
+            ),
           ],
-        ),
+          if ((widget.data.note ?? '').trim().isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Text(
+              widget.data.note!,
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                color: titleColor,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+                height: 1.4,
+              ),
+            ),
+          ],
+          if (widget.data.links.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: widget.data.links.map(_linkButton).toList(),
+            ),
+          ],
+        ],
       ),
     );
   }
 
-  Widget userMetricsCard(
-    context,
-  ) {
-    double completionPercentage = _calculateProfileCompletion();
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Container(
-          width: 65,
-          height: 85,
-          child: Center(
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                SizedBox(
-                  width: 58,
-                  height: 58,
-                  child: CircularProgressIndicator(
-                    value: completionPercentage / 100,
-                    strokeWidth: 3,
-                    backgroundColor: Colors.grey[200],
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      completionPercentage >= 90
-                          ? Colors.green
-                          : completionPercentage >= 70
-                              ? Colors.blue
-                              : Colors.orange,
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 55,
-                  height: 55,
-                  // color: Colors.green,
-                  decoration: AppDecoration.outlineCircular4,
-                  // child: Image.asset(
-                  //     ImageConstant.imgLogoWhite13,),
-                  child: CustomImageView(
-                    imagePath: widget.data.profilePic.toString() == 'null'
-                        ? ImageConstant.imgPerson
-                        : widget.data.profilePic.toString().contains('http')
-                            ? widget.data.profilePic.toString()
-                            : AppEndpoints.baseUrlWithoutApi +
-                                widget.data.profilePic.toString(),
-                    width: 55,
-                    height: 55,
-                    alignment: Alignment.center,
-                    radius: BorderRadius.circular(30),
-                    fit: BoxFit.cover,
-                    placeHolder: ImageConstant.imgPerson,
-                  ),
-                ),
-                Positioned(
-                  right: 2,
-                  top: 0,
-                  child: Container(
-                    decoration: AppDecoration.outlineCircular3.copyWith(
-                        borderRadius: BorderRadius.all(Radius.circular(66)),
-                        boxShadow: []),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Text(
-                        '${completionPercentage.round()}%',
-                        style: TextStyle(
-                          fontSize: 7,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        // textNormal(text:  widget.data.hasMoreThan3000.toString()),
-        sizeWidthNormal(),
-        Padding(
-          padding: EdgeInsets.only(top: 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                widget.data.userName.toString() ?? '',
-                style: themeLite.textTheme.titleSmall!
-                    .copyWith(fontSize: 13.fSize),
-              ),
-              Row(
-                children: [
-                  widget.data.categoryName == null
-                      ? Container()
-                      : textNormal(
-                          text: widget.data.categoryName ?? '',
-                          fontSize: AppFontSize.fontSize_10,
-                          color: Colors.grey),
-                  // widget.data.categoryName == null
-                  //     ? Container()
-                  //     : textNormal(
-                  //     text: ' ,',
-                  //     fontSize: AppFontSize.fontSize_10,
-                  //     color: appTheme.greenColor),
-                  // widget.data.cityName == null
-                  //     ? Container()
-                  //     : textNormal(
-                  //     text: widget.data.cityName ?? '',
-                  //     fontSize: AppFontSize.fontSize_10,
-                  //     color: appTheme.greenColor),
-                  sizeWidthNormal(),
-                  Container(
-                    child: RatingBarIndicator(
-                      rating:
-                          double.parse(widget.data.rating ?? '0').toDouble(),
-                      itemCount: 5,
-                      itemSize: 20,
-                      unratedColor: Color(0xffc3c3c3),
-                      direction: Axis.horizontal,
-                      itemBuilder: (context, index) => CustomImageView(
-                        imagePath: ImageConstant.starIcon,
-                        width: 20,
-                        height: 20,
-                        color: Colors.yellow,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        Spacer(),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 25),
-          child: InkWell(
-            onTap: () {
-              shareCompany(
-                idCompany: widget.data.userId.toString(),
-                imageUrl: widget.data.profilePic != null
-                    ? (widget.data.profilePic.toString().contains('http')
-                        ? widget.data.profilePic.toString()
-                        : AppEndpoints.baseUrlWithoutApi +
-                            widget.data.profilePic.toString())
-                    : 'null',
-                nameCompany: widget.data.userName.toString() ?? '',
-                accountType: widget.data.accountType.toString(),
-              );
-            },
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Container(
-                  decoration:
-                      AppDecoration.itemIcon.copyWith(color: appTheme.white2),
-                  width: 35,
-                  height: 35,
-                ),
-                CustomImageView(
-                  imagePath: ImageConstant.shareIcon,
-                  width: 18,
-                  height: 18,
-                  fit: BoxFit.contain,
-                  color: Colors.grey,
-                  // color: appTheme.white,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  //      Padding(
-
-  bool isLoadingShareAds = false;
-
-  Widget _buildProfileCompletionCircle() {
-    // حساب نسبة الإكتمال
-    double completionPercentage = _calculateProfileCompletion();
-
-    return Center(
+  Widget _avatar(double completion) {
+    return SizedBox(
+      width: 62,
+      height: 62,
       child: Stack(
         alignment: Alignment.center,
         children: [
           SizedBox(
-            width: 30.w,
-            height: 30.w,
+            width: 62,
+            height: 62,
             child: CircularProgressIndicator(
-              value: completionPercentage / 100,
+              value: completion / 100,
               strokeWidth: 3,
-              backgroundColor: Colors.grey[200],
+              backgroundColor: _isDark
+                  ? LbeenaColors.surfaceDark
+                  : LbeenaColors.iconTile,
               valueColor: AlwaysStoppedAnimation<Color>(
-                completionPercentage >= 90
-                    ? Colors.green
-                    : completionPercentage >= 70
-                        ? Colors.blue
-                        : Colors.orange,
+                completion >= 90 ? LbeenaColors.teal : LbeenaColors.orange,
               ),
             ),
           ),
-          Text(
-            '${completionPercentage.round()}%',
-            style: TextStyle(
-              fontSize: 10.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+          CustomImageView(
+            imagePath: _photo,
+            width: 50,
+            height: 50,
+            alignment: Alignment.center,
+            radius: BorderRadius.circular(25),
+            fit: BoxFit.cover,
+            placeHolder: ImageConstant.imgPerson,
+          ),
+          Positioned(
+            left: 0,
+            bottom: 0,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+              decoration: BoxDecoration(
+                color: LbeenaColors.orange,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                '${completion.round()}%',
+                style: const TextStyle(
+                  fontSize: 8,
+                  fontWeight: FontWeight.w800,
+                  color: LbeenaColors.white,
+                  fontFamily: 'Cairo',
+                ),
+              ),
             ),
           ),
         ],
@@ -372,22 +341,109 @@ class _UserCardWidgetState extends State<UserCardWidget> {
     );
   }
 
+  Widget _chip({
+    required FaIconData icon,
+    required String label,
+    required Color color,
+    bool filled = false,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      decoration: BoxDecoration(
+        color: filled
+            ? color
+            : color.withValues(alpha: _isDark ? 0.18 : 0.1),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FaIcon(icon, size: 11, color: filled ? LbeenaColors.white : color),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: TextStyle(
+              color: filled ? LbeenaColors.white : color,
+              fontFamily: 'Cairo',
+              fontWeight: FontWeight.w700,
+              fontSize: 11,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _stat(String value, String label, {required VoidCallback onTap}) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Column(
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                color: _isDark ? LbeenaColors.white : LbeenaColors.tealDark,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w800,
+                fontSize: 13,
+              ),
+            ),
+            Text(
+              label,
+              style: TextStyle(
+                color: _isDark ? LbeenaColors.fieldHint : LbeenaColors.muted,
+                fontFamily: 'Cairo',
+                fontWeight: FontWeight.w600,
+                fontSize: 10,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _linkButton(String link) {
+    return InkWell(
+      onTap: () {
+        if (link.contains('http')) {
+          launchURL(link);
+        } else {
+          launchURL('https://$link');
+        }
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: 36,
+        height: 36,
+        decoration: BoxDecoration(
+          color: _isDark ? LbeenaColors.surfaceDark : LbeenaColors.iconTile,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Center(
+          child: FaIcon(
+            getIcon(link),
+            size: 15,
+            color: LbeenaColors.teal,
+          ),
+        ),
+      ),
+    );
+  }
+
   double _calculateProfileCompletion() {
     double completion = 0;
 
-    // 40% إذا كانت الصورة موجودة
     if (widget.data.profilePic != null && widget.data.profilePic!.isNotEmpty) {
       completion += 40;
     }
 
-    // حساب نسبة الروابط (60% موزعة على الروابط)
-    int linkCount = widget.data.links.length ?? 0;
-    double linksPercentage = (linkCount / 4) * 60; // 4 روابط = 100%
-
-    // لا تتجاوز النسبة 60% للروابط
+    int linkCount = widget.data.links.length;
+    double linksPercentage = (linkCount / 4) * 60;
     completion += linksPercentage.clamp(0, 60);
 
-    // لا تتجاوز النسبة 100%
     return completion.clamp(0, 100);
   }
 
@@ -430,125 +486,11 @@ class _UserCardWidgetState extends State<UserCardWidget> {
       setState(() {
         isLoadingShareAds = false;
       });
-      // print('ssssssssssssssssss');
     } catch (e) {
       setState(() {
         isLoadingShareAds = false;
       });
       print("Error in Share Ads : $e");
     }
-  }
-
-  Widget userRatingAndBusinessName(context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [],
-        ),
-        Container(),
-      ],
-    );
-  }
-
-  bool isOwnerAccount() {
-    return DIManager.findDep<SharedPrefs>().getUserID() ==
-            widget.data.userId.toString()
-        ? true
-        : false;
-  }
-
-  Widget descUser() {
-    return widget.data.note == null
-        ? Container()
-        : textNormal(
-            text: widget.data.note ?? " ",
-            maxLines: 3,
-            overflow: TextOverflow.ellipsis,
-            fontSize: AppFontSize.fontSize_10,
-            color: appTheme.deepPurpleA10001,
-          );
-  }
-
-  Widget userEngagementInfo(context) {
-    print('170.w : ${170.sp}');
-    print('widget : ${MediaQuery.sizeOf(context).width}');
-    print('widget : ${MediaQuery.sizeOf(context).width * 0.5}');
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            sizeHeightNormal(
-                height: 5
-            ),
-            textNormal(
-              text: 'رقم العضوية: ${widget.data.membershipNumber.toString()}',
-              fontWeight: FontWeight.w400,
-
-              color: appTheme.greenColor,
-            ),
-            sizeHeightNormal(
-              height: 5
-            ),
-            textNormal(
-                text:
-                    'تاريخ العضوية: ${formatDateWithArabicMonth(widget.data.createdAt!)}',
-                color: Color(0xff8B8B8B),
-                fontWeight: FontWeight.w400),
-            sizeHeightNormal(
-                height: 5
-            ),
-            descUser(),
-
-            containerLinks(links: widget.data.links),
-            sizeHeightNormal(),
-          ],
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            if (widget.data.hasMoreThan3000.toString() == '1') ...{
-              // SizedBox(width: 10.w,),
-
-              Padding(
-                padding: const EdgeInsets.only(bottom: 5),
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                  decoration: AppDecoration.outlineButtonLite.copyWith(
-                    color: appTheme.whiteA700,
-                    border: Border.all(color: appTheme.greenColor),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        spreadRadius: 0.2,
-                        blurRadius: 3,
-                        offset: Offset(0, 2), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: textNormal(
-                        text: '3K Followers+',
-                        fontSize: 12,
-                        color: appTheme.greenColor),
-                ),
-              ),
-            } else ...{
-              Container(
-                width: 90,
-                height: 10,
-              )
-            }
-          ],
-        ),
-      ],
-    );
   }
 }

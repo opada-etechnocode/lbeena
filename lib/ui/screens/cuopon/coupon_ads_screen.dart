@@ -20,6 +20,7 @@ import '../../../core/di/di_manager.dart';
 import '../../../core/helper/snack_bar_helper.dart';
 import '../../../core/shared_prefs/shared_prefs.dart';
 import '../../../core/utils/image_constant.dart';
+import '../../../core/utils/lbeena_menu.dart';
 import '../../../data/models/add_ad_new/category_model.dart';
 import '../../../data/models/add_ad_new/cities_model.dart';
 import '../../../data/models/home_page/banner_product_model.dart';
@@ -127,6 +128,7 @@ class _CouponAdsScreenState extends State<CouponAdsScreen> {
                                       EdgeInsets.symmetric(horizontal: 5.w),
                                   child: PopupMenuButton<Cities>(
                                     color: appTheme.whiteA700,
+                                    constraints: LbeenaMenu.constraints,
                                     onSelected: (Cities newValue) {
                                       setState(() {
                                         selectedEmirate = newValue.title;
@@ -162,7 +164,7 @@ class _CouponAdsScreenState extends State<CouponAdsScreen> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                              selectedEmirate ?? "اختر الإمارة",
+                                              selectedEmirate ?? "اختر المحافظة",
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .displaySmall),

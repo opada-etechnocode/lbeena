@@ -13,6 +13,7 @@ import 'package:syrians_in_uae/widgets/custom_text_form_field.dart';
 
 import '../../../core/di/di_manager.dart';
 import '../../../core/shared_prefs/shared_prefs.dart';
+import '../../../core/utils/lbeena_menu.dart';
 import '../../../data/models/add_ad_new/category_model.dart';
 import '../../../data/models/add_ad_new/cities_model.dart';
 import '../../../data/models/home_page/categories_main.dart';
@@ -163,6 +164,7 @@ class _SubscribeSgcPageState extends State<SubscribeSgcPage> {
                                 padding: EdgeInsets.symmetric(horizontal: 5.w),
                                 child: PopupMenuButton<Cities>(
                                   color: appTheme.whiteA700,
+                                  constraints: LbeenaMenu.constraints,
                                   onSelected: (Cities newValue) {
                                     setState(() {
                                       selectedEmirate = newValue.title;
@@ -197,7 +199,7 @@ class _SubscribeSgcPageState extends State<SubscribeSgcPage> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                          selectedEmirate ?? "اختر الإمارة",
+                                          selectedEmirate ?? "اختر المحافظة",
                                           style: Theme.of(context)
                                               .textTheme
                                               .displaySmall!

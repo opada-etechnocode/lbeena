@@ -16,6 +16,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/constants/app_font.dart';
 import '../../../core/utils/image_constant.dart';
+import '../../../core/utils/lbeena_menu.dart';
 import '../../../data/models/add_ad_new/category_details_model.dart';
 import '../../../data/models/add_ad_new/category_model.dart';
 import '../../../data/models/add_ad_new/cities_model.dart';
@@ -194,6 +195,7 @@ class _PartsMainNewPageState extends State<PartsMainNewPage> {
                                                 horizontal: 5.w),
                                             child: PopupMenuButton<Cities>(
                                               color: appTheme.whiteA700,
+                                              constraints: LbeenaMenu.constraints,
                                               onSelected: (Cities newValue) {
                                                 setState(() {
                                                   selectedEmara =
@@ -235,7 +237,7 @@ class _PartsMainNewPageState extends State<PartsMainNewPage> {
                                                   children: [
                                                     Text(
                                                         selectedEmara ??
-                                                            "اختر الإمارة",
+                                                            "اختر المحافظة",
                                                         style: Theme.of(context)
                                                             .textTheme
                                                             .displaySmall),

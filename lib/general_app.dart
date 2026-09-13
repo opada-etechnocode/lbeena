@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:syrians_in_uae/ui/app_general_bloc/app_general_cubit.dart';
 import 'package:syrians_in_uae/ui/screens/aladhan_time/cubit/aladhan_time_cubit.dart';
+import 'package:syrians_in_uae/ui/screens/exchange_rates/cubit/exchange_rates_cubit.dart';
 import 'package:syrians_in_uae/ui/screens/auth/login/login_screen.dart';
 import 'package:syrians_in_uae/ui/screens/auth/login/model_home_page.dart';
 import 'package:syrians_in_uae/ui/screens/cart/cubit/cart_cubit.dart';
@@ -66,6 +67,10 @@ if(DIManager.findDep<SharedPrefs>().getToken()  == null){
 
   BlocProvider(
     create: (context) => AladhanTimeCubit()..getPrayerTimes(DIManager.findDep<SharedPrefs>().getYourCountry()),
+    lazy: false,
+  ),
+  BlocProvider(
+    create: (context) => ExchangeRatesCubit()..loadSaved(),
     lazy: false,
   ),
 ];

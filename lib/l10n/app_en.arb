@@ -42,7 +42,7 @@
   "company_name": "Company name (as in the license)",
   "owner_name": "Owner Name",
   "license_number": "License number",
-  "emirate": "Emirate",
+  "emirate": "Governorate",
   "upload_license": "Upload the trade license",
   "remove": "Remove",
   "company_activity": "Company activity",

@@ -2,6 +2,8 @@ class AppConsts {
   AppConsts._();
 
   static const appName = 'Hashtag';
+  static const appVersion = '1.0.0';
+  static const technoCodeUrl = 'https://etechnocode.com';
   static const countryCodeWithEmoji = '🇦🇪    +971\t\t\t\t\t';
   static const countryCode = '971';
   static bool isDebugMode = true;

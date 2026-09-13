@@ -13,6 +13,7 @@ import '../../../core/shared_prefs/shared_prefs.dart';
 import '../../../data/models/chats/ads_chats_model.dart';
 import '../../../data/models/chats/message_model.dart';
 import '../../../widgets/components.dart';
+import '../../theme/lbeena_colors.dart';
 import '../../widget/main_page_chats.dart';
 import 'chat_messages_post.dart';
 import 'cubit/apis_chat_firebase.dart';
@@ -111,12 +112,28 @@ class _ChatsScreenState extends State<ChatsScreen>
                 )
               : chatBlocFirebase.adsLastInfo.length == 0
                   ? Center(
-                      child: Container(
-                        child: Text('لايوجد محادثات بعد'),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.chat_bubble_outline_rounded,
+                            size: 46,
+                            color: LbeenaColors.teal.withValues(alpha: 0.7),
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'لا توجد محادثات بعد',
+                            style: TextStyle(
+                              fontFamily: 'Cairo',
+                              fontWeight: FontWeight.w700,
+                              color: LbeenaColors.muted,
+                            ),
+                          ),
+                        ],
                       ),
                     )
                   : ListView.builder(
-                      padding: EdgeInsets.zero,
+                      padding: const EdgeInsets.only(top: 4),
                       itemBuilder: (context, index) {
                         //  print(chatBlocFirebase.adsChatsModel[index].massage);
                         // List<DataMassageModel> m =chatBlocFirebase.messages;

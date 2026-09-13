@@ -215,34 +215,13 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                     sizeHeightNormal(height: 20.h),
                     const Center(child: _SplashSloganText()),
-                    sizeHeightNormal(height: 20.h),
-                    if (isLoading)
-                      SizedBox(
-                        width: 22.w,
-                        height: 22.w,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2.2,
-                          color: LbeenaColors.orange,
-                        ),
-                      )
-                    else if (_fadeAnimation != null)
-                      FadeTransition(
-                        opacity: _fadeAnimation!,
-                        child: Text(
-                          appWord ?? 'لبينا',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16.fSize,
-                            fontWeight: FontWeight.w600,
-                            color: LbeenaColors.white,
-                            fontFamily: 'Cairo',
-                          ),
-                        ),
-                      ),
                     const Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 24.0),
-                      child: versionAppWidget(),
+                      child: versionAppWidget(
+                        textColor: LbeenaColors.white,
+                        yearOnly: true,
+                      ),
                     ),
                   ],
                 ),
@@ -265,7 +244,7 @@ class _SplashSloganText extends StatefulWidget {
 
 class _SplashSloganTextState extends State<_SplashSloganText>
     with SingleTickerProviderStateMixin {
-  static const _slogan = 'إعلانك يبدأ من هنا';
+  static const _slogan = 'إعلانك يبدأ من هنا مع لبينا';
 
   late final AnimationController _gradient;
 
@@ -287,23 +266,24 @@ class _SplashSloganTextState extends State<_SplashSloganText>
   @override
   Widget build(BuildContext context) {
     final style = TextStyle(
-      fontSize: 18.fSize,
+      fontSize: 15.fSize,
       fontWeight: FontWeight.w700,
       color: LbeenaColors.white,
       fontFamily: 'Cairo',
       letterSpacing: 0.5,
-      height: 1.3,
+      height: 1.35,
     );
+    final maxWidth = MediaQuery.sizeOf(context).width - 40;
     final painter = TextPainter(
       text: TextSpan(text: '$_slogan|', style: style),
       textDirection: TextDirection.rtl,
       textAlign: TextAlign.center,
-      maxLines: 1,
-    )..layout();
+      maxLines: 2,
+    )..layout(maxWidth: maxWidth);
 
     return SizedBox(
-      height: 40.h,
-      width: painter.width,
+      height: painter.height + 8,
+      width: painter.width.clamp(0, maxWidth),
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: AnimatedBuilder(
@@ -336,7 +316,7 @@ class _SplashSloganTextState extends State<_SplashSloganText>
                 TypewriterAnimatedText(
                   _slogan,
                   textAlign: TextAlign.center,
-                  speed: const Duration(milliseconds: 90),
+                  speed: const Duration(milliseconds: 140),
                   cursor: '|',
                 ),
               ],

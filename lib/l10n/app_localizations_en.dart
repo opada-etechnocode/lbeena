@@ -136,7 +136,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get license_number => 'License number';
 
   @override
-  String get emirate => 'Emirate';
+  String get emirate => 'Governorate';
 
   @override
   String get upload_license => 'Upload the trade license';

@@ -353,7 +353,7 @@ abstract class AppLocalizations {
   /// No description provided for @emirate.
   ///
   /// In en, this message translates to:
-  /// **'Emirate'**
+  /// **'Governorate'**
   String get emirate;
 
   /// No description provided for @upload_license.

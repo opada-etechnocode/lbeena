@@ -93,7 +93,9 @@ class CustomTextFormField extends StatelessWidget {
     height: height,
     child: ThemeTextFormField(
       child: TextFormField(
-        textDirection: textDirection,
+        textDirection: textDirection ??
+            (isMobile! ? TextDirection.ltr : null),
+        textAlign: isMobile! ? TextAlign.left : TextAlign.start,
         cursorHeight: cursorHeight,
         inputFormatters: isMobile!
             ? [

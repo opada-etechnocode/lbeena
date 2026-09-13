@@ -317,7 +317,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget _buildMobileNo(BuildContext context, focusNode) {
     return CustomTextFormField(
       controller: mobileNoController,
-      hintText: "504501535",
+      hintText: LbeenaPhoneCountry.phoneHint,
       autofocus: false,
       isMobile: true,
       textInputAction: TextInputAction.done,

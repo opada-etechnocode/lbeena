@@ -4,6 +4,7 @@ import 'package:syrians_in_uae/core/utils/image_constant.dart';
 import 'package:syrians_in_uae/ui/screens/chats/test_code.dart';
 import 'package:syrians_in_uae/ui/screens/chats/test_code2.dart';
 import 'package:syrians_in_uae/ui/screens/chats/voice_widget.dart';
+import 'package:syrians_in_uae/ui/theme/lbeena_colors.dart';
 import 'package:syrians_in_uae/ui/theme/theme_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -141,7 +142,7 @@ class _ReceivedMessageWidgetState extends State<ReceivedMessageWidget>  with Wid
               // alignment: Alignment.topRight,
               // margin: EdgeInsets.only(top: 20),
 
-              backGroundColor: Colors.grey,
+              backGroundColor: LbeenaColors.iconTile,
               child:
               // data?.type == "text"
               //     ?
@@ -169,7 +170,7 @@ mainAxisAlignment: MainAxisAlignment.start,
 
                       widget.dataMessages!.type == 'image'?Container():     Text(
                         _dateTimeNow,
-                        style: themeLite.textTheme.titleSmall!.copyWith(color: Colors.white,fontSize: 10.sp,),
+                        style: themeLite.textTheme.titleSmall!.copyWith(color: LbeenaColors.muted,fontSize: 10.sp,),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -252,7 +253,7 @@ mainAxisAlignment: MainAxisAlignment.start,
                           child: Center(
                             child: Text(
                               widget.dataMessages!.text.toString(),
-                              style: themeLite.textTheme.titleSmall!.copyWith(color: Colors.white,overflow: TextOverflow.visible),
+                              style: themeLite.textTheme.titleSmall!.copyWith(color: LbeenaColors.black, overflow: TextOverflow.visible),
 
                             ),
                           ),

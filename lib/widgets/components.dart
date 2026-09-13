@@ -27,6 +27,7 @@ import 'package:syrians_in_uae/widgets/view_item_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:syrians_in_uae/core/link_app.dart';
 import '../core/constants/app_colors.dart';
+import '../core/constants/app_consts.dart';
 import '../core/constants/app_font.dart';
 import '../core/di/di_manager.dart';
 import '../core/helper/snack_bar_helper.dart';
@@ -506,7 +507,7 @@ Widget buildCategory({
   if (isScrollerCard) {
     return SizedBox(
       width: 78,
-      height: 112,
+      height: 90,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -536,8 +537,8 @@ Widget buildCategory({
                   ),
                   child: CustomImageView(
                     imagePath: imagePath,
-                    height: 72,
-                    width: 78,
+                    height: 60,
+                    width: 68,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -853,10 +854,10 @@ Widget point() {
 }
 
 launchURL(url) async {
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
+  final uri = url is Uri ? url : Uri.parse(url.toString());
+  final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
+  if (!opened) {
+    throw 'Could not launch $uri';
   }
 }
 
@@ -950,50 +951,77 @@ Color getColor(String url) {
   }
 }
 
-Widget versionAppWidget() {
-  return Directionality(
-    textDirection: ui.TextDirection.ltr,
-    child: Column(
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            textNormal(
-                text: 'Copyright © 2024 ',
-                color: Colors.grey,
-                fontSize: AppFontSize.fontSize_12,
-                fontWeight: FontWeight.w500),
-            // InkWell(
-            //     onTap: () {
-            //       launchURL('https://alkhaaldi.ae/');
-            //     },
-            //     child: textNormal(text: 'Alkhaaldi.ae', color:  appTheme.deepPurpleA100, fontSize: AppFontSize.fontSize_12, fontWeight: FontWeight.w500)),
-            // textNormal(text: ' and ', color: Colors.grey, fontSize: AppFontSize.fontSize_12, fontWeight: FontWeight.w500),
-            // InkWell(
-            //     onTap: () {
-            //       launchURL('https://www.etechnocode.com/');
-            //     },
-            //     child: textNormal(text: 'TechnoCode L.L.C.', color:  appTheme.deepPurpleA100, fontSize: AppFontSize.fontSize_12, fontWeight: FontWeight.w500)),
-          ],
+Widget versionAppWidget({Color? textColor, bool yearOnly = false}) {
+  final color = textColor ?? LbeenaColors.muted;
+  final today = yearOnly
+      ? DateTime.now().year.toString()
+      : DateFormat('d MMMM yyyy', 'ar').format(DateTime.now());
+  return Column(
+    children: [
+      Text(
+        'جميع الحقوق محفوظة © $today',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: color,
+          fontSize: AppFontSize.fontSize_12,
+          fontWeight: FontWeight.w500,
+          fontFamily: 'Cairo',
         ),
-        textNormal(
-            text: 'All rights reserved powered by',
-            color: Colors.grey,
-            fontSize: AppFontSize.fontSize_12,
-            fontWeight: FontWeight.w500),
-        textNormal(
-            text: 'Lbeena',
-            color: Colors.grey,
-            fontSize: AppFontSize.fontSize_12,
-            fontWeight: FontWeight.w500),
-        textNormal(
-            text: 'Version 1.4.3',
-            color: Colors.grey,
-            fontSize: AppFontSize.fontSize_12,
-            fontWeight: FontWeight.w500),
-      ],
-    ),
+      ),
+      const SizedBox(height: 2),
+      Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        alignment: WrapAlignment.center,
+        children: [
+          Text(
+            'من شركة ',
+            style: TextStyle(
+              color: color,
+              fontSize: AppFontSize.fontSize_12,
+              fontWeight: FontWeight.w500,
+              fontFamily: 'Cairo',
+            ),
+          ),
+          GestureDetector(
+            onTap: () => launchURL(AppConsts.technoCodeUrl),
+            child: ShaderMask(
+              blendMode: BlendMode.srcIn,
+              shaderCallback: (bounds) {
+                return LinearGradient(
+                  colors: [
+                    LbeenaColors.orange,
+                    const Color(0xFFFFC14D),
+                    LbeenaColors.orange,
+                  ],
+                ).createShader(bounds);
+              },
+              child: Text(
+                'technocode',
+                style: TextStyle(
+                  color: LbeenaColors.white,
+                  fontSize: AppFontSize.fontSize_14,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'Cairo',
+                  decoration: TextDecoration.underline,
+                  decorationColor: LbeenaColors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 2),
+      Text(
+        'الإصدار ${AppConsts.appVersion}',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: color,
+          fontSize: AppFontSize.fontSize_12,
+          fontWeight: FontWeight.w600,
+          fontFamily: 'Cairo',
+        ),
+      ),
+    ],
   );
 }
 

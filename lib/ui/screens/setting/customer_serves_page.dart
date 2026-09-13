@@ -16,6 +16,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/di/di_manager.dart';
 import '../../../core/utils/image_constant.dart';
+import '../../../core/utils/lbeena_phone_country.dart';
 import '../../../data/models/support/team_service_model.dart';
 // import '../../../l10n/app_localizations.dart';
 
@@ -298,7 +299,7 @@ class _CustomerServesState extends State<CustomerServes> {
                                   : false,
                           focusNode: _secondFocusNode,
                           isMobile: true,
-                          hintText: 'رقم الجوال'),
+                          hintText: LbeenaPhoneCountry.phoneHint),
                       _buildDescriptionCompany(context, _thirdFocusNode),
                       sizeHeightNormal(height: 15.h),
                       state is LoadingSendMessageSupportState

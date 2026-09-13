@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../../core/di/di_manager.dart';
+import '../../../../core/utils/lbeena_menu.dart';
 import '../../../../core/utils/lbeena_phone_country.dart';
 import '../../../../core/shared_prefs/shared_prefs.dart';
 import '../../../../core/utils/image_constant.dart';
@@ -803,9 +804,10 @@ class _CompleteRegisterCompanyState extends State<CompleteRegisterCompany> {
             filled: true,
             fillColor: appTheme.lightBlue100,
           ),
-          validator: (value) => value == null ? "يجب أن تختار إمارة" : null,
+          validator: (value) => value == null ? "يجب أن تختار محافظة" : null,
           dropdownColor: appTheme.lightBlue100,
-          hint: textNormal(text: 'الإمارة'),
+          menuMaxHeight: LbeenaMenu.maxHeight,
+          hint: textNormal(text: 'المحافظة'),
 
           value: selectedCountry,
           focusNode: focusNode,

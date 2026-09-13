@@ -156,11 +156,11 @@ class _MainCategoriesNewState extends State<MainCategoriesNew> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+      padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
       child: GridView.builder(
         shrinkWrap: true,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisExtent: 78,
+          mainAxisExtent: 82,
           crossAxisCount: 6,
           mainAxisSpacing: 6,
           crossAxisSpacing: 4,
@@ -174,9 +174,9 @@ class _MainCategoriesNewState extends State<MainCategoriesNew> {
             imagePath: category["imagePath"] as String,
             color: LbeenaColors.teal,
             text: category["text"] as String,
-            tileSize: 40,
+            tileSize: 44,
             iconSize: 22,
-            fontSize: 9,
+            fontSize: 10,
             onTap: () {
               if (category["onTap"] is Function(BuildContext, dynamic)) {
                 category["onTap"](context, widget);
