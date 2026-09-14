@@ -6,15 +6,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_neumorphic_plus/flutter_neumorphic.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:syrians_in_uae/core/di/di_manager.dart';
+import 'package:syrians_in_uae/core/shared_prefs/shared_prefs.dart';
 import 'package:syrians_in_uae/core/utils/size_utils.dart';
 import 'package:syrians_in_uae/ui/screens/cart/widget/item_order.dart';
 import 'package:syrians_in_uae/ui/screens/cart/widget/shimmer_item_cart.dart';
+import 'package:syrians_in_uae/ui/theme/lbeena_colors.dart';
 import '../../../widgets/components.dart';
-import '../../../widgets/custom_elevated_button.dart';
 import '../../../widgets/custom_search_view.dart';
 import '../../../widgets/smart_refresh_widget.dart';
-import '../../theme/custom_button_style.dart';
-import '../../theme/theme_helper.dart';
 import 'cubit/cart_cubit.dart';
 import 'cubit/cart_state.dart';
 
@@ -54,6 +54,9 @@ int page =1;
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        backgroundColor: DIManager.findDep<SharedPrefs>().getThemeApp() == 'd'
+            ? LbeenaColors.surfaceDark
+            : LbeenaColors.lightBg,
         appBar: appBarNormalWithIcon( context:context,text: widget.isMyOrderRequests?'الطلبات الواردة': 'طلباتي',isShowBack: true),
         body: BlocProvider(
           create: (context) => CartCubit()..getMyOrder(
@@ -117,21 +120,21 @@ int page =1;
                             child: DropdownButtonFormField<int>(
                               decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: appTheme.buttonColorBorder, width: 1),
-                                  borderRadius: BorderRadius.circular(7.r),
+                                  borderSide: BorderSide(color: LbeenaColors.fieldBorder, width: 1),
+                                  borderRadius: BorderRadius.circular(12.r),
                                 ),
                                 border: OutlineInputBorder(
-                                  borderSide: BorderSide(color: appTheme.buttonColorBorder, width: 1),
-                                  borderRadius: BorderRadius.circular(7.r),
+                                  borderSide: BorderSide(color: LbeenaColors.fieldBorder, width: 1),
+                                  borderRadius: BorderRadius.circular(12.r),
                                 ),
                                 filled: true,
-                                fillColor: appTheme.lightBlue100,
+                                fillColor: LbeenaColors.white,
                                 contentPadding: EdgeInsets.symmetric(
                                   vertical: 10.h, // تعديل الارتفاع
                                   horizontal: 12.w, // تعديل الحشوة الجانبية
                                 ),
                               ),
-                              dropdownColor: appTheme.lightBlue100,
+                              dropdownColor: LbeenaColors.white,
                               hint: textNormal(text: 'النوع',fontSize: 10.fSize),
                               value: typeSearch ??0,
                               focusNode: _firstFocusNode,
@@ -200,62 +203,30 @@ int page =1;
                                       Padding(
                                         padding: EdgeInsets.all(8.r),
                                         child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            CustomElevatedButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  typeAds = 1;
-                                                });
-                                              },
-                                              text:   'غير  مكتملة',
-                                              width: 150.w,
-                                              height: 30.h,
-                                              buttonTextStyle: themeLite.textTheme.titleSmall!
-                                                  .copyWith(
-                                                  color:typeAds == 1
-                                                      ? Colors.white
-                                                      : appTheme.black900,
-                                                  fontSize: 12.fSize),
-                                              buttonStyle: CustomButtonStyles.baseBorderButton
-                                                  .copyWith(
-                                                backgroundColor:
-                                                MaterialStateProperty.all<Color>(
-                                                  typeAds != 1
-                                                      ? appTheme.lightBlue100
-                                                      : appTheme.blueGray,),
+                                            Expanded(
+                                              child: _orderTab(
+                                                label: 'غير مكتملة',
+                                                selected: typeAds == 1,
+                                                onTap: () {
+                                                  setState(() {
+                                                    typeAds = 1;
+                                                  });
+                                                },
                                               ),
                                             ),
                                             sizeWidthNormal(),
-                                            CustomElevatedButton(
-                                              onPressed: () {
-                                                setState(() {
+                                            Expanded(
+                                              child: _orderTab(
+                                                label: 'مكتملة',
+                                                selected: typeAds == 2,
+                                                onTap: () {
                                                   setState(() {
                                                     typeAds = 2;
                                                   });
-                                                });
-                                              },
-                                              text:     'مكتملة',
-                                              width: 150.w,
-                                              height: 30.h,
-                                              buttonStyle: CustomButtonStyles.baseBorderButton
-                                                  .copyWith(
-                                                backgroundColor:
-                                                MaterialStateProperty.all<Color>(
-                                                  typeAds != 2
-                                                      ? appTheme.lightBlue100
-                                                      : appTheme.blueGray,),
+                                                },
                                               ),
-                                              buttonTextStyle: themeLite.textTheme.titleSmall!
-                                                  .copyWith(
-                                                  color:   typeAds == 2
-                                                      ? Colors.white
-                                                      : appTheme.black900,
-                                                  fontSize: 12.fSize),
                                             ),
-
-
                                           ],
                                         ),
                                       ),
@@ -326,4 +297,35 @@ int page =1;
   }
   bool isPressingAdsArchived = false;
   int typeAds = 1;
+
+  Widget _orderTab({
+    required String label,
+    required bool selected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        height: 36.h,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: selected ? LbeenaColors.orange : LbeenaColors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: selected ? LbeenaColors.orange : LbeenaColors.fieldBorder,
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: selected ? LbeenaColors.white : LbeenaColors.tealDark,
+            fontFamily: 'Cairo',
+            fontWeight: FontWeight.w800,
+            fontSize: 12,
+          ),
+        ),
+      ),
+    );
+  }
 }

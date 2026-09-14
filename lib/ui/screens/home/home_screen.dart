@@ -98,6 +98,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with LifecycleMixin {
   int selectScreen = -1;
+  DateTime? _lastBackPress;
   StreamSubscription<List<ConnectivityResult>>? subscription;
   List<ConnectivityResult> _connectionStatus = [ConnectivityResult.none];
   final Connectivity _connectivity = Connectivity();
@@ -254,10 +255,13 @@ class _HomePageState extends State<HomePage>
     String? accountType = DIManager.findDep<SharedPrefs>().getAccountType();
     String? imageProfile =
         DIManager.findDep<SharedPrefs>().getImageProfile().toString();
-    return
-      // AdaptiveStatusBar(
-      // backgroundColor:Theme.of(context).scaffoldBackgroundColor,
-      HandelAndroidApp(
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) {
+        if (didPop) return;
+        _handleHomeBack();
+      },
+      child: HandelAndroidApp(
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         resizeToAvoidBottomInset: false,
@@ -410,7 +414,44 @@ class _HomePageState extends State<HomePage>
           ),
         ),
       ),
+      ),
     );
+  }
+
+  void _handleHomeBack() {
+    if (selectScreen != -1) {
+      setState(() {
+        selectScreen = -1;
+      });
+      return;
+    }
+
+    final now = DateTime.now();
+    if (_lastBackPress == null ||
+        now.difference(_lastBackPress!) > const Duration(seconds: 2)) {
+      _lastBackPress = now;
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+            'اضغط مرة أخرى للخروج',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'Cairo',
+              fontWeight: FontWeight.w700,
+              color: LbeenaColors.white,
+            ),
+          ),
+          backgroundColor: LbeenaColors.tealDark,
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+          margin: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+        ),
+      );
+      return;
+    }
+
+    SystemNavigator.pop();
   }
 
   void timerBanner() {
@@ -448,14 +489,17 @@ class _HomePageState extends State<HomePage>
           'حساب شركتك قيد المراجعة يرجى الانتظار ..', context);
       return;
     }
-    navigatorToPush(context: context, pageName: const CreatePost());
+    setState(() {
+      selectScreen = 4;
+    });
   }
 
   List<Widget> widgetApp = [
     CartPage(),
     GeneralChatsPage(),
     SettingPage(),
-    CompaniesPage()
+    CompaniesPage(),
+    const CreatePost(isTab: true),
   ];
   final PageController _bannerController =
       PageController(viewportFraction: 0.9);

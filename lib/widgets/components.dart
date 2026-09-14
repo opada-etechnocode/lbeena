@@ -376,8 +376,8 @@ String formatDate(Timestamp timestamp) {
 navigatorToPushReplacementUntil(
     {required BuildContext context,
     required String location,
-    Object? extra}) async {
-  return   context.pushReplacement(location,extra:extra );
+    Object? extra}) {
+  context.go(location, extra: extra);
 }
 
 Future<Object?> navigatorToPushReplacement(
@@ -1445,6 +1445,8 @@ Widget itemButtonContainer({
   String? imageIcon,
   required void Function()? onTap,
   double? width,
+  double? height,
+  double? fontSize,
   bool changeBackGround = false,
   bool isDeleteAds = false,
   bool inactivation = false,
@@ -1459,18 +1461,18 @@ Widget itemButtonContainer({
       isDisabled ? LbeenaColors.muted : LbeenaColors.white;
 
   final button = Container(
-    height: 44.h,
+    height: height ?? 44.h,
     width: width ?? 180.w,
     decoration: BoxDecoration(
       color: background,
-      borderRadius: BorderRadius.circular(14.r),
+      borderRadius: BorderRadius.circular(height != null ? 10.r : 14.r),
       boxShadow: isDisabled
           ? const []
           : [
               BoxShadow(
                 color: background.withValues(alpha: 0.28),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+                blurRadius: height != null ? 6 : 10,
+                offset: Offset(0, height != null ? 2 : 4),
               ),
             ],
     ),
@@ -1480,7 +1482,7 @@ Widget itemButtonContainer({
       children: [
         textNormal(
           text: text,
-          fontSize: 12.fSize,
+          fontSize: fontSize ?? 12.fSize,
           color: foreground,
           fontWeight: FontWeight.w700,
         ),

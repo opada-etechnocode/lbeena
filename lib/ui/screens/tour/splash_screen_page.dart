@@ -79,6 +79,10 @@ class _SplashScreenState extends State<SplashScreen>
   bool isLoading = true;
   Color _splashBackground = LbeenaColors.splashStart;
   DateTime? _splashShownAt;
+  bool _sloganFinished = false;
+  bool _homeReady = false;
+  bool _didNavigate = false;
+  HomePageLoginModel? _pendingHome;
 
   void _applyBackendSplashColor() {
     if (!mounted) return;
@@ -113,15 +117,12 @@ class _SplashScreenState extends State<SplashScreen>
               HomeCubit.get(context).getStatusUser();
               // HomeCubit.get(context).unReadNotifications();
             }
-            // HomeCubit.get(context).getPolicyTermsAppLinks();
-            navigatorToPushReplacementUntil(
-                context: context,
-                location: '/homePage',
-                extra: HomePageLoginModel(
-                  homePageModel: homePageModel,
-                  categoriesMainModel: categoriesMainModel,
-                  // adsRandomModel: adsRandomModel,
-                ));
+            _pendingHome = HomePageLoginModel(
+              homePageModel: homePageModel,
+              categoriesMainModel: categoriesMainModel,
+            );
+            _homeReady = true;
+            _tryGoHome();
 
           }
 
@@ -161,11 +162,8 @@ class _SplashScreenState extends State<SplashScreen>
             HomeCubit.get(context).getSettingApp();
           }
           if (state is ErrorAllDataHomePageState) {
-            // if (DIManager.findDep<SharedPrefs>().getIsFirst() == false) {
-            navigatorToPushReplacementUntil(
-              context: context,
-              location: '/homePage',
-            );
+            _homeReady = true;
+            _tryGoHome();
             // } else {
             //   navigatorToPushReplacementUntil(
             //       context: context, location: '/tour');
@@ -214,7 +212,11 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                     ),
                     sizeHeightNormal(height: 20.h),
-                    const Center(child: _SplashSloganText()),
+                    Center(
+                      child: _SplashSloganText(
+                        onFinished: _onSloganFinished,
+                      ),
+                    ),
                     const Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 24.0),
@@ -233,10 +235,29 @@ class _SplashScreenState extends State<SplashScreen>
       ),
     );
   }
+
+  void _onSloganFinished() {
+    if (_sloganFinished) return;
+    _sloganFinished = true;
+    Future.delayed(const Duration(milliseconds: 350), _tryGoHome);
+  }
+
+  void _tryGoHome() {
+    if (!_sloganFinished || !_homeReady || _didNavigate) return;
+    if (isAppUnderMaintenance || !mounted) return;
+    _didNavigate = true;
+    navigatorToPushReplacementUntil(
+      context: context,
+      location: '/homePage',
+      extra: _pendingHome,
+    );
+  }
 }
 
 class _SplashSloganText extends StatefulWidget {
-  const _SplashSloganText();
+  const _SplashSloganText({required this.onFinished});
+
+  final VoidCallback onFinished;
 
   @override
   State<_SplashSloganText> createState() => _SplashSloganTextState();
@@ -323,6 +344,7 @@ class _SplashSloganTextState extends State<_SplashSloganText>
               isRepeatingAnimation: false,
               totalRepeatCount: 1,
               displayFullTextOnTap: false,
+              onFinished: widget.onFinished,
             ),
           ),
         ),

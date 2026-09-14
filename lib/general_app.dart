@@ -81,131 +81,109 @@ final goRouter = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-
+      redirect: (context, state) => '/homePage',
+    ),
+    GoRoute(
+      path: '/home',
+      redirect: (context, state) => '/homePage',
+    ),
+    GoRoute(
+      path: '/splash',
+      builder: (context, state) => SplashScreen(),
+    ),
+    GoRoute(
+      path: '/homePage',
       builder: (context, state) {
-
         HomePageLoginModel? homePageLoginModel =
-        state.extra as HomePageLoginModel?;
-        if (homePageLoginModel == null) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
+            state.extra as HomePageLoginModel?;
         return HomePage(
-          // adsRandomModel: homePageLoginModel?.adsRandomModel,
           categoriesMainModel: homePageLoginModel?.categoriesMainModel,
           homePageModel: homePageLoginModel?.homePageModel,
         );
       },
-      routes: [
-        GoRoute(
-          path: 'splash',
-          builder: (context, state) => SplashScreen(),
-        ),
-
-
-        GoRoute(
-          path: 'details/:itemId/:isBanner/:idCompany/:idAds/:isBannerInOut/:categoryId',
-          builder: (context, state) => DetailsProduct(
-            idBannerOrProduct: int.parse(state.pathParameters['itemId']!),
-            // idBannerOrProduct:  int.parse(state.pathParameters['itemId']!),
-            isBanner: bool.parse(state.pathParameters['isBanner']!),
-            idAdOnwerCompany: int.parse(state.pathParameters['idCompany']!),
-            categoryId: state.pathParameters['categoryId']!.toString(),
-            idAds: state.pathParameters['idAds']!,
-            adsName: '',
-            isBannerInOut:
+    ),
+    GoRoute(
+      path: '/details/:itemId/:isBanner/:idCompany/:idAds/:isBannerInOut/:categoryId',
+      builder: (context, state) => DetailsProduct(
+        idBannerOrProduct: int.parse(state.pathParameters['itemId']!),
+        isBanner: bool.parse(state.pathParameters['isBanner']!),
+        idAdOnwerCompany: int.parse(state.pathParameters['idCompany']!),
+        categoryId: state.pathParameters['categoryId']!.toString(),
+        idAds: state.pathParameters['idAds']!,
+        adsName: '',
+        isBannerInOut:
             int.parse(state.pathParameters['isBannerInOut']!) == 0
                 ? false
                 : true,
-          ),
-        ),
-        GoRoute(
-            path: 'company/:idCompany',
-            builder: (context, state) => CompanyDetailsPage(
-              idCompany: int.parse(state.pathParameters['idCompany']!),
-            )),
-
-        GoRoute(
-            path: 'user/:idCompany',
-            builder: (context, state) => CompanyDetailsPage(
-              idCompany: int.parse(state.pathParameters['idCompany']!),
-            )),
-        GoRoute(path: 'login', builder: (context, state) => LoginScreen()),
-        GoRoute(
-          path: 'homePage',
-          builder: (context, state) {
-            HomePageLoginModel? homePageLoginModel =
-            state.extra as HomePageLoginModel?;
-            return HomePage(
-              // adsRandomModel: homePageLoginModel?.adsRandomModel,
-              categoriesMainModel: homePageLoginModel?.categoriesMainModel,
-              homePageModel: homePageLoginModel?.homePageModel,
-            );
-          },
-        ),
-        GoRoute(
-          path: 'chatScreen',
-          builder: (context, state) => ChatsScreen(type: 'ads',),
-        ),
-        GoRoute(
-          path: 'postScreen/:idPost',
-          builder: (context, state) => PostScreen(
-            idPost:int.parse(state.pathParameters['idPost']!),
-          ),
-        ),
-
-        GoRoute(
-          path: 'remindersItem/:idReminder/:reminderOthers',
-          builder: (context, state) => RemindersItem(
-            idReminder:int.parse(state.pathParameters['idReminder']!),
-            reminderOthers:int.parse(state.pathParameters['reminderOthers']!),
-          ),
-        ),
-        GoRoute(
-          path:
-          'chat/:nameAds/:imageAds/:imageCompany/:imageUser/:nameOwnerAds/:user_name_person_sender/:user_id/:user_id_2/:ad_id/:categoryId/:idBannerOrProduct/:isBanner/:isBannerInOut/:idAdOnwerCompany',
-          // path: 'chat/:nameAds/:imageAds',
-          builder: (context, state) => ChatMessagesPage(
-            dataMessage: ArgumentMessage(
-              nameAds: state.pathParameters['nameAds'].toString(),
-              imageAds:
-              '${AppEndpoints.baseUrlImageFirebase}/img/ad/${state.pathParameters['imageAds']}',
-              imageCompany:
-              '${AppEndpoints.baseUrlImageFirebase}/img/profile/${state.pathParameters['imageCompany']}',
-              imageUser:
-              '${AppEndpoints.baseUrlImageFirebase}/img/profile/${state.pathParameters['imageUser']}',
-              nameOwnerAds: state.pathParameters['nameOwnerAds'],
-              user_name_person_sender:
-              state.pathParameters['user_name_person_sender'],
-              idAdOnwerCompany: state.pathParameters['idAdOnwerCompany']!,
-              user_id: state.pathParameters['user_id'],
-              user_id_2: int.parse(state.pathParameters['user_id_2']!),
-              ad_id: int.parse(state.pathParameters['ad_id']!),
-              categoryId:state.pathParameters['categoryId']!,
-              idBannerOrProduct: int.parse(state.pathParameters['idBannerOrProduct']!),
-              isBanner: bool.parse(state.pathParameters['isBanner']!),
-              isBannerInOut: bool.parse(state.pathParameters['isBannerInOut']!),
-            ),
-          ),
-        ),
-        GoRoute(
-          path: 'orderPage/:idOrder/:orderType',
-          builder: (context, state) => OrderPage(
-            idOrderFromNotification: int.parse(state.pathParameters['idOrder']!),
-            isMyOrderRequests: state.pathParameters['orderType'] =='incoming'? true:false,
-          ),
-        ),
-      ],
+      ),
     ),
     GoRoute(
-      path: '/home',
-      redirect: (context, state) => '/',
-    )
+      path: '/company/:idCompany',
+      builder: (context, state) => CompanyDetailsPage(
+        idCompany: int.parse(state.pathParameters['idCompany']!),
+      ),
+    ),
+    GoRoute(
+      path: '/user/:idCompany',
+      builder: (context, state) => CompanyDetailsPage(
+        idCompany: int.parse(state.pathParameters['idCompany']!),
+      ),
+    ),
+    GoRoute(path: '/login', builder: (context, state) => LoginScreen()),
+    GoRoute(
+      path: '/chatScreen',
+      builder: (context, state) => ChatsScreen(type: 'ads'),
+    ),
+    GoRoute(
+      path: '/postScreen/:idPost',
+      builder: (context, state) => PostScreen(
+        idPost: int.parse(state.pathParameters['idPost']!),
+      ),
+    ),
+    GoRoute(
+      path: '/remindersItem/:idReminder/:reminderOthers',
+      builder: (context, state) => RemindersItem(
+        idReminder: int.parse(state.pathParameters['idReminder']!),
+        reminderOthers: int.parse(state.pathParameters['reminderOthers']!),
+      ),
+    ),
+    GoRoute(
+      path:
+          '/chat/:nameAds/:imageAds/:imageCompany/:imageUser/:nameOwnerAds/:user_name_person_sender/:user_id/:user_id_2/:ad_id/:categoryId/:idBannerOrProduct/:isBanner/:isBannerInOut/:idAdOnwerCompany',
+      builder: (context, state) => ChatMessagesPage(
+        dataMessage: ArgumentMessage(
+          nameAds: state.pathParameters['nameAds'].toString(),
+          imageAds:
+              '${AppEndpoints.baseUrlImageFirebase}/img/ad/${state.pathParameters['imageAds']}',
+          imageCompany:
+              '${AppEndpoints.baseUrlImageFirebase}/img/profile/${state.pathParameters['imageCompany']}',
+          imageUser:
+              '${AppEndpoints.baseUrlImageFirebase}/img/profile/${state.pathParameters['imageUser']}',
+          nameOwnerAds: state.pathParameters['nameOwnerAds'],
+          user_name_person_sender:
+              state.pathParameters['user_name_person_sender'],
+          idAdOnwerCompany: state.pathParameters['idAdOnwerCompany']!,
+          user_id: state.pathParameters['user_id'],
+          user_id_2: int.parse(state.pathParameters['user_id_2']!),
+          ad_id: int.parse(state.pathParameters['ad_id']!),
+          categoryId: state.pathParameters['categoryId']!,
+          idBannerOrProduct:
+              int.parse(state.pathParameters['idBannerOrProduct']!),
+          isBanner: bool.parse(state.pathParameters['isBanner']!),
+          isBannerInOut: bool.parse(state.pathParameters['isBannerInOut']!),
+        ),
+      ),
+    ),
+    GoRoute(
+      path: '/orderPage/:idOrder/:orderType',
+      builder: (context, state) => OrderPage(
+        idOrderFromNotification: int.parse(state.pathParameters['idOrder']!),
+        isMyOrderRequests:
+            state.pathParameters['orderType'] == 'incoming' ? true : false,
+      ),
+    ),
   ],
   redirect: (context, state) {
-    // print('state.matchedLocation:${state.matchedLocation}');
-    // print(state.uri.queryParameters.length);
     return state.uri.queryParameters['from'];
   },
 );

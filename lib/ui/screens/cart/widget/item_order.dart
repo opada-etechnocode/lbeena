@@ -10,7 +10,7 @@ import '../../../../core/utils/endpoints.dart';
 import '../../../../data/models/cart_model/order_model.dart';
 import '../../../../widgets/components.dart';
 import '../../../../widgets/custom_image_view.dart';
-import '../../../theme/app_decoration.dart';
+import '../../../theme/lbeena_colors.dart';
 import '../../../theme/theme_helper.dart';
 import '../cubit/cart_cubit.dart';
 
@@ -54,19 +54,18 @@ class _OrderItemState extends State<OrderItem> {
     // print('id order : ${widget.idOrder.toString()}');
 
     List<OrdersList> dataList = widget.typeAds !=2? CartCubit.get(context).orderNotCompletedList: CartCubit.get(context).orderList;
+    final isHighlighted = widget.idOrder != null &&
+        dataList[widget.index].id.toString() == widget.idOrder.toString();
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 5.h),
+      padding: EdgeInsets.symmetric(vertical: 6.h),
       child: Container(
-        decoration: AppDecoration.itemCart.copyWith(
-          color: widget.idOrder == null
-              ? null
-              : dataList[widget.index].id.toString() ==
-                      widget.idOrder.toString()
-                  ? appTheme.containerCart.withOpacity(.2)
-                  : null,
+        decoration: LbeenaColors.cardWith(
+          color: isHighlighted
+              ? LbeenaColors.orange.withValues(alpha: 0.06)
+              : LbeenaColors.white,
+        ).copyWith(
           border: Border.all(
-            color: appTheme.greenColor,
-            width: 0.4, // يمكنك تعديل عرض الحدود حسب الرغبة
+            color: isHighlighted ? LbeenaColors.orange : LbeenaColors.fieldBorder,
           ),
         ),
         child: Padding(
@@ -102,9 +101,10 @@ class _OrderItemState extends State<OrderItem> {
                       child: Padding(
                         padding: EdgeInsets.only(left: 14.w, right: 62.w),
                         child: Container(
-                          decoration: AppDecoration.itemCartNew.copyWith(
-                              // color: appTheme.colorAppBar
-                              ),
+                          decoration: BoxDecoration(
+                            color: LbeenaColors.lightBg,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           child: Padding(
                             padding: EdgeInsets.all(6.sp),
                             child: Center(
@@ -116,12 +116,12 @@ class _OrderItemState extends State<OrderItem> {
                                       text:
                                           '${dataList[widget.index].phone.toString()}+',
                                       fontSize: AppFontSize.fontSize_12,
-                                      color: appTheme.black900.withOpacity(.6))
+                                      color: LbeenaColors.muted)
                                   : textNormal(
                                       text:
                                           '971${dataList[widget.index].phone.toString()}+',
                                       fontSize: AppFontSize.fontSize_12,
-                                      color: appTheme.black900.withOpacity(.6)),
+                                      color: LbeenaColors.muted),
                             ),
                           ),
                         ),
@@ -144,9 +144,10 @@ class _OrderItemState extends State<OrderItem> {
                         EdgeInsets.symmetric(horizontal: 8.sp, vertical: 3.sp),
                     child: Container(
                       width: 202.w,
-                      decoration: AppDecoration.itemCartNew.copyWith(
-                          // color: appTheme.colorAppBar.withOpacity(.2),
-                          ),
+                      decoration: BoxDecoration(
+                        color: LbeenaColors.lightBg,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       child: Padding(
                         padding: EdgeInsets.all(6.sp),
                         child: Row(
@@ -156,7 +157,7 @@ class _OrderItemState extends State<OrderItem> {
                             textNormal(
                                 text: 'التكلفة الإجمالية: ',
                                 fontWeight: FontWeight.w700,
-                                color: appTheme.black900.withOpacity(.8),
+                                color: LbeenaColors.tealDark,
                                 fontSize: AppFontSize.fontSize_12),
                             Container(
                               width: 80.w,
@@ -165,7 +166,7 @@ class _OrderItemState extends State<OrderItem> {
                                       '${calculateTotalCost(dataList[widget.index].items).toString()} د.إ',
                                   fontWeight: FontWeight.w700,
                                   maxLines: 3,
-                                  color: appTheme.black900.withOpacity(.6),
+                                  color: LbeenaColors.orange,
                                   fontSize: AppFontSize.fontSize_12),
                             ),
                           ],
@@ -185,9 +186,10 @@ class _OrderItemState extends State<OrderItem> {
                   // Spacer(),
                   Container(
                     width: 120.w,
-                    decoration: AppDecoration.itemCartNew.copyWith(
-                        // color:  appTheme.colorAppBar.withOpacity(.2),
-                        ),
+                    decoration: BoxDecoration(
+                      color: LbeenaColors.lightBg,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     child: Padding(
                       padding:
                           EdgeInsets.symmetric(horizontal: 22.w, vertical: 6.h),
@@ -196,7 +198,7 @@ class _OrderItemState extends State<OrderItem> {
                           text: convertDateTime(
                        dataTimeValue:       dataList[widget.index].createdAt!.toString(),
                           ),fontSize: 12.fSize,
-                          color: appTheme.black900.withOpacity(.8),
+                          color: LbeenaColors.muted,
                         ),
                       ),
                     ),
@@ -270,7 +272,8 @@ class _OrderItemState extends State<OrderItem> {
                         child: textNormal(
                             text: dataList[widget.index].items[i].productName ??
                                 '',
-                            fontSize: AppFontSize.fontSize_14),
+                            fontSize: AppFontSize.fontSize_14,
+                            color: const Color(0xFF1F2937)),
                       ),
                       sizeHeightNormal(height: 2.h),
                       Row(
@@ -311,15 +314,15 @@ class _OrderItemState extends State<OrderItem> {
                               text: 'السعر: ',
                               fontWeight: FontWeight.w400,
                               fontSize: AppFontSize.fontSize_12,
-                              color: appTheme.containerCart),
+                              color: LbeenaColors.muted),
                           Container(
                             width: 70.w,
                             child: textNormal(
                                 text:
                                     '${dataList[widget.index].items[i].price ?? ''} د.إ',
                                 fontSize: AppFontSize.fontSize_12,
-                                fontWeight: FontWeight.w400,
-                                color: appTheme.containerCart),
+                                fontWeight: FontWeight.w700,
+                                color: LbeenaColors.orange),
                           ),
                         ],
                       ),
@@ -329,7 +332,10 @@ class _OrderItemState extends State<OrderItem> {
                     children: [
                       if (!widget.isCompany) ...{
                         Container(
-                          decoration: AppDecoration.itemCartNew,
+                          decoration: BoxDecoration(
+                            color: LbeenaColors.lightBg,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Row(
@@ -340,7 +346,7 @@ class _OrderItemState extends State<OrderItem> {
                                     text: 'الحالة: ',
                                     fontWeight: FontWeight.w700,
                                     fontSize: AppFontSize.fontSize_12,
-                                    color: appTheme.black900.withOpacity(.8)),
+                                    color: LbeenaColors.tealDark),
                                 textNormal(
                                     text: dataList[widget.index]
 
@@ -375,7 +381,7 @@ class _OrderItemState extends State<OrderItem> {
                                                         .statusOrder ==
                                                     2
                                                 ? Colors.green
-                                                : appTheme.black900),
+                                                : LbeenaColors.tealDark),
                               ],
                             ),
                           ),
@@ -385,7 +391,10 @@ class _OrderItemState extends State<OrderItem> {
                             .items[i]
                             .statusOrder ==
                             2    ?  Container(
-                          decoration: AppDecoration.itemCartNew,
+                          decoration: BoxDecoration(
+                            color: LbeenaColors.lightBg,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16.w,vertical: 10.h
                             ),
@@ -397,7 +406,7 @@ class _OrderItemState extends State<OrderItem> {
                                     text: 'الحالة: ',
                                     fontWeight: FontWeight.w700,
                                     fontSize: AppFontSize.fontSize_12,
-                                    color: appTheme.black900.withOpacity(.8)),
+                                    color: LbeenaColors.tealDark),
                                 sizeWidthNormal(width: 5.w),
                                 textNormal(
                                     text: 'مكتملة',
@@ -408,7 +417,10 @@ class _OrderItemState extends State<OrderItem> {
                             ),
                           ),
                         ):     Container(
-                          decoration: AppDecoration.itemCartNew,
+                          decoration: BoxDecoration(
+                            color: LbeenaColors.lightBg,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           width: 120.w,
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 5.w),
@@ -474,7 +486,7 @@ class _OrderItemState extends State<OrderItem> {
                                   child: textNormal(
                                       text: 'تحت المعالجة',
                                       fontWeight: FontWeight.w900,
-                                      color: appTheme.black900,
+                                      color: LbeenaColors.tealDark,
                                       fontSize: AppFontSize.fontSize_11),
                                 ),
                                 DropdownMenuItem(
@@ -515,12 +527,12 @@ class _OrderItemState extends State<OrderItem> {
                               decoration: InputDecoration(
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: appTheme.containerCart,
+                                    color: LbeenaColors.fieldBorder,
                                   ),
                                 ),
                                 focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: appTheme.containerCart,
+                                    color: LbeenaColors.orange,
                                   ),
                                 ),
                               ),
@@ -546,7 +558,7 @@ class _OrderItemState extends State<OrderItem> {
         dataList[widget.index].items.length == 1
             ? sizeHeightNormal(height: 5.h)
             : Divider(
-                color: appTheme.containerCart,
+                color: LbeenaColors.fieldBorder,
                 height: 10,
                 thickness: .4,
               ),
@@ -563,9 +575,10 @@ class _OrderItemState extends State<OrderItem> {
       padding: EdgeInsets.symmetric(horizontal: 8.sp, vertical: 3.sp),
       child: Container(
         width: width ?? 180.w,
-        decoration: AppDecoration.itemCartNew.copyWith(
-            // color: appTheme.colorAppBar.withOpacity(.2),
-            ),
+        decoration: BoxDecoration(
+          color: LbeenaColors.lightBg,
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: Padding(
           padding: EdgeInsets.all(6.sp),
           child: Row(
@@ -575,7 +588,7 @@ class _OrderItemState extends State<OrderItem> {
               textNormal(
                   text: title,
                   fontWeight: FontWeight.w700,
-                  color: appTheme.black900.withOpacity(.8),
+                  color: LbeenaColors.tealDark,
                   fontSize: AppFontSize.fontSize_12),
               titleApi.length > 40
                   ? Expanded(
@@ -583,13 +596,13 @@ class _OrderItemState extends State<OrderItem> {
                           text: titleApi,
                           fontWeight: FontWeight.w700,
                           maxLines: 4,
-                          color: appTheme.black900.withOpacity(.6),
+                          color: LbeenaColors.muted,
                           fontSize: AppFontSize.fontSize_12))
                   : textNormal(
                       text: titleApi,
                       fontWeight: FontWeight.w700,
                       maxLines: 4,
-                      color: appTheme.black900.withOpacity(.6),
+                      color: LbeenaColors.muted,
                       fontSize: AppFontSize.fontSize_12),
             ],
           ),

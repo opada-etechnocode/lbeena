@@ -47,6 +47,7 @@ class ImageConstant {
   static String imageNotFound = 'assets/images/image_not_found_app.png';
   static String photoNotification2 = '$imagePath/photo_notification_app.svg';
   // static String aladhanTimeIcon = '$imagePath/aladhan.jpeg';
+  static String mmImage = '$imagePath/mm.png';
   static String aladhanTimeIcon = '$imagePath/aladhan_icon.jpg';
   static String aladhanTimeIcon2 = '$imagePath/aladhan_icon2.jpg';
   static String community = '$imagePath/community.svg';

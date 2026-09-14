@@ -163,9 +163,9 @@ class ExchangeRatesCardWidget extends StatelessWidget {
     final up = change > 0;
     final down = change < 0;
     final changeColor = up
-        ? LbeenaColors.teal
+        ? const Color(0xFF16A34A)
         : down
-            ? LbeenaColors.orange
+            ? const Color(0xFFDC2626)
             : LbeenaColors.muted;
 
     return Container(
@@ -229,10 +229,10 @@ class ExchangeRatesCardWidget extends StatelessWidget {
           children: [
             Text(
               'عيار $karat',
-              style: const TextStyle(
-                color: LbeenaColors.muted,
+              style: TextStyle(
+                color: LbeenaColors.orange,
                 fontFamily: 'Cairo',
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w800,
                 fontSize: 11,
               ),
             ),

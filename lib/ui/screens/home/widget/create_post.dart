@@ -44,7 +44,9 @@ import '../cubit/cubit.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class CreatePost extends StatefulWidget {
-  const CreatePost({super.key});
+  const CreatePost({super.key, this.isTab = false});
+
+  final bool isTab;
 
   @override
   State<CreatePost> createState() => _CreatePostState();
@@ -131,7 +133,9 @@ class _CreatePostState extends State<CreatePost> {
           checkBoxIndex1 = 0;
 
           checkIndexColors = 5;
-          Navigator.pop(context);
+          if (!widget.isTab) {
+            Navigator.pop(context);
+          }
         }
         if (state is ErrorAddAdState) {
           loadingAddAd = false;
@@ -148,7 +152,9 @@ class _CreatePostState extends State<CreatePost> {
           child: HandelAndroidApp(
             child: Scaffold(
               appBar: appBarNormalWithIcon(
-                  text: 'إنشاء إعلان', isShowBack: true, context: context),
+                  text: 'إنشاء إعلان',
+                  isShowBack: !widget.isTab,
+                  context: context),
               body: SingleChildScrollView(
                 child: Column(
                   children: [

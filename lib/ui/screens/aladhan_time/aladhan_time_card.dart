@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../core/di/di_manager.dart';
 import '../../../core/shared_prefs/shared_prefs.dart';
+import '../../../core/utils/image_constant.dart';
 import '../../../core/utils/lbeena_menu.dart';
 import '../../../widgets/BoothShimmer.dart';
 import '../../theme/lbeena_colors.dart';
@@ -132,13 +133,29 @@ class _AladhanTimeCardWidgetState extends State<AladhanTimeCardWidget> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const AnalogClockWidget(size: 92),
+                SizedBox(
+                  width: 92,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        ImageConstant.mmImage,
+                        width: 78,
+                        height: 50,
+                        fit: BoxFit.contain,
+                      ),
+
+                      const AnalogClockWidget(size: 88),
+                    ],
+                  ),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Expanded(
                             child: Text(
@@ -154,7 +171,7 @@ class _AladhanTimeCardWidgetState extends State<AladhanTimeCardWidget> {
                               ),
                             ),
                           ),
-                          const SizedBox(width: 6),
+                          const SizedBox(width: 8),
                           _cityPicker(context, city, isDark),
                         ],
                       ),
@@ -168,56 +185,7 @@ class _AladhanTimeCardWidgetState extends State<AladhanTimeCardWidget> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      GridView.count(
-                        padding: EdgeInsets.all(0),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 6,
-                        crossAxisSpacing: 6,
-                        childAspectRatio: 1.35,
-                        children: _order.map((item) {
-                          final isNext = _nextPrayer == item.$2;
-                          return Container(
-                            decoration: BoxDecoration(
-                              color: isNext
-                                  ? LbeenaColors.orange
-                                  : (isDark
-                                      ? LbeenaColors.surfaceDark
-                                      : LbeenaColors.iconTile),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  item.$1,
-                                  style: TextStyle(
-                                    color: isNext
-                                        ? LbeenaColors.white
-                                        : LbeenaColors.muted,
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  _cleanTime(timings[item.$3]),
-                                  style: TextStyle(
-                                    color: isNext
-                                        ? LbeenaColors.white
-                                        : (isDark
-                                            ? LbeenaColors.white
-                                            : LbeenaColors.tealDark),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        }).toList(),
-                      ),
+                      _prayerGrid(timings, isDark),
                     ],
                   ),
                 ),
@@ -225,6 +193,70 @@ class _AladhanTimeCardWidgetState extends State<AladhanTimeCardWidget> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _prayerGrid(Map<String, String?> timings, bool isDark) {
+    return Column(
+      children: [
+        Row(
+          children: _order
+              .take(3)
+              .map((item) => _prayerTile(item, timings, isDark))
+              .toList(),
+        ),
+        const SizedBox(height: 6),
+        Row(
+          children: _order
+              .skip(3)
+              .map((item) => _prayerTile(item, timings, isDark))
+              .toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _prayerTile(
+    (String, String, String) item,
+    Map<String, String?> timings,
+    bool isDark,
+  ) {
+    final isNext = _nextPrayer == item.$2;
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 3),
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          color: isNext
+              ? LbeenaColors.orange
+              : (isDark ? LbeenaColors.surfaceDark : LbeenaColors.iconTile),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              item.$1,
+              style: TextStyle(
+                color: isNext ? LbeenaColors.white : LbeenaColors.muted,
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              _cleanTime(timings[item.$3]),
+              style: TextStyle(
+                color: isNext
+                    ? LbeenaColors.white
+                    : (isDark ? LbeenaColors.white : LbeenaColors.tealDark),
+                fontSize: 12,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

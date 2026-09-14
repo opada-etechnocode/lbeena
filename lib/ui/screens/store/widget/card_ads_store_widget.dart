@@ -1,35 +1,29 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:syrians_in_uae/core/utils/size_utils.dart';
-import 'package:syrians_in_uae/widgets/custom_elevated_button.dart';
-import '../../../../core/constants/app_font.dart';
+import 'package:syrians_in_uae/ui/theme/lbeena_colors.dart';
 import '../../../../core/di/di_manager.dart';
 import '../../../../core/shared_prefs/shared_prefs.dart';
 import '../../../../core/utils/endpoints.dart';
 import '../../../../core/utils/image_constant.dart';
 import '../../../../widgets/components.dart';
 import '../../../../widgets/custom_image_view.dart';
-import '../../../theme/app_decoration.dart';
-import '../../../theme/theme_helper.dart';
 import '../../auth/login/login_screen.dart';
 import '../../cart/cart_page.dart';
 import '../../cart/cubit/cart_cubit.dart';
 import '../../cart/cubit/cart_state.dart';
 import '../../company/company_details_page.dart';
 
-// ignore: must_be_immutable
 class CardAdsStoreWidget extends StatefulWidget {
-  CardAdsStoreWidget(
-      {Key? key, this.dataProductItem, this.isFromEvaluation = false,
-        this.width})
-      : super(
-    key: key,
-  );
+  CardAdsStoreWidget({
+    Key? key,
+    this.dataProductItem,
+    this.isFromEvaluation = false,
+    this.width,
+  }) : super(key: key);
+
   dynamic dataProductItem;
   bool isFromEvaluation = false;
   double? width;
@@ -40,338 +34,185 @@ class CardAdsStoreWidget extends StatefulWidget {
 
 class _CardAdsStoreWidgetState extends State<CardAdsStoreWidget> {
   String? userId = DIManager.findDep<SharedPrefs>().getUserID();
+  bool _isAddingToCart = false;
+
+  bool get _isDark => DIManager.findDep<SharedPrefs>().getThemeApp() == 'd';
+
+  bool get _hasCompany =>
+      widget.dataProductItem?.company != null &&
+      widget.dataProductItem.company.isNotEmpty;
+
+  bool get _hasPrice {
+    final price = widget.dataProductItem.price.toString();
+    return price != '0.0' &&
+        price != '0' &&
+        price != '0.00' &&
+        price != 'null';
+  }
+
+  bool get _hasDiscount {
+    final finalPrice =
+        double.tryParse(widget.dataProductItem.finalPrice?.toString() ?? '');
+    final price =
+        double.tryParse(widget.dataProductItem.price?.toString() ?? '');
+    if (finalPrice == null || price == null) return false;
+    return finalPrice != price;
+  }
+
+  String get _imagePath {
+    final images = widget.dataProductItem?.imageNames;
+    if (images == null ||
+        images.isEmpty ||
+        images[0] == null ||
+        images[0].toString().isEmpty) {
+      return ImageConstant.imgPerson;
+    }
+    final raw = images[0].toString();
+    if (raw.contains('http')) return raw;
+    return AppEndpoints.baseUrlWithoutApi + raw;
+  }
+
+  String get _companyPhoto {
+    if (!_hasCompany) return ImageConstant.imgPerson;
+    final raw = widget.dataProductItem.company[0].profilePic.toString();
+    if (raw.contains('http')) return raw;
+    return AppEndpoints.baseUrlWithoutApi + raw;
+  }
+
+  String get _title {
+    final name = widget.dataProductItem?.name?.toString() ?? '';
+    if (name.isNotEmpty && name != 'null') return name;
+    return widget.dataProductItem?.description?.toString() ?? '';
+  }
+
+  String get _companyName {
+    if (!_hasCompany) return '';
+    return widget.dataProductItem.company[0].companyName?.toString() ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.center,
-      child: Container(
-        // height: 182.h,
-        width: widget.width??185.w,
-        decoration: BoxDecoration(
-            boxShadow: [
-              // BoxShadow(
-              //   color: appTheme.lightBlue100,
-              //   spreadRadius: 2,
-              //   blurRadius: 6,
-              //   offset: Offset(
-              //     0,
-              //     0,
-              //   )
-              // ),
-            ],
-            // border: Border.all(color: appTheme.lightBlue200),
-            color: appTheme.whiteA700,
-            borderRadius: BorderRadius.circular(7.r)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    final titleColor = _isDark ? LbeenaColors.white : LbeenaColors.tealDark;
+    final muted = _isDark ? LbeenaColors.fieldHint : LbeenaColors.muted;
 
-          // alignment: Alignment.bottomLeft,
-          children: [
-            Column(
+    return Container(
+      width: widget.width,
+      decoration: LbeenaColors.cardWith(
+        color: _isDark ? LbeenaColors.cardDark : LbeenaColors.white,
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(child: _productImage()),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 5, 8, 0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    Container(
-                      height: 140.h,
-                      width: 180.w,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(7.r),
-                              topRight: Radius.circular(7.r))),
-                      child: CustomImageView(
-                        imagePath: widget.dataProductItem!.imageNames[0]
-                            .toString()
-                            .contains('http')
-                            ? widget.dataProductItem!.imageNames[0]
-                            :
-                        AppEndpoints.baseUrlWithoutApi +
-                            widget.dataProductItem!.imageNames[0],
-                        // imagePath: '${ImageConstant.imagePath}/1.PNG',
-                        height: 120.h,
-                        width: 180.w,
-                        fit: BoxFit.cover,
-                        radius: BorderRadius.only(
-                            topLeft: Radius.circular(7.r),
-                            topRight: Radius.circular(7.r)),
-                        // alignment: Alignment.center,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 33.h, left: 3.w),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        // mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            height: 45.h,
-                            width: 45.h,
-                            decoration: AppDecoration.outlineWhiteA700,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Container(
-                                  height: 40.h, width: 40.h,
-                                  decoration: AppDecoration.outlineCircular3.copyWith(color: Colors.white),
-                                  // color: AppColorsController().defaultPrimaryColor,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    // print('Id Company: ${widget.dataProductItem!.company[0].id}');
-                                    userId ==
-                                        widget.dataProductItem!.company[0].id
-                                            .toString()
-                                        ? null
-                                        : navigatorToPush(
-                                        context: context,
-                                        pageName: CompanyDetailsPage(
-                                            idCompany: widget.dataProductItem!
-                                                .company[0].id));
-                                  },
-                                  child: widget.dataProductItem!.company == null
-                                      ? CustomImageView(
-                                    imagePath: widget.dataProductItem!.company[0]
-                                        .profilePic
-                                        .toString().contains('http')?widget.dataProductItem!.company[0]
-                                        .profilePic
-                                        .toString(): AppEndpoints.baseUrlWithoutApi +
-                                        widget.dataProductItem!.company[0]
-                                            .profilePic
-                                            .toString(),
-                                    height: 37.h,
-                                    width: 37.h,
-                                    radius: BorderRadiusStyle.circleBorder20,
-                                    alignment: Alignment.center,
-                                    fit: BoxFit.cover,
-                                    placeHolder: ImageConstant.imgPerson,
-                                  )
-                                      : CustomImageView(
-                                    imagePath: widget.dataProductItem!.company[0]
-                                        .profilePic
-                                        .toString().contains('http')?widget.dataProductItem!.company[0]
-                                        .profilePic
-                                        .toString(): AppEndpoints.baseUrlWithoutApi +
-                                        widget.dataProductItem!.company[0]
-                                            .profilePic
-                                            .toString(),
-                                    height: 37.h,
-                                    width: 37.h,
-                                    radius: BorderRadiusStyle.circleBorder20,
-                                    alignment: Alignment.center,
-                                    fit: BoxFit.cover,
-                                    placeHolder: ImageConstant.imgPerson,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Spacer(),
-                          widget.dataProductItem.price.toString() == '0.0' ||
-                              widget.dataProductItem.price.toString() == '0' ||
-                              widget.dataProductItem.price.toString() == '0.00' ||
-                              widget.dataProductItem.price.toString() == 'null'
-                              ? Container()
-                              : Padding(
-                                padding:  EdgeInsets.only(bottom: 5.h),
-                                child: Container(
-                                                            decoration: AppDecoration.cardPrice.copyWith(
-                                                            ),
-                                  child: Padding(
-                                    padding:  EdgeInsets.all(2.h),
-                                    child: Row(
-                                      children: [
-
-                                        if (widget.dataProductItem.finalPrice == null) ...{
-                                          Text(
-                                            "${widget.dataProductItem.price.toString()} درهم ",
-                                            style: themeLite.textTheme.titleSmall!
-                                                .copyWith(
-                                                color:
-                                                DIManager.findDep<SharedPrefs>()
-                                                    .getThemeApp() ==
-                                                    'd'
-                                                    ? Colors.white
-                                                    : Colors.black, fontSize: AppFontSize.fontSize_12,
-                                                fontWeight: FontWeight.bold),
-                                          )
-                                        } else ...{
-                                          double.parse(widget.dataProductItem.finalPrice.toString())
-                                              .toString() ==
-                                              double.parse(
-                                                  widget.dataProductItem.price.toString())
-                                                  .toString()
-                                              ? Text(
-                                            "${widget.dataProductItem.price.toString()} درهم ",
-                                            style: themeLite.textTheme.titleSmall!
-                                                .copyWith(
-                                                color: DIManager.findDep<
-                                                    SharedPrefs>()
-                                                    .getThemeApp() ==
-                                                    'd'
-                                                    ? Colors.white
-                                                    : Colors.black,fontSize: AppFontSize.fontSize_12,
-                                                fontWeight: FontWeight.bold),
-                                          )
-                                              : Text(
-                                            "${widget.dataProductItem.price.toString()} ",
-                                            style: themeLite.textTheme.titleSmall!
-                                                .copyWith(
-                                              color:  DIManager.findDep<
-                                                  SharedPrefs>()
-                                                  .getThemeApp() ==
-                                                  'd'
-                                                  ?Colors.orangeAccent
-                                                  : Colors.black,
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: AppFontSize.fontSize_12,
-                                              decoration:
-                                              TextDecoration.lineThrough,
-                                              decorationColor: DIManager.findDep<
-                                                  SharedPrefs>()
-                                                  .getThemeApp() ==
-                                                  'd'
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                            ),
-                                          ),
-                                          sizeWidthNormal(width: 4.w),
-                                          double.parse(widget.dataProductItem.finalPrice.toString())
-                                              .toString() ==
-                                              double.parse(
-                                                  widget.dataProductItem.price.toString())
-                                                  .toString()
-                                              ? Container()
-                                              : Text(
-                                            "${double.parse(widget.dataProductItem.finalPrice.toString()).toString()} درهم ",
-                                            style: themeLite.textTheme.titleSmall!
-                                                .copyWith(
-                                              color: DIManager.findDep<
-                                                  SharedPrefs>()
-                                                  .getThemeApp() ==
-                                                  'd'
-                                                  ? Colors.white
-                                                  : Colors.black, fontSize: AppFontSize.fontSize_12,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        },
-
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                        ],
-                      ),
-                    ),
-                    widget.dataProductItem.isHave.toString() == '1'
-                        ? Positioned(
-                      right:widget.width !=null? 125.w: 140.w,
-                      bottom: isIpad(context)?80.h: 100.h,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Icon(
-                            Icons.star,
-                            color: Colors.black,
-                            size: 20.sp,
-                          ),
-                          Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 15.sp,
-                          ),
-                        ],
-                      ),
-                    )
-                        : Container(),
-                  ],
-                ),
-              sizeHeightNormal(height: 2.h),
-                Container(
-                  width: 150.w,
-                  margin: EdgeInsets.only(
-                    left: 13.w, right: 13.w,
-                    // bottom: 25.v,
+                Text(
+                  _title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: titleColor,
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.w800,
+                    fontSize: 11,
+                    height: 1.25,
                   ),
-                  child:  Text(
-                    widget.dataProductItem!.description ?? '',
+                ),
+                if (_companyName.isNotEmpty) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    _companyName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: themeLite.textTheme.bodySmall,
+                    style: TextStyle(
+                      color: muted,
+                      fontFamily: 'Cairo',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 9,
+                    ),
                   ),
+                ],
+                const SizedBox(height: 3),
+                Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.clock,
+                      size: 9,
+                      color: muted,
+                    ),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        widget.dataProductItem!.acceptDate != null
+                            ? formatDateTime(
+                                widget.dataProductItem!.acceptDate ??
+                                    DateTime.now(),
+                              )
+                            : '',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: muted,
+                          fontFamily: 'Cairo',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 5, 8, 7),
+            child: BlocConsumer<CartCubit, CartState>(
+              listener: (context, state) {
+                if (state is SuccessAddToCartState &&
+                    state.productId ==
+                        widget.dataProductItem.adsId.toString()) {
+                  setState(() {
+                    _isAddingToCart = false;
+                  });
+                }
+              },
+              builder: (context, state) {
+                if (_isAddingToCart) {
+                  return _cartShell(
+                    child: LoadingAnimationWidget.threeRotatingDots(
+                      color: LbeenaColors.white,
+                      size: 16,
+                    ),
+                  );
+                }
 
-            Center(
-              child: textNormal(
-                  text: widget.dataProductItem!.acceptDate != null
-                      ? formatDateTime(widget.dataProductItem!.acceptDate ??
-                      DateTime.now())
-                      .toString()
-                      : "",
-                  fontSize: AppFontSize.fontSize_10,
-                  fontWeight: FontWeight.w200),
-            ),
+                final productId =
+                    int.parse(widget.dataProductItem.adsId!.toString());
+                final isProductInCart =
+                    CartCubit.get(context).dataCart != null &&
+                        CartCubit.get(context).dataCart!.items.any(
+                              (item) => item.productId == productId,
+                            );
 
-            Spacer(),
-            Center(
-              child: BlocConsumer<CartCubit, CartState>(
-                listener: (context, state) {
-                  if (state is SuccessAddToCartState &&
-                      state.productId == widget.dataProductItem.adsId.toString()) {
-                    setState(() {
-                      _isAddingToCart = false;
-                    });
-                  }
-                },
-                builder: (context, state) {
-                  if (_isAddingToCart) {
-                    return CustomElevatedButton(
-                        width: 100.w,
-                        height: 25.h,
-                        isDisabled: true,
-                        buttonStyle: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(Colors.grey),
-                            shape: MaterialStateProperty.all<OutlinedBorder>(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(7.r),
-                              ),
-                            )),
-                            text: "أضف إلى السلة",
-                            buttonTextStyle: themeLite.textTheme.titleMedium!.copyWith(
-                                color: Colors.white,
-                                fontSize: 12.fSize),
-                            child: LoadingAnimationWidget.threeRotatingDots(
-                              color: Colors.white,
-                              size: 25,
-                                ));
-                        }
-
-                        int productId = int.parse(widget.dataProductItem.adsId!.toString());
-                  bool isProductInCart = CartCubit.get(context).dataCart != null &&
-                  CartCubit.get(context).dataCart!.items.any((item) =>
-                  item.productId == productId);
-
-                  return isProductInCart
-                  ? itemButtonContainer(
+                return itemButtonContainer(
                   onTap: () {
-                  navigatorToPush(context: context, pageName: CartPage(isShowBack: true,));
-                  },
-                  adStatus: widget.dataProductItem.status,
-                  text: 'الذهاب إلى السلة',
-                  width: 100.w,
-                  )
-                      : itemButtonContainer(
-                  onTap: () {
-                    if(DIManager.findDep<SharedPrefs>().getToken() ==null){
-
-                      navigatorToPush(context: context, pageName: LoginScreen());
-                    }else{
-
+                    if (isProductInCart) {
+                      navigatorToPush(
+                        context: context,
+                        pageName: CartPage(isShowBack: true),
+                      );
+                      return;
+                    }
+                    if (DIManager.findDep<SharedPrefs>().getToken() == null) {
+                      navigatorToPush(
+                        context: context,
+                        pageName: LoginScreen(),
+                      );
+                    } else {
                       setState(() {
                         _isAddingToCart = true;
                       });
@@ -383,34 +224,208 @@ class _CardAdsStoreWidgetState extends State<CardAdsStoreWidget> {
                         isNeedGetMyCart: true,
                       );
                     }
-
                   },
                   adStatus: widget.dataProductItem.status,
-                  text: 'أضف إلى السلة',
-                  changeBackGround: true,
-                  width: 100.w,
-                  );
-                },
+                  text: isProductInCart ? 'الذهاب إلى السلة' : 'أضف إلى السلة',
+                  changeBackGround: !isProductInCart,
+                  width: double.infinity,
+                  height: 30,
+                  fontSize: 10,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _productImage() {
+    return SizedBox(
+      width: double.infinity,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned.fill(
+            child: CustomImageView(
+              imagePath: _imagePath,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              placeHolder: ImageConstant.imgPerson,
+            ),
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  LbeenaColors.tealDark.withValues(alpha: 0),
+                  LbeenaColors.tealDark.withValues(alpha: 0),
+                  LbeenaColors.tealDark.withValues(alpha: 0.32),
+                ],
+                stops: const [0, 0.55, 1],
               ),
             ),
-            sizeHeightNormal(height: 5.h),
+          ),
+          if (widget.dataProductItem.isHave.toString() == '1')
+            PositionedDirectional(
+              top: 8,
+              end: 8,
+              child: Container(
+                width: 26,
+                height: 26,
+                decoration: BoxDecoration(
+                  color: LbeenaColors.orange,
+                  shape: BoxShape.circle,
+                ),
+                child: const Center(
+                  child: FaIcon(
+                    FontAwesomeIcons.solidStar,
+                    size: 11,
+                    color: LbeenaColors.white,
+                  ),
+                ),
+              ),
+            ),
+          if (_hasPrice)
+            PositionedDirectional(
+              top: 8,
+              start: 8,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 124),
+                child: _priceChip(),
+              ),
+            ),
+          if (_hasCompany)
+            PositionedDirectional(
+              bottom: 8,
+              end: 8,
+              child: InkWell(
+                onTap: () {
+                  userId ==
+                          widget.dataProductItem!.company[0].id.toString()
+                      ? null
+                      : navigatorToPush(
+                          context: context,
+                          pageName: CompanyDetailsPage(
+                            idCompany:
+                                widget.dataProductItem!.company[0].id,
+                          ),
+                        );
+                },
+                child: Container(
+                  width: 30,
+                  height: 30,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: LbeenaColors.white, width: 2),
+                    boxShadow: [
+                      BoxShadow(
+                        color: LbeenaColors.teal.withValues(alpha: 0.22),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: ClipOval(
+                    child: CustomImageView(
+                      imagePath: _companyPhoto,
+                      fit: BoxFit.cover,
+                      placeHolder: ImageConstant.imgPerson,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _priceChip() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: LbeenaColors.orange,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: LbeenaColors.orange.withValues(alpha: 0.28),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (!_hasDiscount)
+              Text(
+                '${_prettyPrice(widget.dataProductItem.price)} درهم',
+                style: const TextStyle(
+                  color: LbeenaColors.white,
+                  fontFamily: 'Cairo',
+                  fontWeight: FontWeight.w800,
+                  fontSize: 11,
+                ),
+              )
+            else ...[
+              Text(
+                _prettyPrice(widget.dataProductItem.price),
+                style: TextStyle(
+                  color: LbeenaColors.white.withValues(alpha: 0.85),
+                  fontFamily: 'Cairo',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 10,
+                  decoration: TextDecoration.lineThrough,
+                  decorationColor: LbeenaColors.white,
+                ),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                '${_prettyPrice(widget.dataProductItem.finalPrice)} درهم',
+                style: const TextStyle(
+                  color: LbeenaColors.white,
+                  fontFamily: 'Cairo',
+                  fontWeight: FontWeight.w800,
+                  fontSize: 11,
+                ),
+              ),
+            ],
           ],
         ),
       ),
     );
   }
-  bool _isAddingToCart = false;
+
+  String _prettyPrice(dynamic value) {
+    final parsed = double.tryParse(value?.toString() ?? '');
+    if (parsed == null) return value?.toString() ?? '';
+    if (parsed == parsed.roundToDouble()) {
+      return parsed.toInt().toString();
+    }
+    return parsed.toStringAsFixed(2);
+  }
+
+  Widget _cartShell({required Widget child}) {
+    return Container(
+      height: 30,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: LbeenaColors.orange,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      alignment: Alignment.center,
+      child: child,
+    );
+  }
 
   String getComparedTime(DateTime dateTime) {
     Duration difference = DateTime.now().difference(dateTime);
     final List prefix = [
-      // translate("just now"),
-      // translate("second(s)"),
-      // translate("minute(s)"),
-      // translate("hour(s)"),
-      // translate("day(s)"),
-      // translate("month(s)"),
-      // translate("year(s)")
       'الآن',
       'ثواني',
       'دقائق',
@@ -448,8 +463,7 @@ class _CardAdsStoreWidgetState extends State<CardAdsStoreWidget> {
 }
 
 String formatDateTime(DateTime dateTimeString) {
-  // DateTime dateTime = DateTime.parse(dateTimeString);
   String formattedDate =
-  DateFormat('MMM dd, yyyy hh:mm a').format(dateTimeString);
+      DateFormat('MMM dd, yyyy hh:mm a').format(dateTimeString);
   return formattedDate;
 }

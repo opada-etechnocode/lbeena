@@ -4,10 +4,14 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:syrians_in_uae/core/di/di_manager.dart';
+import 'package:syrians_in_uae/core/shared_prefs/shared_prefs.dart';
 import 'package:syrians_in_uae/ui/screens/store/cubit/store_cubit.dart';
 import 'package:syrians_in_uae/ui/screens/store/cubit/store_state.dart';
 import 'package:syrians_in_uae/ui/screens/store/widget/card_ads_store_widget.dart';
+import 'package:syrians_in_uae/ui/theme/lbeena_colors.dart';
 import 'package:syrians_in_uae/widgets/components.dart';
+import 'package:syrians_in_uae/widgets/lbeena_bottom_nav.dart';
 
 import '../../../widgets/smart_refresh_widget.dart';
 import '../../../widgets/store_ads_shimmer.dart';
@@ -48,7 +52,9 @@ class _StorePageState extends State<StorePage> {
   }
   @override
   Widget build(BuildContext context) {
+    final isDark = DIManager.findDep<SharedPrefs>().getThemeApp() == 'd';
     return Scaffold(
+      backgroundColor: isDark ? LbeenaColors.surfaceDark : LbeenaColors.lightBg,
       appBar: appBarNormalWithIcon(
           text: 'المتجر', context: context, isShowBack: true),
       body: BlocConsumer<StoreCubit, StoreState>(
@@ -71,22 +77,21 @@ class _StorePageState extends State<StorePage> {
                     StoreCubit.get(context).bannerStore ==null?Container():  buildBannerItem(
                         context,StoreCubit.get(context).bannerStore!,horizontal: 10.w),
                     sizeHeightNormal(),
-                    Padding(
-                      padding:  EdgeInsets.symmetric(horizontal: 14.w),
-                      child: textNormal(text: 'متجرنا في الإمارات'),
+                    const LbeenaSectionHeader(
+                      title: 'متجر لبينا',
+                      padding: EdgeInsets.fromLTRB(14, 4, 14, 10),
                     ),
-                    sizeHeightNormal(),
                     StoreCubit.get(context).asdStoreData.length ==0?Center(
                       child: textNormal(text: 'لا يوجد منتجات بعد'),
                     ):   GridView.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          mainAxisSpacing: 16.h,
-                          crossAxisSpacing: 16.w,
-                          childAspectRatio: 0.75,
+                          mainAxisSpacing: 12.h,
+                          crossAxisSpacing: 12.w,
+                          mainAxisExtent: 228,
                         ),
                         shrinkWrap: true,
-                        padding: EdgeInsets.only(top: 5.h,left: 10.w,right: 10.w),
+                        padding: EdgeInsets.only(top: 2.h,left: 12.w,right: 12.w),
                         itemCount: StoreCubit.get(context).asdStoreData.length,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
