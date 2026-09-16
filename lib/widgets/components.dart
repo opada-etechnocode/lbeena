@@ -496,6 +496,7 @@ Widget buildCategory({
   FaIconData? icon,
   required String text,
   Color? color,
+  Color? tileColor,
   bool isScrollerCard = false,
   double tileSize = 56,
   double iconSize = 30,
@@ -581,7 +582,9 @@ Widget buildCategory({
           height: tileSize,
           width: tileSize,
           decoration: BoxDecoration(
-            color: isDark ? LbeenaColors.cardDark : LbeenaColors.iconTile,
+            color: isDark
+                ? LbeenaColors.cardDark
+                : (tileColor ?? LbeenaColors.iconTile),
             borderRadius: BorderRadius.circular(14),
           ),
           child: Center(

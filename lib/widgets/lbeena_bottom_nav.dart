@@ -7,9 +7,11 @@ import 'package:liquid_glass_easy/liquid_glass_easy.dart';
 import 'package:syrians_in_uae/core/di/di_manager.dart';
 import 'package:syrians_in_uae/core/link_app.dart';
 import 'package:syrians_in_uae/core/shared_prefs/shared_prefs.dart';
+import 'package:syrians_in_uae/core/utils/image_constant.dart';
 import 'package:syrians_in_uae/ui/screens/chats/cubit/cubit.dart';
 import 'package:syrians_in_uae/ui/screens/chats/cubit/states.dart';
 import 'package:syrians_in_uae/ui/theme/lbeena_colors.dart';
+import 'package:syrians_in_uae/widgets/custom_image_view.dart';
 
 class LbeenaBottomNav extends StatelessWidget {
   const LbeenaBottomNav({
@@ -56,24 +58,27 @@ class LbeenaBottomNav extends StatelessWidget {
             final items = <LiquidGlassTabBarItem>[
               _glassTab(
                 icon: Icons.home_rounded,
+                svgPath: ImageConstant.navHome,
                 label: isAr ? 'الرئيسية' : 'Home',
               ),
               _glassTab(
                 icon: Icons.chat_rounded,
-                selectedIcon: Icons.chat_bubble_rounded,
+                svgPath: ImageConstant.imgChats,
                 label: l10n.chat,
                 badge: chatCount,
               ),
               _glassTab(
-                icon: Icons.add_box_rounded,
-                label: isAr ? 'رفع إعلان' : 'Post ad',
+                icon: Icons.add,
+                isAdd: true,
               ),
               _glassTab(
                 icon: Icons.menu_book_rounded,
+                svgPath: ImageConstant.mainIcons,
                 label: isAr ? 'الدليل' : 'Directory',
               ),
               _glassTab(
                 icon: Icons.settings_rounded,
+                svgPath: ImageConstant.imgSetting,
                 label: l10n.settings,
               ),
             ];
@@ -89,7 +94,11 @@ class LbeenaBottomNav extends StatelessWidget {
               ),
               child: Directionality(
               textDirection: TextDirection.ltr,
-              child: LiquidGlassTabBar.withImpeller(
+              child: Stack(
+                alignment: Alignment.bottomCenter,
+                clipBehavior: Clip.none,
+                children: [
+                  LiquidGlassTabBar.withImpeller(
                 items: barItems,
                 selectedIndex: barIndex,
                 onChanged: (index) {
@@ -157,6 +166,49 @@ class LbeenaBottomNav extends StatelessWidget {
                   ),
                 ),
               ),
+                  Positioned(
+                    bottom: (Platform.isIOS ? iOSBottomPad : media.padding.bottom) +
+                        (Platform.isIOS ? 0 : 8) +
+                        (barHeight - 48) / 2,
+                    child: IgnorePointer(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 56,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: LbeenaColors.teal,
+                              borderRadius: BorderRadius.circular(barHeight),
+                            ),
+                            alignment: Alignment.center,
+                            child: Icon(
+                              Icons.add_rounded,
+                              size: 22,
+                              color: LbeenaColors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            isAr ? 'رفع' : 'Post',
+                            style: TextStyle(
+                              color: selectScreen == 4
+                                  ? LbeenaColors.orange
+                                  : ink,
+                              fontFamily: 'Cairo',
+                              fontSize: 10,
+                              fontWeight: selectScreen == 4
+                                  ? FontWeight.w800
+                                  : FontWeight.w600,
+                              height: 1,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               ),
             );
           },
@@ -165,31 +217,29 @@ class LbeenaBottomNav extends StatelessWidget {
 
   static LiquidGlassTabBarItem _glassTab({
     required IconData icon,
-    required String label,
-    IconData? selectedIcon,
+    String? label,
+    String? svgPath,
+    bool isAdd = false,
     int badge = 0,
   }) {
     return LiquidGlassTabBarItem(
       icon: icon,
-      selectedIcon: selectedIcon,
-      label: label,
+      label: isAdd ? null : label,
       iconBuilder: (context, i) {
+        if (isAdd) {
+          return SizedBox(width: i.size, height: i.size);
+        }
+
         return Stack(
           clipBehavior: Clip.none,
           alignment: Alignment.center,
           children: [
-            Icon(
-              i.selected ? (selectedIcon ?? icon) : icon,
-              size: i.size,
+            CustomImageView(
+              imagePath: svgPath,
+              height: i.size,
+              width: i.size,
               color: i.color,
-              shadows: i.selected
-                  ? [
-                      Shadow(
-                        color: i.color.withValues(alpha: 0.85),
-                        blurRadius: 14,
-                      ),
-                    ]
-                  : null,
+              fit: BoxFit.contain,
             ),
             if (badge > 0)
               Positioned(

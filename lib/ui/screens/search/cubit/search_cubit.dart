@@ -18,7 +18,29 @@ class SearchCubit extends Cubit<SearchState> {
   int? categoryId;
 
   List<DataProductBannerModel> data =[];
+  List<DataProductBannerModel> categoryBanners = [];
   bool isLoadingSearch = false;
+
+  Future<void> loadCategoryBanners(int? categoryId) async {
+    categoryBanners.clear();
+    if (categoryId == null || categoryId == -1) {
+      emit(SuccessCategoryBannerState());
+      return;
+    }
+    try {
+      const dataSource = HomePageDataSourceImpl();
+      final result =
+          await dataSource.getCategoriesPartNew(id: categoryId, page: 1);
+      final banners = result.data?.adsBanner?.data?.data;
+      if (banners != null && banners.isNotEmpty) {
+        categoryBanners = List<DataProductBannerModel>.from(banners);
+      }
+      emit(SuccessCategoryBannerState());
+    } catch (_) {
+      emit(SuccessCategoryBannerState());
+    }
+  }
+
   Future<void> getSearchItem({
      String? title,
      int? categoryId,

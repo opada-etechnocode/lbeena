@@ -53,6 +53,38 @@ class ExchangeRatesCubit extends Cubit<ExchangeRatesState> {
     'SGD': 'دولار سنغافوري',
   };
 
+  static const currencyFlags = {
+    'USD': 'us',
+    'EUR': 'eu',
+    'TRY': 'tr',
+    'SAR': 'sa',
+    'AED': 'ae',
+    'EGP': 'eg',
+    'JOD': 'jo',
+    'KWD': 'kw',
+    'GBP': 'gb',
+    'QAR': 'qa',
+    'BHD': 'bh',
+    'IQD': 'iq',
+    'LYD': 'ly',
+    'OMR': 'om',
+    'CHF': 'ch',
+    'CAD': 'ca',
+    'AUD': 'au',
+    'SEK': 'se',
+    'NOK': 'no',
+    'DKK': 'dk',
+    'MAD': 'ma',
+    'TND': 'tn',
+    'DZD': 'dz',
+    'RUB': 'ru',
+    'MYR': 'my',
+    'BRL': 'br',
+    'NZD': 'nz',
+    'ZAR': 'za',
+    'SGD': 'sg',
+  };
+
   SpTodaySnapshotModel? snapshot;
   String market = defaultMarket;
   String extraCurrency = defaultExtraCurrency;

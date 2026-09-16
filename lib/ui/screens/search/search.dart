@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:syrians_in_uae/core/utils/size_utils.dart';
 import 'package:syrians_in_uae/data/models/search/seach_model.dart';
 import 'package:syrians_in_uae/ui/screens/home/cubit/cubit.dart';
@@ -97,6 +98,7 @@ class _SearchPageState extends State<SearchPage> {
                       categoriesMainModel:widget.categoriesMainModel,
                     ),
                     sizeHeightNormal(),
+                    _buildCategoryBanners(context),
                     SearchCubit.get(context).isLoadingSearch? loaderNormal(): Expanded(
                         flex: 3,child:  SmartRefreshWidget(
                         onRefresh: () async {
@@ -146,6 +148,34 @@ class _SearchPageState extends State<SearchPage> {
         ),
         ),
       ),
+    );
+  }
+
+  Widget _buildCategoryBanners(BuildContext context) {
+    final banners = SearchCubit.get(context).categoryBanners;
+    if (banners.isEmpty) return const SizedBox.shrink();
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.h),
+      child: banners.length == 1
+          ? buildBannerItem(context, banners[0], horizontal: 8.w)
+          : CarouselSlider.builder(
+              itemCount: banners.length,
+              itemBuilder: (context, index, realIndex) {
+                return buildBannerItem(context, banners[index]);
+              },
+              options: CarouselOptions(
+                height: 150.h,
+                autoPlay: true,
+                autoPlayInterval: const Duration(seconds: 3),
+                autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                autoPlayCurve: Curves.fastOutSlowIn,
+                enlargeCenterPage: true,
+                viewportFraction: 0.8,
+                enableInfiniteScroll: true,
+                scrollDirection: Axis.horizontal,
+              ),
+            ),
     );
   }
 

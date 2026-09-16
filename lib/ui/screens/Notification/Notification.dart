@@ -17,6 +17,7 @@ import '../../app_general_bloc/handel_android_app.dart';
 import '../../theme/lbeena_colors.dart';
 import '../chats/cubit/cubit.dart';
 import '../company/company_details_page.dart';
+import '../cart/order_page.dart';
 import '../details_product/details_product.dart';
 import '../reminders/reminder_item.dart';
 
@@ -171,7 +172,8 @@ class _NotificationPageState extends State<NotificationPage> {
         data.type_notification == 'post' ||
         data.type_notification == 'ads' ||
         data.type_notification == 'reminder' ||
-        data.type_notification == 'follow';
+        data.type_notification == 'follow' ||
+        _isOrderNotification(data);
 
     showDialog(
       context: context,
@@ -264,6 +266,15 @@ class _NotificationPageState extends State<NotificationPage> {
                             context: context,
                             pageName: CompanyDetailsPage(
                               idCompany: int.parse(data.following_id.toString()),
+                            ),
+                          );
+                        } else if (_isOrderNotification(data)) {
+                          navigatorToPush(
+                            context: context,
+                            pageName: OrderPage(
+                              isMyOrderRequests: false,
+                              idOrderFromNotification:
+                                  int.tryParse(data.order_id ?? ''),
                             ),
                           );
                         }
@@ -480,10 +491,28 @@ class _NotificationCard extends StatelessWidget {
         return FontAwesomeIcons.userPlus;
       case 'reminder':
         return FontAwesomeIcons.calendar;
+      case 'order':
+      case 'orders':
+        return FontAwesomeIcons.bagShopping;
       default:
         return FontAwesomeIcons.bell;
     }
   }
+}
+
+bool _isOrderNotification(DataNotificationsHomePageModel data) {
+  final type = data.type_notification?.toLowerCase() ?? '';
+  final title = '${data.title ?? ''} ${data.body ?? ''}';
+  if (type == 'order' || type == 'orders') return true;
+  if (data.order_id != null &&
+      data.order_id != 'null' &&
+      data.order_id!.isNotEmpty) {
+    return true;
+  }
+  return title.contains('طلبية') ||
+      title.contains('طلباتي') ||
+      title.contains('تم اضافة طلب') ||
+      title.contains('تم إضافة طلب');
 }
 
 String convertDate({required String date}) {

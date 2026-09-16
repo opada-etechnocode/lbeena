@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,10 +6,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:syrians_in_uae/core/utils/share_plus_helper.dart';
 import 'package:syrians_in_uae/core/utils/size_utils.dart';
 import 'package:syrians_in_uae/ui/screens/details_product/widgets/edit_ad_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -1314,41 +1309,12 @@ class _DetailsAdWidgetState extends State<DetailsAdWidget> {
       String urlShare =
           '${AppEndpoints.deepLinksUrl}/details/$idAdsAndBanner/$isBanner/$idCompany/$idAdsProduct/0/$categoryId';
       String textToShare = descriptionAdsUrl + urlShare;
-
-      // التحقق من وجود صورة صحيحة
-      if (imageUrl.isNotEmpty &&
-          (imageUrl.endsWith('.jpg') ||
-              imageUrl.endsWith('.jpeg') ||
-              imageUrl.endsWith('.png') ||
-              imageUrl.endsWith('.webp'))) {
-        try {
-          String filename = basename(imageUrl);
-          Dio dio = Dio();
-          Response response = await dio.get(
-            imageUrl,
-            options: Options(responseType: ResponseType.bytes),
-          );
-
-          Directory tempDir = await getTemporaryDirectory();
-          String tempPath = tempDir.path;
-          File file = File('$tempPath/$filename.jpg');
-          file.createSync();
-          file.writeAsBytesSync(response.data);
-
-          if (file.existsSync()) {
-            await Share.shareXFiles([XFile(file.path)], text: textToShare);
-          } else {
-            // في حال لم تنجح تحميل الصورة
-            await Share.share(textToShare);
-          }
-        } catch (e) {
-          print("Image download failed: $e");
-          await Share.share(textToShare); // مشاركة النص فقط
-        }
-      } else {
-        // إذا لم تكن هناك صورة أو الرابط غير صحيح
-        await Share.share(textToShare);
-      }
+      final imageFile = await xFileFromNetworkImage(imageUrl);
+      await shareWithPlus(
+        context: context,
+        text: textToShare,
+        file: imageFile,
+      );
 
       setState(() {
         isLoadingShareAds = false;

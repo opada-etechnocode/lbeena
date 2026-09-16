@@ -18,3 +18,5 @@ class ErrorSearchItemState extends SearchState {
   final String error;
   ErrorSearchItemState(this.error);
 }
+
+class SuccessCategoryBannerState extends SearchState {}

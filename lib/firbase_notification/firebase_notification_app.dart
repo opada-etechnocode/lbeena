@@ -17,7 +17,7 @@ class FirebaseAppForUsers {
       message.messageId.hashCode,
       message.notification?.title,
       message.notification?.body,
-      payload: 'tr',
+      payload: jsonEncode(message.data),
       NotificationDetails(
         android: AndroidNotificationDetails(
           '188',
@@ -39,6 +39,11 @@ class FirebaseAppForUsers {
 
   void configureFirebaseMessaging() {
     List<String> messages = [];
+    FirebaseMessaging.instance.getInitialMessage().then((message) {
+      if (message != null) {
+        navigationToPage(message);
+      }
+    });
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('launch_background');
@@ -53,11 +58,17 @@ class FirebaseAppForUsers {
       flutterLocalNotificationsPlugin.initialize(
         initializationSettings,
         onDidReceiveNotificationResponse: (NotificationResponse response) async {
-          String? payload = response.payload;
-          if (payload != null) {
-            Map<String, dynamic> data = jsonDecode(payload);
-            navigationToPagePayload (data,message);
-          }
+          try {
+            final payload = response.payload;
+            if (payload != null && payload != 'tr') {
+              final decoded = jsonDecode(payload);
+              if (decoded is Map<String, dynamic>) {
+                _openFromData(decoded);
+                return;
+              }
+            }
+          } catch (_) {}
+          navigationToPage(message);
         },
       );
       print("Data message received: ${message.data}");
@@ -105,7 +116,7 @@ class FirebaseAppForUsers {
         message.messageId.hashCode,
         message.notification!.title,
         message.notification!.body,
-        payload: 'tr',
+        payload: jsonEncode(message.data),
         NotificationDetails(
           android: AndroidNotificationDetails(
             '188',
@@ -186,70 +197,82 @@ class FirebaseAppForUsers {
      print('$e  $stack');
    }
   }
-  void navigationToPage(RemoteMessage message){
-    if (message.data['isMessage'].toString() == "true") {
-      navigatorKey.currentContext!.push(
-          '/chat/${message.data['nameAds']}/${message.data['imageAds']}/${message.data['imageCompany']}/${message.data['imageUser']}/${message.data['nameOwnerAds']}/${message.data['user_name_person_sender']}/${message.data['user_id']}/${message.data['user_id_2']}/${message.data['ad_id']}/${message.data['categoryId']}/${message.data['idBannerOrProduct']}/${message.data['isBanner']}/${message.data['isBannerInOut']}/${message.data['idAdOnwerCompany']}');
-    }else
-    if (message.data['ad_id'] != null) {
-      navigatorKey.currentContext!.push('/details/${message.data['ad_id']}/${message.data['isBanner']}/${message.data['company_id']}/${message.data['banner_id']}/${message.data['in_out']}/${message.data['category_id']}');
-    }else
-
-    if (message.data['is_company'] == '1') {
-      navigatorKey.currentContext!.push('/company/${message.data['company_id']}');
-    }else
-
-    if (message.data['post_id'] !=null) {
-      navigatorKey.currentContext!.push('/postScreen/${message.data['post_id']}');
-    } else
-    if (message.data['reminder_id'] !=null) {
-      navigatorKey.currentContext!.push('/remindersItem/${message.data['reminder_id']}/${message.data['reminder_others']}');
-    } else
-    if (message.data['following_id'] != null) {
-      navigatorKey.currentContext!.push(
-          '/company/${message.data['following_id']}');
-    } else
-    if (message.data['user_id']!= null) {
-      navigatorKey.currentContext!.push('/company/${message.data['user_id']}');
-    }
-    else if(message.data['is_order'] =='1'){
-      navigatorKey.currentContext!.push(
-          '/orderPage/${message.data['order_id']}/${message.data['order_type']}');
-    }
+  void navigationToPage(RemoteMessage message) {
+    _openFromData({
+      ...message.data,
+      if (message.notification?.title != null)
+        'title': message.notification!.title,
+      if (message.notification?.body != null)
+        'body': message.notification!.body,
+    });
   }
 
-  void navigationToPagePayload (Map<String, dynamic> data,RemoteMessage message) {
-    if (data['isMessage'].toString() == "true") {
-      navigatorKey.currentContext!.push(
-          '/chat/${message.data['nameAds']}/${message.data['imageAds']}/${message.data['imageCompany']}/${message.data['imageUser']}/${message.data['nameOwnerAds']}/${message.data['user_name_person_sender']}/${message.data['user_id']}/${message.data['user_id_2']}/${message.data['ad_id']}/${message.data['categoryId']}/${message.data['idBannerOrProduct']}/${message.data['isBanner']}/${message.data['isBannerInOut']}/${message.data['idAdOnwerCompany']}');
-    }else
-    if (message.data['ad_id'] != null) {
-      navigatorKey.currentContext!.push(
-          '/details/${message.data['ad_id']}/${message.data['isBanner']}/${message.data['company_id']}/${message.data['banner_id']}/${message.data['in_out']}/${message.data['category_id']}');
-    }else
+  void navigationToPagePayload(
+      Map<String, dynamic> data, RemoteMessage message) {
+    _openFromData({...message.data, ...data});
+  }
 
-    if (message.data['is_company'] == '1') {
-      navigatorKey.currentContext!.push(
-          '/company/${message.data['company_id']}');
-    }else
+  bool _isOrderPayload(Map<String, dynamic> data) {
+    final type =
+        '${data['type_notification'] ?? data['type'] ?? ''}'.toLowerCase();
+    final isOrderFlag = '${data['is_order']}'.toLowerCase();
+    final title = '${data['title'] ?? ''} ${data['body'] ?? ''}';
+    final orderId = '${data['order_id'] ?? ''}';
+    if (isOrderFlag == '1' || isOrderFlag == 'true') return true;
+    if (type == 'order' || type == 'orders') return true;
+    if (orderId.isNotEmpty && orderId != 'null') return true;
+    return title.contains('طلبية') ||
+        title.contains('طلباتي') ||
+        title.contains('تم اضافة طلب') ||
+        title.contains('تم إضافة طلب');
+  }
 
-    if (message.data['post_id'] !=null) {
-      navigatorKey.currentContext!.push(
-          '/postScreen/${message.data['post_id']}');
-    } else
-    if (message.data['reminder_id'] !=null) {
-      navigatorKey.currentContext!.push(
-          '/remindersItem/${message.data['reminder_id']}/${message.data['reminder_others']}');
-    } else
-    if (message.data['following_id'] != null) {
-      navigatorKey.currentContext!.push(
-          '/company/${message.data['following_id']}');
-    } else
-    if (message.data['user_id']!= null) {
-      navigatorKey.currentContext!.push('/company/${message.data['user_id']}');
-    }else if(message.data['is_order'] =='1'){
-      navigatorKey.currentContext!.push(
-          '/orderPage/${message.data['order_id']}/${message.data['order_type']}');
+  void _openFromData(Map<String, dynamic> data) {
+    final ctx = navigatorKey.currentContext;
+    if (ctx == null) return;
+
+    if (data['isMessage'].toString() == 'true') {
+      ctx.push(
+          '/chat/${data['nameAds']}/${data['imageAds']}/${data['imageCompany']}/${data['imageUser']}/${data['nameOwnerAds']}/${data['user_name_person_sender']}/${data['user_id']}/${data['user_id_2']}/${data['ad_id']}/${data['categoryId']}/${data['idBannerOrProduct']}/${data['isBanner']}/${data['isBannerInOut']}/${data['idAdOnwerCompany']}');
+      return;
+    }
+
+    if (_isOrderPayload(data)) {
+      final orderId = '${data['order_id'] ?? '0'}';
+      ctx.push(
+          '/orderPage/${orderId.isEmpty || orderId == 'null' ? '0' : orderId}/my');
+      return;
+    }
+
+    if (data['ad_id'] != null) {
+      ctx.push(
+          '/details/${data['ad_id']}/${data['isBanner']}/${data['company_id']}/${data['banner_id']}/${data['in_out']}/${data['category_id']}');
+      return;
+    }
+
+    if (data['is_company'] == '1') {
+      ctx.push('/company/${data['company_id']}');
+      return;
+    }
+
+    if (data['post_id'] != null) {
+      ctx.push('/postScreen/${data['post_id']}');
+      return;
+    }
+
+    if (data['reminder_id'] != null) {
+      ctx.push(
+          '/remindersItem/${data['reminder_id']}/${data['reminder_others']}');
+      return;
+    }
+
+    if (data['following_id'] != null) {
+      ctx.push('/company/${data['following_id']}');
+      return;
+    }
+
+    if (data['user_id'] != null) {
+      ctx.push('/company/${data['user_id']}');
     }
   }
 }

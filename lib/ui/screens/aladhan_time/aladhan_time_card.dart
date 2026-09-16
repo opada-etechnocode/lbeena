@@ -126,8 +126,22 @@ class _AladhanTimeCardWidgetState extends State<AladhanTimeCardWidget> {
               AladhanTimeCubit.defaultCity;
 
           return Container(
+            clipBehavior: Clip.antiAlias,
             decoration: LbeenaColors.cardWith(
               color: isDark ? LbeenaColors.cardDark : LbeenaColors.white,
+            ).copyWith(
+              image: DecorationImage(
+                image: AssetImage(ImageConstant.clockImage),
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+                opacity: isDark ? 0.28 : 0.9,
+                colorFilter: isDark
+                    ? ColorFilter.mode(
+                        LbeenaColors.cardDark.withValues(alpha: 0.55),
+                        BlendMode.srcATop,
+                      )
+                    : null,
+              ),
             ),
             padding: const EdgeInsets.fromLTRB(12, 8, 12, 10),
             child: Row(

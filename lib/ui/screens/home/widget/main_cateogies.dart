@@ -73,6 +73,7 @@ class _MainCategoriesState extends State<MainCategories> {
                         }
                       });
                       SearchCubit.get(context).categoryId = -1;
+                      SearchCubit.get(context).loadCategoryBanners(-1);
                       SearchCubit.get(context).getSearchItem(
                         title: SearchCubit.get(context).searchController.text,
                         page: 1,
@@ -80,9 +81,9 @@ class _MainCategoriesState extends State<MainCategories> {
                       );
                     },
                     child: Padding(
-                      padding: const EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(7),
                       child: Container(
-                          height: 40.h,
+                          height: 60.h,
                           decoration: AppDecoration.outlineButton.copyWith(
                             color: SearchCubit.get(context).categoryId == -1
                                 ? appTheme.deepPurpleA100
@@ -117,6 +118,9 @@ class _MainCategoriesState extends State<MainCategories> {
 
                         SearchCubit.get(context).categoryId =
                             widget.categoriesMainModel!.data[index].categoryId;
+                        SearchCubit.get(context).loadCategoryBanners(
+                          SearchCubit.get(context).categoryId,
+                        );
                         SearchCubit.get(context).getSearchItem(
                           title: SearchCubit.get(context).searchController.text,
                           page: 1,
@@ -143,6 +147,7 @@ class _MainCategoriesState extends State<MainCategories> {
                       child: Container(
                           height: 40.h,
                           decoration: AppDecoration.outlineButton.copyWith(
+                            boxShadow: [],
                             color: DIManager.findDep<SharedPrefs>()
                                         .getThemeApp() ==
                                     'd'
@@ -161,7 +166,7 @@ class _MainCategoriesState extends State<MainCategories> {
                                                 null
                                             ? Color(int.parse(
                                                 '0xff${widget.categoriesMainModel!.data[index].color}'))
-                                            : Colors.grey),
+                                            : Colors.grey.withAlpha(80)),
                           ),
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 10.w),

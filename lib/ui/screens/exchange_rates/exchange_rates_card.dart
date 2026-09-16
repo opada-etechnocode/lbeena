@@ -91,18 +91,21 @@ class ExchangeRatesCardWidget extends StatelessWidget {
                 const SizedBox(height: 8),
                 _rateRow(
                   isDark: isDark,
+                  code: 'USD',
                   title: 'دولار',
                   quote: snapshot.currency('USD', market),
                 ),
                 const SizedBox(height: 6),
                 _rateRow(
                   isDark: isDark,
+                  code: 'EUR',
                   title: 'يورو',
                   quote: snapshot.currency('EUR', market),
                 ),
                 const SizedBox(height: 6),
                 _rateRow(
                   isDark: isDark,
+                  code: extra,
                   title: ExchangeRatesCubit.currencyNames[extra] ?? extra,
                   quote: snapshot.currency(extra, market),
                   leading: _chipPicker<String>(
@@ -110,6 +113,7 @@ class ExchangeRatesCardWidget extends StatelessWidget {
                     isDark: isDark,
                     icon: FontAwesomeIcons.coins,
                     label: extra,
+                    flagCode: extra,
                     items: cubit.pickerCurrencies
                         .map(
                           (code) => (
@@ -153,6 +157,7 @@ class ExchangeRatesCardWidget extends StatelessWidget {
 
   Widget _rateRow({
     required bool isDark,
+    required String code,
     required String title,
     required SpTodayQuote? quote,
     Widget? leading,
@@ -176,19 +181,20 @@ class ExchangeRatesCardWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          leading ??
-              SizedBox(
-                width: 54,
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    color: isDark ? LbeenaColors.white : LbeenaColors.tealDark,
-                    fontWeight: FontWeight.w800,
-                    fontFamily: 'Cairo',
-                    fontSize: 12,
-                  ),
-                ),
+          if (leading == null) ...[
+            _flag(code),
+            const SizedBox(width: 8),
+            Text(
+              title,
+              style: TextStyle(
+                color: isDark ? LbeenaColors.white : LbeenaColors.tealDark,
+                fontWeight: FontWeight.w800,
+                fontFamily: 'Cairo',
+                fontSize: 12,
               ),
+            ),
+          ] else
+            leading,
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -213,6 +219,22 @@ class ExchangeRatesCardWidget extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _flag(String code) {
+    final iso = ExchangeRatesCubit.currencyFlags[code];
+    if (iso == null) return const SizedBox.shrink();
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(3),
+      child: Image.asset(
+        'flags/$iso.png',
+        package: 'country_code_picker',
+        width: 22,
+        height: 15,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => const SizedBox(width: 22, height: 15),
       ),
     );
   }
@@ -258,6 +280,7 @@ class ExchangeRatesCardWidget extends StatelessWidget {
     required bool isDark,
     required FaIconData icon,
     required String label,
+    String? flagCode,
     required List<({T value, String label})> items,
     required T selected,
     required ValueChanged<T> onSelected,
@@ -272,13 +295,28 @@ class ExchangeRatesCardWidget extends StatelessWidget {
           final isSelected = item.value == selected;
           return PopupMenuItem<T>(
             value: item.value,
-            child: Text(
-              item.label,
-              style: TextStyle(
-                color: isSelected ? LbeenaColors.orange : LbeenaColors.tealDark,
-                fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                fontFamily: 'Cairo',
-              ),
+            child: Row(
+              children: [
+                if (item.value is String &&
+                    ExchangeRatesCubit.currencyFlags
+                        .containsKey(item.value as String)) ...[
+                  _flag(item.value as String),
+                  const SizedBox(width: 8),
+                ],
+                Expanded(
+                  child: Text(
+                    item.label,
+                    style: TextStyle(
+                      color: isSelected
+                          ? LbeenaColors.orange
+                          : LbeenaColors.tealDark,
+                      fontWeight:
+                          isSelected ? FontWeight.w800 : FontWeight.w600,
+                      fontFamily: 'Cairo',
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
         }).toList();
@@ -292,8 +330,12 @@ class ExchangeRatesCardWidget extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            FaIcon(icon, size: 10, color: LbeenaColors.teal),
-            const SizedBox(width: 4),
+            if (flagCode != null) ...[
+              _flag(flagCode),
+              const SizedBox(width: 4),
+            ] else
+              FaIcon(icon, size: 10, color: LbeenaColors.teal),
+            if (flagCode == null) const SizedBox(width: 4),
             Text(
               label,
               style: TextStyle(

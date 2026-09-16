@@ -48,6 +48,7 @@ class ImageConstant {
   static String photoNotification2 = '$imagePath/photo_notification_app.svg';
   // static String aladhanTimeIcon = '$imagePath/aladhan.jpeg';
   static String mmImage = '$imagePath/mm.png';
+  static String clockImage = '$imagePath/clock.png';
   static String aladhanTimeIcon = '$imagePath/aladhan_icon.jpg';
   static String aladhanTimeIcon2 = '$imagePath/aladhan_icon2.jpg';
   static String community = '$imagePath/community.svg';
@@ -118,6 +119,8 @@ class ImageConstant {
   static String calendarIcon = "$iconsPath/calendar.svg";
   static String jobsIcons = "$iconsPath/jobs_icons.svg";
   static String adsIcons = "$iconsPath/ads_icons.svg";
+  static String navHome = "$iconsPath/nav_home.svg";
+  static String navPlus = "$iconsPath/nav_plus.svg";
   ///Social Media
   static String facebookIcon = "$iconsPath/facebook_icon.png";
   static String gpsIcon = "$iconsPath/gps.png";

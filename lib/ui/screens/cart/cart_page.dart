@@ -123,10 +123,14 @@ class _CartPageState extends State<CartPage> {
             if (state is SuccessCreateOrderState) {
               isLoadingCreateOrder = false;
               SnackBarHelper.mySnackBarSuccess(state.data.message, context);
-              navigatorToPushReplacementUntil(
-                  context: context,
-                  location: '/homePage',
-                  extra: homePageData);
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              } else {
+                navigatorToPushReplacementUntil(
+                    context: context,
+                    location: '/homePage',
+                    extra: homePageData);
+              }
             }
             if (state is ErrorCreateOrderState) {
               isLoadingCreateOrder = false;

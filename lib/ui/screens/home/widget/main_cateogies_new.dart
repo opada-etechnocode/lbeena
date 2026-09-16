@@ -177,6 +177,7 @@ class _MainCategoriesNewState extends State<MainCategoriesNew> {
             tileSize: 46,
             iconSize: 30,
             fontSize: 10,
+            tileColor: const Color(0xFFE8E8E8),
             onTap: () {
               if (category["onTap"] is Function(BuildContext, dynamic)) {
                 category["onTap"](context, widget);

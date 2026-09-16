@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -80,7 +81,6 @@ class _SplashScreenState extends State<SplashScreen>
   Color _splashBackground = LbeenaColors.splashStart;
   DateTime? _splashShownAt;
   bool _sloganFinished = false;
-  bool _homeReady = false;
   bool _didNavigate = false;
   HomePageLoginModel? _pendingHome;
 
@@ -121,8 +121,6 @@ class _SplashScreenState extends State<SplashScreen>
               homePageModel: homePageModel,
               categoriesMainModel: categoriesMainModel,
             );
-            _homeReady = true;
-            _tryGoHome();
 
           }
 
@@ -162,8 +160,6 @@ class _SplashScreenState extends State<SplashScreen>
             HomeCubit.get(context).getSettingApp();
           }
           if (state is ErrorAllDataHomePageState) {
-            _homeReady = true;
-            _tryGoHome();
             // } else {
             //   navigatorToPushReplacementUntil(
             //       context: context, location: '/tour');
@@ -214,6 +210,7 @@ class _SplashScreenState extends State<SplashScreen>
                     sizeHeightNormal(height: 20.h),
                     Center(
                       child: _SplashSloganText(
+                        key: const ValueKey('splash-slogan'),
                         onFinished: _onSloganFinished,
                       ),
                     ),
@@ -239,11 +236,11 @@ class _SplashScreenState extends State<SplashScreen>
   void _onSloganFinished() {
     if (_sloganFinished) return;
     _sloganFinished = true;
-    Future.delayed(const Duration(milliseconds: 350), _tryGoHome);
+    _tryGoHome();
   }
 
   void _tryGoHome() {
-    if (!_sloganFinished || !_homeReady || _didNavigate) return;
+    if (!_sloganFinished || _didNavigate) return;
     if (isAppUnderMaintenance || !mounted) return;
     _didNavigate = true;
     navigatorToPushReplacementUntil(
@@ -255,7 +252,7 @@ class _SplashScreenState extends State<SplashScreen>
 }
 
 class _SplashSloganText extends StatefulWidget {
-  const _SplashSloganText({required this.onFinished});
+  const _SplashSloganText({super.key, required this.onFinished});
 
   final VoidCallback onFinished;
 
@@ -268,6 +265,12 @@ class _SplashSloganTextState extends State<_SplashSloganText>
   static const _slogan = 'إعلانك يبدأ من هنا مع لبينا';
 
   late final AnimationController _gradient;
+  final _kitKey = GlobalKey();
+  Timer? _doneTimer;
+
+  void _notifyDone() {
+    widget.onFinished();
+  }
 
   @override
   void initState() {
@@ -276,10 +279,16 @@ class _SplashSloganTextState extends State<_SplashSloganText>
       vsync: this,
       duration: const Duration(milliseconds: 2400),
     )..repeat();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final typingMs = (_slogan.characters.length * 140) + 280;
+      _doneTimer = Timer(Duration(milliseconds: typingMs), _notifyDone);
+    });
   }
 
   @override
   void dispose() {
+    _doneTimer?.cancel();
     _gradient.dispose();
     super.dispose();
   }
@@ -333,18 +342,21 @@ class _SplashSloganTextState extends State<_SplashSloganText>
           child: DefaultTextStyle(
             style: style,
             child: AnimatedTextKit(
+              key: _kitKey,
               animatedTexts: [
-                TypewriterAnimatedText(
+                TyperAnimatedText(
                   _slogan,
                   textAlign: TextAlign.center,
                   speed: const Duration(milliseconds: 140),
-                  cursor: '|',
                 ),
               ],
               isRepeatingAnimation: false,
               totalRepeatCount: 1,
+              pause: Duration.zero,
               displayFullTextOnTap: false,
-              onFinished: widget.onFinished,
+              onFinished: () {
+                Future.delayed(const Duration(milliseconds: 120), _notifyDone);
+              },
             ),
           ),
         ),
